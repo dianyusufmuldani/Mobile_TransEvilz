@@ -36,7 +36,6 @@ const TransactionSuccess = ({navigation}) => {
         <Text style={styles.TextDescription}>
           Selesaikan Pembayaran sebelum{' '}
         </Text>
-        {/* <Text style={styles.TextCount}>23 Jam 30 Menit 10 Detik</Text> */}
         <CountDownTimer
           ref={refTimer}
           timestamp={86399}

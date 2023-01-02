@@ -1,6 +1,13 @@
 //Import Library
 import React, {useEffect, useState} from 'react';
-import {View, StyleSheet, Image, Text} from 'react-native';
+import {
+  View,
+  StyleSheet,
+  Image,
+  Text,
+  BackHandler,
+  ScrollView,
+} from 'react-native';
 
 //Import Component
 import TextButton from '../../components/atoms/textButton';
@@ -13,9 +20,13 @@ import BlueButton from '../../components/moleculs/blueButton';
 import TextFieldPassword from '../../components/moleculs/textFieldPassword';
 import {Colours} from '../../helpers/colours';
 import TextFieldEmail from '../../components/moleculs/textFieldEmail';
+import PopUpError from '../../components/organism/popupError';
+// import { RegexPassword } from '../../helpers/formats';
 
 //Import Assets
 import ImageFingerprint from '../../../assets/login/Fingerprint.png';
+import ImagePopupError3x from '../../../assets/popup/popup_error.png';
+import NegatifCase from '../../components/atoms/negatifCaseTextInput';
 
 const Login = ({navigation}) => {
   const [isButton, setIsButton] = useState(false);
@@ -23,6 +34,7 @@ const Login = ({navigation}) => {
   const [password, setPassword] = useState(null);
   const [checkValidEmail, setCheckValidEmail] = useState(false);
   const [checkValidPassword, setCheckValidPassword] = useState(false);
+  const [isPopup3x, setIsPopup3x] = useState(false);
   const handleCheckValidEmail = text => {
     let re = /\S+@\S+\.\S+/;
     let regex = /^[\+]?[(]?[0-9]{3}[)]?[-\s\.]?[0-9]{3}[-\s\.]?[0-9]{4,6}$/im;
@@ -36,7 +48,7 @@ const Login = ({navigation}) => {
   const handleCheckValidPassword = text => {
     let re = /\S+@\S+\.\S+/;
     let regex =
-      /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[#$@!%&*?])[A-Za-z\d#$@!%&*?]{8,16}$/;
+      /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@*#&])[A-Za-z\d#$@!%&*?]{8,16}$/;
     setPassword(text);
     if (re.test(text) || regex.test(text)) {
       setCheckValidPassword(false);
@@ -44,21 +56,28 @@ const Login = ({navigation}) => {
       setCheckValidPassword(true);
     }
   };
+
+  const backAction = () => {
+    BackHandler.exitApp();
+    return true;
+  };
   useEffect(() => {
-    if (email == null) {
+    console.log('ce valid pas', checkValidPassword)
+    if (email == null || email == '') {
       setIsButton(false);
-    } else if (password == null) {
+      setCheckValidEmail(false);
+    } else if (password == null || password == '') {
       setIsButton(false);
+      setCheckValidPassword(false);
+      console.log('isiCheck Email OKE', checkValidEmail);
     } else if (checkValidEmail == false && checkValidPassword == false) {
       setIsButton(true);
+    } else {
+      setIsButton(false);
     }
-    // else if(password!=null||password!=undefined){
-    //   setIsButton(false);
-    // }
-    // else{
-    //   console.log('isi ELSE', isButton);
-    //   setIsButton(true)
-    // }
+    BackHandler.addEventListener('hardwareBackPress', backAction);
+    return () =>
+      BackHandler.removeEventListener('hardwareBackPress', backAction);
   });
   const handleRegistrasi = () => {
     navigation.navigate('Registration');
@@ -70,64 +89,81 @@ const Login = ({navigation}) => {
     navigation.navigate('ForgotPassword');
   };
   return (
-    <View style={styles.Container}>
-      <View style={styles.ContainerBody}>
-        <View style={styles.ContainerHeader}>
-          <TextTitleOnBoarding value={'Hallo!'} />
-          {/* <Icon name='eye-outline'/> */}
-        </View>
-        <View style={styles.ContainerText}>
-          <TextDescriptionOnBoarding value={'Sudah punya akun ? '} />
-          <TextButton value={'Lakukan Registrasi'} onPress={handleRegistrasi} />
-        </View>
-        <View style={styles.ContainerImage}>
-          <Image source={ImageFingerprint} />
-        </View>
-        <View style={styles.FormLogin}>
-          <View style={{flexDirection: 'row'}}>
-            <TextDefault value={'Email '} />
-            <RequirementSymbols />
+    <>
+      <ScrollView style={styles.Container}>
+        <PopUpError
+          visible={isPopup3x}
+          value={
+            'Kata sandi yang anda masukkan sudah 3 kali salah, Coba setelah 10 menit '
+          }
+          ImagePopUp={ImagePopupError3x}
+          textButton={'Coba Nanti'}
+        />
+        <View style={styles.ContainerBody}>
+          <View style={styles.ContainerHeader}>
+            <TextTitleOnBoarding value={'Hallo!'} />
           </View>
-          <TextFieldEmail
-            placeholder={'Email'}
-            value={email}
-            onChangeText={handleCheckValidEmail}
-            autoCapitalize={'none'}
-          />
-          {checkValidEmail ? (
-            <Text style={styles.TextWrong}>Incorrect email format</Text>
-          ) : (
-            <Text> </Text>
-          )}
-        </View>
-
-        <View style={styles.FormLogin}>
-          <View style={{flexDirection: 'row'}}>
-            <TextDefault value={'Kata sandi '} />
-            <RequirementSymbols />
-          </View>
-          <TextFieldPassword
-            placeholder={'Password'}
-            onChangeText={handleCheckValidPassword}
-            value={password}
-          />
-          {checkValidPassword ? (
-            <Text style={styles.TextWrong}>Incorrect password format</Text>
-          ) : (
-            <Text> </Text>
-          )}
-          <View style={{alignSelf: 'flex-end'}}>
-            <TextButtonBlue
-              value={'Lupa Kata sandi ?'}
-              onPress={handleForgotPassword}
+          <View style={styles.ContainerText}>
+            <TextDescriptionOnBoarding value={'Sudah punya akun ? '} />
+            <TextButton
+              value={'Lakukan Registrasi'}
+              onPress={handleRegistrasi}
             />
           </View>
+          <View style={styles.ContainerImage}>
+            <Image source={ImageFingerprint} />
+          </View>
+
+          <View style={styles.FormLogin}>
+            <View style={{flexDirection: 'row'}}>
+              <TextDefault value={'Email '} />
+              <RequirementSymbols />
+            </View>
+            <TextFieldEmail
+              placeholder={'Email'}
+              value={email}
+              onChangeText={handleCheckValidEmail}
+              autoCapitalize={'none'}
+            />
+            {checkValidEmail ? (
+              <Text style={styles.TextWrong}>Format email salah</Text>
+            ) : null}
+            <NegatifCase value={email} text={'Anda harus mengisi bagian ini'} />
+          </View>
+
+          <View style={styles.FormLogin}>
+            <View style={{flexDirection: 'row'}}>
+              <TextDefault value={'Kata sandi '} />
+              <RequirementSymbols />
+            </View>
+            <TextFieldPassword
+              placeholder={'Kata sandi'}
+              onChangeText={handleCheckValidPassword}
+              value={password}
+              maxLength={16}
+            />
+            {checkValidPassword==true&&password!='' ? (
+              <Text style={styles.TextWrong}>
+                Kata sandi harus berisi huruf besar, angka dan simbol (@ * # &)
+              </Text>
+            ) : null}
+            <NegatifCase
+              value={password}
+              text={'Anda harus mengisi bagian ini'}
+            />
+            <View style={{alignSelf: 'flex-end'}}>
+              <TextButtonBlue
+                value={'Lupa Kata sandi ?'}
+                onPress={handleForgotPassword}
+              />
+            </View>
+          </View>
         </View>
-      </View>
+      </ScrollView>
       <View style={styles.ButtonLogin}>
-        <BlueButton value={'Login'} onPress={handleLogin} isButton={isButton} />
+        <BlueButton value={'Masuk'} onPress={handleLogin} isButton={isButton} />
       </View>
-    </View>
+    </>
   );
 };
 
@@ -135,12 +171,12 @@ export default Login;
 const styles = StyleSheet.create({
   Container: {
     flex: 1,
-    alignItems: 'center',
-    backgroundColor: Colours.background,
+    width: '100%',
+    backgroundColor:Colours.background
   },
   ContainerBody: {
     width: '90%',
-    alignItems: 'center',
+    alignSelf: 'center',
   },
   ContainerHeader: {
     marginTop: 36,
@@ -148,19 +184,19 @@ const styles = StyleSheet.create({
   ContainerText: {
     flexDirection: 'row',
     marginBottom: 33,
+    alignSelf: 'center',
   },
   FormLogin: {
-    width: '90%',
-    alignItems: 'baseline',
     marginTop: 30,
   },
   ButtonLogin: {
     width: '90%',
-    position: 'absolute',
-    bottom: 20,
+
+    bottom: 0,
+    alignSelf: 'center',
   },
   TextWrong: {
-    color: 'red',
+    color: '#DC3328',
   },
   ContainerImage: {
     width: '100%',

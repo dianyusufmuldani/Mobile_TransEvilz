@@ -1,6 +1,13 @@
 //Import Library
 import React, {useState, useEffect} from 'react';
-import {View, StyleSheet, Image, Text} from 'react-native';
+import {
+  View,
+  StyleSheet,
+  Image,
+  Text,
+  BackHandler,
+  ScrollView,
+} from 'react-native';
 
 //Import Component
 import HeaderPages from '../../components/moleculs/headerPages';
@@ -14,6 +21,7 @@ import PopUp from '../../components/organism/popup';
 //Import Assets
 import ImageGirlPassword from '../../../assets/forgotPassword/girl_tries_password.png';
 import ImageReceiveMessage from '../../../assets/popup/received_message_icon.png';
+import NegatifCase from '../../components/atoms/negatifCaseTextInput';
 
 const ForgotPassword = ({navigation}) => {
   const [email, setEmail] = useState(null);
@@ -30,13 +38,32 @@ const ForgotPassword = ({navigation}) => {
       setCheckValidEmail(true);
     }
   };
+  const backAction = () => {
+    BackHandler.removeEventListener();
+    return true;
+  };
   useEffect(() => {
-    if (email != null || email != undefined) {
-      console.log(isButton);
-      setIsButton(true);
-    } else {
+    console.log('isicheck email', checkValidEmail)
+    
+     if(email==null||email==''){
       setIsButton(false);
+      setCheckValidEmail(false)
     }
+ 
+      else if (checkValidEmail == false&&email!='') {
+        console.log('isi Isbutton',isButton);
+        setIsButton(true);
+      } 
+      else {
+        setIsButton(false);
+       setCheckValidEmail(true)
+      }
+    
+  
+    
+    BackHandler.addEventListener('hardwareBackPress', backAction);
+    return () =>
+      BackHandler.removeEventListener('hardwareBackPress', backAction);
   });
   const handleKirim = () => {
     setIsPopup(true);
@@ -54,39 +81,41 @@ const ForgotPassword = ({navigation}) => {
         visible={isPopup}
         onPressCancel={handleCancelPopUp}
         onPressButton={handleButtonPopup}
-        value={'Permohonan Perubahan Password telah dikirim ke email anda'}
+        value={'Permohonan Perubahan kata sandi telah dikirim ke email anda'}
         ImagePopUp={ImageReceiveMessage}
         textButton={'Cek Email Sekarang'}
       />
       <HeaderPages
         hideShowTitle={true}
-        value={'Lupa Password ?'}
+        value={'Lupa Kata Sandi ?'}
         onPress={() => navigation.goBack()}
       />
-      <View style={styles.ContainerImage}>
-        <Image source={ImageGirlPassword} />
-        <Text style={styles.TextStyle}>
-          Masukkan email anda untuk membuat password baru
-        </Text>
-      </View>
-      <View style={styles.FormStyle}>
-        <View style={{flexDirection: 'row'}}>
-          <TextDefault value={'Email '} />
-          <RequirementSymbols />
+      <ScrollView style={styles.ContainerScrollView}>
+        <View style={styles.ContainerImage}>
+          <Image source={ImageGirlPassword} />
+          <Text style={styles.TextStyle}>
+            Masukkan email anda untuk membuat kata sandi baru
+          </Text>
         </View>
-        <TextField
-          placeholder={'Email'}
-          value={email}
-          onChangeText={handleCheckValidEmail}
-        />
-        {checkValidEmail ? (
-          <Text style={styles.TextWrong}>Incorrect email format</Text>
-        ) : (
-          <Text> </Text>
-        )}
-      </View>
-
-      <View style={styles.ContainerKirim}>
+        <View style={styles.FormStyle}>
+          <View style={{flexDirection: 'row'}}>
+            <TextDefault value={'Email '} />
+            <RequirementSymbols />
+          </View>
+          <TextField
+            placeholder={'Email'}
+            value={email}
+            onChangeText={handleCheckValidEmail}
+          />
+          {checkValidEmail? (
+            <Text style={styles.TextWrong}>Format email salah</Text>
+          ) : (
+            (null)
+          )}
+          <NegatifCase value={email} text={'Anda harus mengisi bagian ini'}/>
+        </View>
+      </ScrollView>
+      <View style={styles.ContainerKirim}>  
         <BlueButton value={'Kirim'} onPress={handleKirim} isButton={isButton} />
       </View>
     </View>
@@ -101,8 +130,7 @@ const styles = StyleSheet.create({
     backgroundColor: Colours.background,
   },
   ContainerImage: {
-    marginTop: 87.5,
-    width: '90%',
+    marginTop: 40,
     alignItems: 'center',
   },
   TextStyle: {
@@ -110,16 +138,18 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: '500',
     color: '#98A5D3',
+    width: '90%',
   },
   FormStyle: {
     width: '90%',
-    alignItems: 'baseline',
+
     marginTop: 30,
+    alignSelf: 'center',
   },
   ContainerKirim: {
     width: '90%',
-    position: 'absolute',
-    bottom: 20,
+    // position: 'absolute',
+    bottom: 0,
   },
   TextWrong: {
     color: 'red',

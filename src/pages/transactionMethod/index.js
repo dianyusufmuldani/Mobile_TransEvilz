@@ -12,7 +12,7 @@ import HeaderPages from '../../components/moleculs/headerPages';
 import {Colours} from '../../helpers/colours';
 
 const TransactionMethod = ({navigation}) => {
-  const [akunBank, setAkunBank] = useState(false);
+  const [bankAccount, setBankAccount] = useState(false);
   const [creditCard, setCreditCard] = useState(false);
   const [debitCard, setDebitCard] = useState(false);
   const [selected, setSelected] = React.useState('');
@@ -22,19 +22,19 @@ const TransactionMethod = ({navigation}) => {
     {key: '3', value: 'BRI'},
     {key: '4', value: 'Mandiri'},
   ];
-  const handleButtonAkunBank = () => {
-    setAkunBank(true);
+  const handleButtonBankAccount = () => {
+    setBankAccount(true);
     setCreditCard(false);
     setDebitCard(false);
   };
   const handleButtonCreditCard = () => {
     setCreditCard(true);
-    setAkunBank(false);
+    setBankAccount(false);
     setDebitCard(false);
   };
   const handleButtonDebitCard = () => {
     setDebitCard(true);
-    setAkunBank(false);
+    setBankAccount(false);
     setCreditCard(false);
   };
   return (
@@ -57,11 +57,13 @@ const TransactionMethod = ({navigation}) => {
             data={data}
             save="value"
             boxStyles={{
-              backgroundColor: '#EFEFEF',
+              backgroundColor: '#F1F7FF',
               borderWidth: 0,
               width: '100%',
             }}
             placeholder="Pilih Bank"
+            search={false}
+            dropdownStyles={{backgroundColor: '#F1F7FF', borderWidth: 0}}
           />
         </View>
       </View>

@@ -1,6 +1,6 @@
 //Import Library
 import React from 'react';
-import {View, StyleSheet, Text} from 'react-native';
+import {View, StyleSheet, Text, TextInput} from 'react-native';
 
 //Import Component
 import HeaderPages from '../../components/moleculs/headerPages';
@@ -26,14 +26,14 @@ const TransferCard = ({navigation}) => {
       />
       <View style={styles.ContainerBody}>
         <View style={styles.ContainerFieldCurrency}>
-          <TextFieldCurrency
-            placeholder={'IDR'}
-            IconCurrency={<IconIndonesia />}
-          />
+          {/* <TextFieldCurrency /> */}
+          <View style={styles.ContainerFlag}>
+          <IconIndonesia/>
+          </View>
+          <TextInput style={styles.ContainerTextInputFlag}/>
+          
         </View>
-        <View style={styles.ContainerFieldCurrency}>
-          <TextFieldCurrency placeholder={'USD'} IconCurrency={<IconUSA />} />
-        </View>
+        
         <View style={styles.TextNilaiKurs}>
           <TextDescriptionOnBoarding value={'Nilai Kurs Saat ini'} />
           <TextDescriptionOnBoarding value={'15.000 IDR'} />
@@ -77,6 +77,7 @@ const styles = StyleSheet.create({
   ContainerFieldCurrency: {
     width: '90%',
     marginTop: 24,
+    flexDirection:'row'
   },
   TextNilaiKurs: {
     flexDirection: 'row',
@@ -119,4 +120,10 @@ const styles = StyleSheet.create({
     width: '90%',
     alignSelf: 'center',
   },
+  ContainerFlag:{
+    backgroundColor:'#F1F7FF', height:39,borderTopLeftRadius:10, borderBottomLeftRadius:10, width:'15%', justifyContent:'center', alignItems:'center'
+  },
+  ContainerTextInputFlag:{
+    backgroundColor:'#F1F7FF', height:39, borderTopRightRadius:10, borderBottomRightRadius:10, width:'85%'
+  }
 });

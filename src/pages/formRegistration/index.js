@@ -7,11 +7,14 @@ import {
   Text,
   TouchableOpacity,
   TextInput,
+  Image,
 } from 'react-native';
 import RadioGroup from 'react-native-radio-buttons-group';
 import {SelectList} from 'react-native-dropdown-select-list';
 import moment from 'moment';
 import DateTimePicker from '@react-native-community/datetimepicker';
+import {useDispatch, useSelector} from 'react-redux';
+import {launchCamera, launchImageLibrary} from 'react-native-image-picker';
 
 //Import Component
 import RequirementSymbols from '../../components/atoms/requirementSymbols';
@@ -23,13 +26,21 @@ import BlueButton from '../../components/moleculs/blueButton';
 import PopUp from '../../components/organism/popup';
 import {Colours} from '../../helpers/colours';
 import TextFieldEmail from '../../components/moleculs/textFieldEmail';
+import {setUsers} from '../../service/redux/reducer/usersSlice';
+import {getUsers} from '../../service/redux/reducer/usersSlice';
+import RadioButton from '../../components/moleculs/radioButton';
+import NegatifCase from '../../components/atoms/negatifCaseTextInput';
+import {
+  setIsPopupSuccessFormRegistration,
+  setIsButtonFormRegistration,
+} from '../../service/redux/reducer/globalSlice';
 
 //Import Assets
 import ImageReceiveMessage from '../../../assets/popup/received_message_icon.png';
 import IconCalender from '../../../assets/formRegistration/calendar.svg';
 import IconUserImageAdd from '../../../assets/formRegistration/user-plus.svg';
 
-const kewarganegaraanData = [
+const nationalityData = [
   {
     id: '1', // acts as primary key, should be unique and non-empty string
     label: 'WNI',
@@ -45,7 +56,7 @@ const kewarganegaraanData = [
     size: 15,
   },
 ];
-const jenisKelaminData = [
+const genderData = [
   {
     id: '1', // acts as primary key, should be unique and non-empty string
     label: 'Laki-laki',
@@ -61,7 +72,7 @@ const jenisKelaminData = [
     size: 15,
   },
 ];
-const agreementData = [
+const agreeTermsData = [
   {
     id: '1', // acts as primary key, should be unique and non-empty string
     value: 'Setuju',
@@ -70,30 +81,72 @@ const agreementData = [
 ];
 
 const FormRegistration = ({navigation}) => {
-  const [isPopup, setIsPopup] = useState(false);
-  const [kewarganegaraan, setKewarganegaraan] = useState(null);
-  const [selected, setSelected] = React.useState('');
+  // const [isPopup, setisPopupSuccessFormRegistration] = useState(false);
+  const [nationality, setNationality] = useState(null);
+  const [typeDocument, setTypeDocument] = useState(null);
   const [noDocument, setNoDocument] = useState(null);
-  const [jenisKelamin, setJenisKelamin] = useState(jenisKelaminData);
-  const [namaDepan, setNamaDepan] = useState(null);
-  const [namaBelakang, setNamaBelakang] = useState(null);
-  const [tempatLahir, setTempatLahir] = useState(null);
+  const [gender, setGender] = useState(genderData);
+  const [firstName, setFirstName] = useState(null);
+  const [lastName, setLastName] = useState(null);
+  const [birthplace, setBirthplace] = useState(null);
   const [birtday, setBirthday] = useState(null);
-  const [alamat, setAlamat] = useState(null);
-  const [kataSandi, setKataSandi] = useState(null);
-  const [konfirmasiKataSandi, setKonfirmasiKataSandi] = useState(null);
-  const [agreement, setAgreement] = useState(null);
+  const [address, setAddress] = useState(null);
+  const [password, setPassword] = useState(null);
+  const [confirmPassword, setConfirmPassword] = useState(null);
+  const [agreeTerms, setAgreeTerms] = useState(null);
   const [email, setEmail] = useState(null);
-  const [isButton, setIsButton] = useState(false);
   const [date, setDate] = useState(new Date());
   const [showDate, setShowDate] = useState(false);
+  const [matchPassword, setMatchPassword] = useState(true);
+  const dispatch = useDispatch();
+  const stateUsers = useSelector(state => state.users);
+  const stateGlobal = useSelector(state=>state.global);
 
   momentDate = moment(date).format('l');
+  const [checkValidEmail, setCheckValidEmail] = useState(false);
+  const [checkValidPassword, setCheckValidPassword] = useState(true);
+  const handleCheckValidEmail = text => {
+    let re = /\S+@\S+\.\S+/;
+    let regex = /^[\+]?[(]?[0-9]{3}[)]?[-\s\.]?[0-9]{3}[-\s\.]?[0-9]{4,6}$/im;
+    setEmail(text);
+    if (re.test(text) || regex.test(text)) {
+      setCheckValidEmail(false);
+    } else {
+      setCheckValidEmail(true);
+    }
+  };
+  const handleCheckValidPassword = text => {
+    let re = /\S+@\S+\.\S+/;
+    let regex =
+      /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@*#&])[A-Za-z\d#$@!%&*?]{8,16}$/;
+    setPassword(text);
+    if (re.test(text) || regex.test(text)) {
+      setCheckValidPassword(true);
+    } else {
+      setCheckValidPassword(false);
+    }
+  };
 
   useEffect(() => {
-    console.log('isi MomentData', momentDate);
-    console.log('isi Birthday', date);
+    if (email == null || email == '') {
+      setCheckValidEmail(false);
+    }
+    if (password == '' || password == null){
+      setCheckValidPassword(true);
+    }
+    if (confirmPassword != null || confirmPassword != undefined){
+      if (confirmPassword == ''){
+        setMatchPassword(true);
+      } else if (password != confirmPassword) {
+        setMatchPassword(false);
+      } else {
+        setMatchPassword(true);
+      }
+    } else {
+      setMatchPassword(true);
+    }
   });
+
   const onChange = (event, selectedDate) => {
     const currentDate = selectedDate || date;
     setShowDate(false);
@@ -112,65 +165,103 @@ const FormRegistration = ({navigation}) => {
   };
 
   useEffect(() => {
-    // console.log('cek isi', birtday)
+    console.log('sampai sini', stateGlobal.isButtonFormRegistration);
+    console.log('isi state', agreeTerms);
     if (email == '' || email == undefined) {
-      console.log(isButton);
-      setIsButton(false);
-    } else if (kewarganegaraan == '' || kewarganegaraan == undefined) {
-      setIsButton(false);
-    } else if (selected == '' || selected == undefined) {
-      setIsButton(false);
+      dispatch(setIsButtonFormRegistration(false));
+    } else if (nationality == '' || nationality == undefined) {
+      dispatch(setIsButtonFormRegistration(false));
+    } else if (typeDocument == '' || typeDocument == undefined) {
+      dispatch(setIsButtonFormRegistration(false));
     } else if (noDocument == '' || noDocument == undefined) {
-      setIsButton(false);
-    } else if (namaDepan == '' || namaDepan == undefined) {
-      setIsButton(false);
-    } else if (namaBelakang == '' || namaBelakang == undefined) {
-      setIsButton(false);
-    } else if (tempatLahir == '' || tempatLahir == undefined) {
-      setIsButton(false);
-    } else if (alamat == '' || alamat == undefined) {
-      setIsButton(false);
-    } else if (jenisKelamin == '' || jenisKelamin == undefined) {
-      setIsButton(false);
-    } else if (kataSandi == '' || kataSandi == undefined) {
-      setIsButton(false);
-    } else if (konfirmasiKataSandi == '' || konfirmasiKataSandi == undefined) {
-      setIsButton(false);
-    } else if (agreement == '' || agreement == undefined) {
-      setIsButton(false);
-    } else {
-      setIsButton(true);
+      dispatch(setIsButtonFormRegistration(false));
+    } else if (firstName == '' || firstName == undefined) {
+      dispatch(setIsButtonFormRegistration(false));
+    } else if (lastName == '' || lastName == undefined) {
+      dispatch(setIsButtonFormRegistration(false));
+    } else if (birthplace == '' || birthplace == undefined) {
+      dispatch(setIsButtonFormRegistration(false));
+    } else if (address == '' || address == undefined) {
+      dispatch(setIsButtonFormRegistration(false));
+    } else if (gender == '' || gender == undefined) {
+      dispatch(setIsButtonFormRegistration(false));
+    } else if (password == '' || password == undefined) {
+      dispatch(setIsButtonFormRegistration(false));
+      setCheckValidPassword(true);
+    }
+    else if (checkValidPassword == false){
+      dispatch(setIsButtonFormRegistration(false));
+    } else if (matchPassword == false) {
+      dispatch(setIsButtonFormRegistration(false));
+    } else if (confirmPassword == '' || confirmPassword == undefined) {
+      dispatch(setIsButtonFormRegistration(false));
+
+
+    } else if (agreeTerms == '' || agreeTerms == undefined) {
+      dispatch(setIsButtonFormRegistration(false));
+    } else if (password == confirmPassword) {
+
+      dispatch(setIsButtonFormRegistration(true));
     }
   });
-  function onPressKewarganegaraan(radioButtonsArray) {
-    setKewarganegaraan(radioButtonsArray);
+
+  function onPressNationality(radioButtonsArray) {
+    setNationality(radioButtonsArray);
   }
-  function onPressJenisKelamin(radioButtonsArray) {
-    setJenisKelamin(radioButtonsArray);
+  function onPressGender(radioButtonsArray) {
+    setGender(radioButtonsArray);
   }
-  function onPressAgreement(radioButtonsArray) {
-    setAgreement(radioButtonsArray);
+  function onPressAgreeTerms(radioButtonsArray) {
+    setAgreeTerms(radioButtonsArray);
   }
 
   const documentData = [
-    {key: '1', value: 'KTP'},
-    {key: '2', value: 'SIM'},
-    {key: '3', value: 'Passport'},
+    {key: '1', value: 'Passport'},
+    {key: '2', value: 'KTP'},
+    {key: '3', value: 'SIM'},
   ];
   const handleLanjut = () => {
-    setIsPopup(true);
+    const request = {
+      email: email,
+      nationality: nationality,
+      typeDocument: typeDocument,
+      noDocument: noDocument,
+      firstName: firstName,
+      lastName: lastName,
+      birthplace: birthplace,
+      birtday: birtday,
+      address: address,
+      gender: gender,
+      password: password,
+      confirmPassword: confirmPassword,
+      agreeTerms: agreeTerms,
+    };
+    dispatch(getUsers(request));
+    dispatch(setIsPopupSuccessFormRegistration(true));
   };
   const handleCancelPopUp = () => {
-    setIsPopup(false);
+    dispatch(setIsPopupSuccessFormRegistration(false));
   };
   const handleAktivasiSekarang = () => {
-    setIsPopup(false);
+    dispatch(setIsPopupSuccessFormRegistration(false));
+    dispatch(setIsButtonFormRegistration(false));
     navigation.navigate('CreatePIN');
+  };
+  const [photo, setPhoto] = useState(null);
+  let options = {
+    setToPhotos: true,
+    mediaType: 'photo',
+  };
+
+  const openGallery = async()=>{
+    const result = await launchImageLibrary(options);
+    setPhoto(result.assets[0].uri);
+    console.log('isi Photo', photo);
   };
   return (
     <ScrollView style={styles.Container}>
       <PopUp
-        visible={isPopup}
+        visible={stateGlobal.isPopupSuccessFormRegistration}
         onPressCancel={handleCancelPopUp}
         onPressButton={handleAktivasiSekarang}
         value={'Cek email anda untuk melakukan aktivasi akun'}
@@ -184,8 +275,14 @@ const FormRegistration = ({navigation}) => {
       />
       <View style={styles.ContainerBody}>
         <View style={styles.FormStyle}>
-          <TouchableOpacity style={styles.ContainerImageAdd}>
-            <IconUserImageAdd />
+          <TouchableOpacity
+            style={styles.ContainerImageAdd}
+            onPress={openGallery}>
+            {photo ? (
+              <Image source={{uri: photo}} style={styles.ImageProfilPick} />
+            ) : (
+              <IconUserImageAdd />
+            )}
           </TouchableOpacity>
 
           <View style={{flexDirection: 'row'}}>
@@ -195,8 +292,17 @@ const FormRegistration = ({navigation}) => {
           <TextFieldEmail
             placeholder={'Email'}
             value={email}
-            onChangeText={value => setEmail(value)}
+            onChangeText={handleCheckValidEmail}
           />
+          {checkValidEmail ?
+
+
+
+( <NegatifCase text={'Format email salah'} value={''} />) : null
+}
+          {email == '' ? (
+            <NegatifCase text={'Anda harus mengisi bagian ini'} value={email} />
+          ) : null}
         </View>
         <View style={styles.FormStyle}>
           <View style={{flexDirection: 'row'}}>
@@ -204,8 +310,8 @@ const FormRegistration = ({navigation}) => {
             <RequirementSymbols />
           </View>
           <RadioGroup
-            radioButtons={kewarganegaraanData}
-            onPress={onPressKewarganegaraan}
+            radioButtons={nationalityData}
+            onPress={onPressNationality}
             containerStyle={{flexDirection: 'row'}}
           />
         </View>
@@ -214,23 +320,46 @@ const FormRegistration = ({navigation}) => {
             <TextDefault value={'Tipe Dokumen '} />
             <RequirementSymbols />
           </View>
-          <SelectList
-            setSelected={val => setSelected(val)}
-            data={documentData}
-            save="value"
-            boxStyles={{
-              backgroundColor: '#F1F7FF',
-              borderWidth: 0,
-              width: '100%',
-            }}
-            placeholder="Pilih tipe dokumen"
-            inputStyles={{marginLeft: -15}}
-          />
+          <View style={styles.ContainerDropdownType}>
+            <SelectList
+              setSelected={val => setTypeDocument(val)}
+              data={documentData}
+              save="value"
+              boxStyles={{
+                backgroundColor: '#F1F7FF',
+                borderWidth: 0,
+                width: '100%',
+              }}
+              placeholder="Pilih tipe dokumen"
+              inputStyles={{marginLeft: -15, paddingLeft: 10}}
+              dropdownStyles={{
+                height: 130,
+                backgroundColor: '#F1F7FF',
+                borderWidth: 0,
+              }}
+              search={false}
+            />
+          </View>
           <View style={{marginTop: 10}} />
-          <TextField
-            placeholder={'Masukkan no dokumen'}
+          {typeDocument != null ? (
+            <TextField
+              placeholder={'Masukkan no dokumen'}
+              value={noDocument}
+              onChangeText={value => setNoDocument(value)}
+            />
+          ) : (
+            <TextInput
+              placeholder={'Masukkan no dokumen'}
+              value={noDocument}
+              onChangeText={value => setNoDocument(value)}
+              editable={false}
+              style={styles.ContainerTextInputFalseNoDocument}
+            />
+          )}
+
+          <NegatifCase
+            text={'Anda harus mengisi bagian ini'}
             value={noDocument}
-            onChangeText={value => setNoDocument(value)}
           />
         </View>
 
@@ -241,8 +370,12 @@ const FormRegistration = ({navigation}) => {
           </View>
           <TextField
             placeholder={'Nama depan'}
-            value={namaDepan}
-            onChangeText={value => setNamaDepan(value)}
+            value={firstName}
+            onChangeText={value => setFirstName(value)}
+          />
+          <NegatifCase
+            text={'Anda harus mengisi bagian ini'}
+            value={firstName}
           />
         </View>
         <View style={styles.FormStyle}>
@@ -252,8 +385,12 @@ const FormRegistration = ({navigation}) => {
           </View>
           <TextField
             placeholder={'Nama Belakang'}
-            value={namaBelakang}
-            onChangeText={value => setNamaBelakang(value)}
+            value={lastName}
+            onChangeText={value => setLastName(value)}
+          />
+          <NegatifCase
+            text={'Anda harus mengisi bagian ini'}
+            value={lastName}
           />
         </View>
         <View style={styles.FormStyle}>
@@ -262,46 +399,61 @@ const FormRegistration = ({navigation}) => {
             <RequirementSymbols />
           </View>
           <TextField
-            placeholder={'Tempat Lahir'}
-            value={tempatLahir}
-            onChangeText={value => setTempatLahir(value)}
+            placeholder={'Tempat Lahir '}
+            value={birthplace}
+            onChangeText={value => setBirthplace(value)}
+          />
+          <NegatifCase
+            text={'Anda harus mengisi bagian ini'}
+            value={birthplace}
           />
         </View>
         <View style={styles.FormStyle}>
           <View style={{flexDirection: 'row'}}>
-            <TextDefault value={'Tanggal Lahir'} />
+            <TextDefault value={'Tanggal Lahir '} />
             <RequirementSymbols />
           </View>
-          <View style={styles.ContainerTextInputDate}>
-            <TextInput value={birtday} />
-
-            <TouchableOpacity onPress={() => showMode('date')}>
-              <IconCalender />
-            </TouchableOpacity>
-
-            {showDate && (
-              <DateTimePicker
-                testID="dateTimePicker"
-                value={date}
-                mode={'date'}
-                is24Hour={true}
-                onChange={onChange}
+          <TouchableOpacity
+            onPress={() => showMode('date')}
+            style={{width: '100%'}}>
+            <View style={styles.ContainerTextInputDate}>
+              <TextInput
+                value={birtday}
+                editable={false}
+                placeholder={'mm/dd/yyyy'}
+                style={styles.ContainerPlaceholderDate}
               />
-            )}
-          </View>
+
+              <IconCalender />
+
+              {showDate && (
+                <DateTimePicker
+                  testID="dateTimePicker"
+                  value={date}
+                  mode={'date'}
+                  is24Hour={true}
+                  onChange={onChange}
+                />
+              )}
+            </View>
+          </TouchableOpacity>
         </View>
         <View style={styles.FormStyle}>
           <View style={{flexDirection: 'row'}}>
-            <TextDefault value={'Alamat'} />
+            <TextDefault value={'Alamat '} />
             <RequirementSymbols />
           </View>
-          <TextField
+          <TextInput
             placeholder={'Alamat'}
             multiline={true}
             numberOfLines={4}
-            value={alamat}
-            onChangeText={value => setAlamat(value)}
+            value={address}
+            onChangeText={value => setAddress(value)}
+            style={styles.ContainerAddress}
+            textAlignVertical="top"
+
           />
+          <NegatifCase text={'Anda harus mengisi bagian ini'} value={address} />
         </View>
         <View style={styles.FormStyle}>
           <View style={{flexDirection: 'row'}}>
@@ -309,51 +461,75 @@ const FormRegistration = ({navigation}) => {
             <RequirementSymbols />
           </View>
           <RadioGroup
-            radioButtons={jenisKelamin}
-            onPress={onPressJenisKelamin}
+            radioButtons={gender}
+            onPress={onPressGender}
             containerStyle={{flexDirection: 'row'}}
           />
         </View>
         <View style={styles.FormStyle}>
           <View style={{flexDirection: 'row'}}>
-            <TextDefault value={'Kata Sandi'} />
+            <TextDefault value={'Kata sandi '} />
             <RequirementSymbols />
           </View>
           <TextFieldPassword
-            placeholder={'Kata Sandi'}
-            value={kataSandi}
-            onChangeText={value => setKataSandi(value)}
+            placeholder={'Kata sandi'}
+            value={password}
+            onChangeText={handleCheckValidPassword}
+            maxLength={16}
+          />
+          {checkValidPassword ? (
+            <></>
+          ) : (
+            <NegatifCase
+              text={'Kata sandi harus berisi huruf besar, angka dan simbol (@ * # &)'}
+              value={''}
+            />
+          )}
+          <NegatifCase
+            text={'Anda harus mengisi bagian ini'}
+            value={password}
           />
         </View>
         <View style={styles.FormStyle}>
           <View style={{flexDirection: 'row'}}>
-            <TextDefault value={'Konfirmasi Kata Sandi'} />
+            <TextDefault value={'Konfirmasi kata sandi '} />
             <RequirementSymbols />
           </View>
           <TextFieldPassword
-            placeholder={'Konfirmasi Kata Sandi'}
-            value={konfirmasiKataSandi}
-            onChangeText={value => setKonfirmasiKataSandi(value)}
+            placeholder={'Konfirmasi kata sandi'}
+            value={confirmPassword}
+            onChangeText={value => setConfirmPassword(value)}
+            maxLength={16}
+          />
+
+          {matchPassword ? (null) : 
+            (<NegatifCase text={'Kata sandi tidak sama'} value={''} />)
+
+          }
+          <NegatifCase
+            text={'Anda harus mengisi bagian ini'}
+            value={confirmPassword}
           />
         </View>
-        <View style={styles.ViewAgreement}>
+        <View style={styles.ViewAgreeTerms}>
           <RadioGroup
-            radioButtons={agreementData}
-            onPress={onPressAgreement}
+            radioButtons={agreeTermsData}
+            onPress={onPressAgreeTerms}
             containerStyle={{flexDirection: 'row'}}
           />
-          <Text style={styles.TextAgreement}>Saya setuju dengan </Text>
-          <TouchableOpacity>
-            <Text style={styles.TextButtonAgreement}>
+          <Text style={styles.TextAgreeTerms}>Saya setuju dengan </Text>
+          <TouchableOpacity
+            onPress={() => navigation.navigate('TermsAndConditions')}>
+            <Text style={styles.TextButtonAgreeTerms}>
               Syarat & Ketentuan yang berlaku
             </Text>
           </TouchableOpacity>
         </View>
         <View style={styles.ButtonLanjut}>
           <BlueButton
-            value={'Lanjut'}
+            value={'Selanjutnya'}
             onPress={handleLanjut}
-            isButton={isButton}
+            isButton={stateGlobal.isButtonFormRegistration}
           />
         </View>
       </View>
@@ -375,19 +551,20 @@ const styles = StyleSheet.create({
     alignItems: 'baseline',
     marginTop: 30,
   },
-  TextAgreement: {
+  TextAgreeTerms: {
     fontSize: 12,
     fontWeight: '500',
   },
-  TextButtonAgreement: {
+  TextButtonAgreeTerms: {
     fontSize: 12,
     fontWeight: '500',
     color: '#2075F3',
   },
-  ViewAgreement: {
+  ViewAgreeTerms: {
     alignItems: 'center',
     justifyContent: 'center',
     flexDirection: 'row',
+    marginTop: 30,
   },
   ButtonLanjut: {
     width: '90%',
@@ -412,4 +589,35 @@ const styles = StyleSheet.create({
     alignSelf: 'center',
     paddingLeft: 5,
   },
+  ContainerDropdownType: {
+    width: '100%',
+  },
+  ContainerTextInputFalseNoDocument: {
+    backgroundColor: '#EFEFEF',
+    width: '100%',
+    borderRadius: 10,
+    paddingLeft: 10,
+  },
+  ContainerPlaceholderDate: {
+    paddingLeft: 10,
+  },
+  ContainerAddress: {
+    backgroundColor: '#F1F7FF',
+    width: '100%',
+    borderRadius: 10,
+    paddingLeft: 10,
+
+
+  },
+  TextWrong: {
+    color: '#DC3328',
+  },
+  ImageProfilPick: {
+    width: 60,
+    height: 60,
+    borderRadius: 40,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+
 });

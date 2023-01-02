@@ -22,9 +22,7 @@ const PopUp = ({
     <Modal visible={visible} transparent={true} animationType={'fade'}>
       <View style={styles.Container}>
         <View style={styles.ContainerPopUp}>
-          <TouchableOpacity style={styles.CancelX} onPress={onPressCancel}>
-            <IconXCancel />
-          </TouchableOpacity>
+          <TouchableOpacity style={styles.CancelX} onPress={onPressCancel} />
           <View style={styles.ViewImage}>
             <Image source={ImagePopUp} />
             <Text style={styles.TextPopUp}>{value}</Text>
@@ -65,6 +63,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     width: '80%',
     alignSelf: 'center',
+    marginTop: 50,
   },
   TextPopUp: {
     fontSize: 16,

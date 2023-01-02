@@ -10,11 +10,12 @@ const NumberKeyboard = ({onPress, value}) => {
 export default NumberKeyboard;
 const styles = StyleSheet.create({
   FontNumberKeyboard: {
-    fontSize: 22,
+    fontSize: 16,
     fontWeight: '500',
+    color: '#2075F3',
   },
   CoverNumberKeyboard: {
-    backgroundColor: '#F3F7FD',
+    backgroundColor: '#F1F7FF',
     width: 60,
     height: 60,
     alignItems: 'center',

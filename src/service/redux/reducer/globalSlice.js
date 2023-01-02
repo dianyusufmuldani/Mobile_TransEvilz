@@ -2,18 +2,46 @@ import {createSlice} from '@reduxjs/toolkit';
 
 const initialState = {
   data: '',
-  isPopup: false,
+  isPopupIncorectOtp: false,
+  isPopupSuccessFormRegistration: false,
+  isButton: false,
+  isPopupCreatePinSuccess: false,
+  isButtonRegistration: false,
+  isButtonFormRegistration: false,
 };
 export const GlobalSlice = createSlice({
   name: 'global',
   initialState,
   reducers: {
-    setIsPopup: (state, action) => {
-      console.log('tes global');
-      state.isPopup = action.payload;
+    setIsPopupIncorectOtp: (state, action) => {
+      console.log('tes reducer popup');
+      state.isPopupIncorectOtp = action.payload;
+    },
+    setIsPopupSuccessFormRegistration: (state, action) => {
+      console.log('tes reducer popup');
+      state.isPopupSuccessFormRegistration = action.payload;
+    },
+    setIsPopupCreatePinSuccess: (state, action) => {
+      console.log('tes reducer popup');
+      state.isPopupCreatePinSuccess = action.payload;
+    },
+    setIsButtonRegistration: (state, action) => {
+      console.log('tes redicer button');
+      state.isButtonRegistration = action.payload;
+    },
+    setIsButtonFormRegistration: (state, action) => {
+      console.log('tes redicer button');
+      state.isButtonFormRegistration = action.payload;
     },
   },
 });
 
-export const {setIsPopup} = GlobalSlice.actions;
+export const {
+  setIsPopupIncorectOtp,
+  setIsButtonFormRegistration,
+  setIsButtonRegistration,
+  setIsPopupCreatePinSuccess,
+  setIsPopupSuccessFormRegistration,
+  setIsButton,
+} = GlobalSlice.actions;
 export default GlobalSlice.reducer;

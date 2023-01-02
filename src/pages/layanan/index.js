@@ -5,7 +5,6 @@ import {View, StyleSheet, Text} from 'react-native';
 //Import Component
 import HeaderPages from '../../components/moleculs/headerPages';
 import TextButtonBlue from '../../components/atoms/textButtonBlue';
-import TextDescriptionOnBoarding from '../../components/atoms/textDescriptionOnBoarding';
 import {Colours} from '../../helpers/colours';
 
 //Import Assets

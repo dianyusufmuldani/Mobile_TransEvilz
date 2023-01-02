@@ -1,13 +1,12 @@
 //Import Library
 import React, {useEffect, useState} from 'react';
-import {View, Image, StyleSheet, ScrollView, Button} from 'react-native';
+import {View, Image, StyleSheet, ScrollView} from 'react-native';
 import SplashScreen from 'react-native-splash-screen';
 
 //Import Component
 import TextTitleOnBoarding from '../../components/atoms/textTitleOnBoarding';
 import TextDescriptionOnBoarding from '../../components/atoms/textDescriptionOnBoarding';
 import BlueButton from '../../components/moleculs/blueButton';
-import WhiteButton from '../../components/moleculs/whiteButton';
 import {Colours} from '../../helpers/colours';
 
 //Import Assets
@@ -16,9 +15,6 @@ import Image2 from '../../../assets/onBoarding/image2.png';
 import Image3 from '../../../assets/onBoarding/image3.png';
 
 const OnBoarding = ({navigation}) => {
-  const [title, setTitle] = useState(null);
-  const [description, setDescription] = useState(null);
-  const [image, setImage] = useState(Image1);
   const [imgActive, setImgActive] = useState(0);
   useEffect(() => {
     SplashScreen.hide();
@@ -34,26 +30,7 @@ const OnBoarding = ({navigation}) => {
       }
     }
   };
-  // useEffect(() => {
-  //   if (imgActive == 0) {
-  //     setTitle('Teknologi terkini yang memberikan kemudahan bagi Anda');
-  //     setDescription(
-  //       'Lorem Ipsum is simply dummy text of the printing and typesetting industry',
-  //     );
-  //   } else if (imgActive == 1) {
-  //     setTitle('Anda dapat melakukan transfer antar Negara dengan Mudah');
-  //     setDescription(
-  //       'Lorem Ipsum is simply dummy text of the printing and typesetting industry.',
-  //     );
-  //     setImage(Image2);
-  //   } else if (imgActive == 2) {
-  //     setTitle('Lalu, Tunggu Apalagi, Gabung sekarang dengan TransEvilz');
-  //     setDescription(
-  //       'Lorem Ipsum is simply dummy text of the printing and typesetting industry.',
-  //     );
-  //     setImage(Image3);
-  //   }
-  // });
+
   const handleMulai = () => {
     navigation.navigate('Login');
   };
@@ -61,9 +38,6 @@ const OnBoarding = ({navigation}) => {
   return (
     <View style={styles.Container}>
       <View>
-        {/* <View style={styles.ContainerImage}>
-          <Image source={image} style={styles.Image} />
-        </View> */}
         <ScrollView
           onScroll={({nativeEvent}) => onChange(nativeEvent)}
           showsHorizontalScrollIndicator={false}
@@ -131,12 +105,7 @@ const OnBoarding = ({navigation}) => {
             </View>
           </View>
         </ScrollView>
-        {/* <View style={styles.ContainerTextTitleOnBoarding}>
-          <TextTitleOnBoarding value={title} />
-        </View> */}
-        {/* <View style={styles.ContainerTextDescriptionOnBoarding}>
-          <TextDescriptionOnBoarding value={description} />
-        </View> */}
+
         <View style={styles.ContainerDotActive}>
           <View
             style={[
@@ -159,7 +128,6 @@ const OnBoarding = ({navigation}) => {
       <View style={styles.ContainerButtonMulai}>
         <BlueButton value={'Mulai'} onPress={handleMulai} isButton={true} />
       </View>
-      {/* )} */}
     </View>
   );
 };
@@ -177,7 +145,7 @@ const styles = StyleSheet.create({
   },
   ScrollViewStyle: {
     marginTop: 60,
-    marginBottom: 20,
+    marginBottom: 40,
     height: 450,
   },
   ContainerTextTitleOnBoarding: {
@@ -186,8 +154,8 @@ const styles = StyleSheet.create({
   },
   ContainerTextDescriptionOnBoarding: {
     alignItems: 'center',
-    width: 360,
-    marginLeft: 15,
+    width: 350,
+    marginLeft: 20,
     marginTop: 20,
   },
   DotSlideInActive: {

@@ -6,7 +6,7 @@ const BlueButton = ({value, onPress, isButton}) => {
     <View>
       {isButton == true ? (
         <TouchableOpacity style={styles.Container} onPress={onPress}>
-          <Text style={styles.Text}>{value}</Text>
+          <Text style={styles.TextTrue}>{value}</Text>
         </TouchableOpacity>
       ) : (
         <View style={styles.ContainerOffButton} onPress={onPress}>
@@ -26,16 +26,25 @@ const styles = StyleSheet.create({
     borderRadius: 8,
     alignItems: 'center',
     justifyContent: 'center',
+    // position:'absolute',
+    bottom: 0,
   },
   ContainerOffButton: {
     width: '100%',
     height: 42,
-    backgroundColor: '#609FFF',
+    backgroundColor: '#D8D8D8',
     borderRadius: 8,
     alignItems: 'center',
     justifyContent: 'center',
+    // position:'absolute',
+    bottom: 0,
   },
   Text: {
+    fontSize: 14,
+    fontWeight: '700',
+    color: '#3A3A3A',
+  },
+  TextTrue: {
     fontSize: 14,
     fontWeight: '700',
     color: '#FFFFFF',

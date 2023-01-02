@@ -11,6 +11,8 @@ const TextField = ({
   onContentSizeChange,
   style,
   numberOfLines,
+  NegatifCase,
+  editable,
 }) => {
   return (
     <>
@@ -25,11 +27,12 @@ const TextField = ({
           onContentSizeChange={onContentSizeChange}
           style={style}
           numberOfLines={numberOfLines}
+          editable={editable}
         />
       </View>
-      {value == '' ? (
-        <Text style={styles.NegatifCase}>Anda Harus mengisi bagian ini</Text>
-      ) : null}
+      {/* {value == '' ? (
+        <Text style={styles.NegatifCase}>{NegatifCase}</Text>
+      ) : null} */}
     </>
   );
 };
@@ -40,6 +43,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#F1F7FF',
     borderRadius: 10,
     width: '100%',
+    paddingLeft: 10,
   },
   NegatifCase: {
     fontSize: 14,

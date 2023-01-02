@@ -1,6 +1,7 @@
 //Import Library
 import React, {useState, useEffect} from 'react';
 import {View, StyleSheet, Text} from 'react-native';
+import {useDispatch, useSelector} from 'react-redux';
 
 //Import Component
 import HeaderPages from '../../components/moleculs/headerPages';
@@ -10,37 +11,54 @@ import TextFieldPassword from '../../components/moleculs/textFieldPassword';
 import BlueButton from '../../components/moleculs/blueButton';
 import PopUp from '../../components/organism/popup';
 import {Colours} from '../../helpers/colours';
+import NegatifCase from '../../components/atoms/negatifCaseTextInput';
+import {setIsPopupCreatePinSuccess} from '../../service/redux/reducer/globalSlice';
 
 //Import Assets
 import IconInfo from '../../../assets/createPIN/info.svg';
 import ImageSuccess from '../../../assets/popup/Completed_successfully.png';
 
 const CreatePIN = ({navigation}) => {
-  const [isPopup, setIsPopup] = useState(false);
   const [pin, setPin] = useState(null);
   const [isButton, setIsButton] = useState(false);
+  const [confirmPin, setConfirmPin] = useState(null);
+  const stateGlobal = useSelector(state=>state.global);
+  const dispatch = useDispatch();
   useEffect(() => {
-    if (pin != null || pin != undefined) {
-      console.log(isButton);
-      setIsButton(true);
+    if (pin == null || pin == undefined) {
+
+      setIsButton(false);
+    } else if (confirmPin == null || confirmPin == undefined) {
+      setIsButton(false);
+    } else if (pin == '' || confirmPin == '') {
+      setIsButton(false);
+    } else if (pin.length == 6) {
+      if (pin == confirmPin) {
+        setIsButton(true);
+      } else {
+        setIsButton(false);
+      }
     } else {
       setIsButton(false);
     }
   });
   const handleKirim = () => {
-    setIsPopup(true);
+    dispatch(setIsPopupCreatePinSuccess(true));
+
   };
   const handleCancelPopUp = () => {
-    setIsPopup(false);
+    dispatch(setIsPopupCreatePinSuccess(false));
+
   };
   const handleLanjutkanLogin = () => {
-    setIsPopup(false);
+    dispatch(setIsPopupCreatePinSuccess(false));
+
     navigation.navigate('Login');
   };
   return (
     <View style={styles.Container}>
       <PopUp
-        visible={isPopup}
+        visible={stateGlobal.isPopupCreatePinSuccess}
         onPressCancel={handleCancelPopUp}
         ImagePopUp={ImageSuccess}
         value={
@@ -66,23 +84,38 @@ const CreatePIN = ({navigation}) => {
         </View>
         <View style={styles.FormTextInput}>
           <View style={{flexDirection: 'row'}}>
-            <TextDefault value={'Buat Pin '} />
+            <TextDefault value={'Buat Pin Evilz '} />
             <RequirementSymbols />
           </View>
           <TextFieldPassword
             placeholder={'Masukkan 6 digit Pin'}
             value={pin}
             onChangeText={value => setPin(value)}
+            maxLength={6}
+            keyboardType={'numeric'}
           />
+          <NegatifCase text={'Anda harus mengisi bagian ini'} value={pin} />
         </View>
         <View style={styles.FormTextInput}>
           <View style={{flexDirection: 'row'}}>
-            <TextDefault value={'Konfirmasi Pin '} />
+            <TextDefault value={'Konfirmasi Pin Evilz '} />
             <RequirementSymbols />
           </View>
           <TextFieldPassword
             placeholder={'Masukkan 6 digit Pin yang telah dibuat'}
+            onChangeText={value => setConfirmPin(value)}
+            maxLength={6}
+            keyboardType={'numeric'}
+            value={confirmPin}
           />
+          <NegatifCase
+            text={'Anda harus mengisi bagian ini'}
+            value={confirmPin}
+          />
+          {pin == confirmPin || confirmPin == null ||confirmPin==''?
+          (null) :
+            (<NegatifCase text={'Pin tidak sama'} value={''} />)
+          }
         </View>
       </View>
       <View style={styles.ButtonKirim}>

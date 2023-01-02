@@ -1,5 +1,5 @@
 //Import Library
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {View, StyleSheet, TouchableOpacity, Text} from 'react-native';
 import {SelectList} from 'react-native-dropdown-select-list';
 
@@ -14,6 +14,8 @@ import {Colours} from '../../helpers/colours';
 //Import Assets
 
 const Transaction = ({navigation}) => {
+  const [name, setName] = useState(null);
+  const [noRek, setNoRek] = useState(null);
   const [selected, setSelected] = React.useState('');
   const data = [
     {key: '1', value: 'BCA'},
@@ -24,6 +26,14 @@ const Transaction = ({navigation}) => {
   const handleSelanjutnya = () => {
     navigation.navigate('TransactionMethod');
   };
+  const handleReset = () => {
+    setSelected('');
+    setName(null);
+    setNoRek(null);
+  };
+  useEffect(() => {
+    console.log(selected);
+  });
   return (
     <View style={styles.Container}>
       <HeaderPages
@@ -53,6 +63,8 @@ const Transaction = ({navigation}) => {
             }}
             placeholder="Pilih Bank"
             inputStyles={{marginLeft: -15}}
+            search={false}
+            dropdownStyles={{backgroundColor: '#F1F7FF', borderWidth: 0}}
           />
         </View>
 
@@ -61,7 +73,11 @@ const Transaction = ({navigation}) => {
             <TextDefault value={'Nama Penerima '} />
             <RequirementSymbols />
           </View>
-          <TextField placeholder={'Masukkan Nama Penerima'} />
+          <TextField
+            placeholder={'Masukkan Nama Penerima'}
+            value={name}
+            onChangeText={value => setName(value)}
+          />
         </View>
 
         <View style={styles.FormInput}>
@@ -69,11 +85,15 @@ const Transaction = ({navigation}) => {
             <TextDefault value={'No. Rekening'} />
             <RequirementSymbols />
           </View>
-          <TextField placeholder={'Masukkan No. Rekening'} />
+          <TextField
+            placeholder={'Masukkan No. Rekening'}
+            value={noRek}
+            onChangeText={value => setNoRek(value)}
+          />
         </View>
       </View>
       <View style={styles.ContainerButton}>
-        <TouchableOpacity style={styles.ButtonAturUlang}>
+        <TouchableOpacity style={styles.ButtonAturUlang} onPress={handleReset}>
           <Text style={styles.TextAturUlang}>Atur Ulang</Text>
         </TouchableOpacity>
         <View style={styles.ButtonSelanjutnya}>

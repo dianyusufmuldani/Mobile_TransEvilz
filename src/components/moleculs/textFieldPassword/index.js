@@ -7,6 +7,7 @@ const TextFieldPassword = ({
   value,
   onChangeText,
   keyboardType,
+  maxLength,
 }) => {
   const [isShowPassword, setIsShowPassword] = useState(true);
   const handleShowPassword = () => {
@@ -20,6 +21,7 @@ const TextFieldPassword = ({
         value={value}
         onChangeText={onChangeText}
         keyboardType={keyboardType}
+        maxLength={maxLength}
       />
       <TouchableOpacity
         onPress={handleShowPassword}
@@ -41,6 +43,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#F1F7FF',
     borderRadius: 10,
     width: '100%',
+    paddingLeft: 10,
   },
   IconHidePassword: {
     position: 'absolute',

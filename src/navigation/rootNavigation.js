@@ -23,8 +23,9 @@ import Riwayat from '../pages/riwayat';
 import User from '../pages/user';
 import Transaction from '../pages/transaction';
 import TransactionMethod from '../pages/transactionMethod';
-import TransactionValidation from '../pages/transactionValidation';
 import TransactionSuccess from '../pages/transactionSuccess';
+import TermsAndConditions from '../pages/termsAndConditions';
+import TransferCardInternational from '../pages/transferCardInternational';
 const Stack = createNativeStackNavigator();
 const RootNavigation = () => {
   return (
@@ -93,6 +94,16 @@ const RootNavigation = () => {
         <Stack.Screen
           name="TransactionSuccess"
           component={TransactionSuccess}
+          options={{headerShown: false}}
+        />
+        <Stack.Screen
+          name="TermsAndConditions"
+          component={TermsAndConditions}
+          options={{headerShown: false}}
+        />
+        <Stack.Screen
+          name="TransferCardInternational"
+          component={TransferCardInternational}
           options={{headerShown: false}}
         />
       </Stack.Navigator>

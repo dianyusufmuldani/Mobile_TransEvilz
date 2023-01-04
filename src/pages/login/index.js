@@ -8,6 +8,7 @@ import {
   BackHandler,
   ScrollView,
 } from 'react-native';
+import { useDispatch, useSelector } from 'react-redux'
 
 //Import Component
 import TextButton from '../../components/atoms/textButton';
@@ -21,12 +22,15 @@ import TextFieldPassword from '../../components/moleculs/textFieldPassword';
 import {Colours} from '../../helpers/colours';
 import TextFieldEmail from '../../components/moleculs/textFieldEmail';
 import PopUpError from '../../components/organism/popupError';
+import { getUsers } from '../../service/redux/reducer/usersSlice';
+import { setIsPopupError3xTest, setIsPopupInternetNotStable, setIsPopupRequestTimedOut } from '../../service/redux/reducer/globalSlice';
+import NegatifCase from '../../components/atoms/negatifCaseTextInput';
 // import { RegexPassword } from '../../helpers/formats';
 
 //Import Assets
 import ImageFingerprint from '../../../assets/login/Fingerprint.png';
 import ImagePopupError3x from '../../../assets/popup/popup_error.png';
-import NegatifCase from '../../components/atoms/negatifCaseTextInput';
+import ImageTimerRuns from '../../../assets/popup/timer_runs.png'
 
 const Login = ({navigation}) => {
   const [isButton, setIsButton] = useState(false);
@@ -35,6 +39,9 @@ const Login = ({navigation}) => {
   const [checkValidEmail, setCheckValidEmail] = useState(false);
   const [checkValidPassword, setCheckValidPassword] = useState(false);
   const [isPopup3x, setIsPopup3x] = useState(false);
+  const stateUsers=useSelector(state=>state.users)
+  const stateGlobal=useSelector(state=>state.global)
+  const dispatch=useDispatch()
   const handleCheckValidEmail = text => {
     let re = /\S+@\S+\.\S+/;
     let regex = /^[\+]?[(]?[0-9]{3}[)]?[-\s\.]?[0-9]{3}[-\s\.]?[0-9]{4,6}$/im;
@@ -62,7 +69,8 @@ const Login = ({navigation}) => {
     return true;
   };
   useEffect(() => {
-    console.log('ce valid pas', checkValidPassword)
+     
+    console.log('cek state users', stateUsers.data)
     if (email == null || email == '') {
       setIsButton(false);
       setCheckValidEmail(false);
@@ -70,8 +78,14 @@ const Login = ({navigation}) => {
       setIsButton(false);
       setCheckValidPassword(false);
       console.log('isiCheck Email OKE', checkValidEmail);
-    } else if (checkValidEmail == false && checkValidPassword == false) {
+    } 
+    else if(email=='client@gmail.com'){
+      setIsButton(false)
+    }
+    else if (checkValidEmail == false && checkValidPassword == false) {
       setIsButton(true);
+      const request = {};
+    dispatch(getUsers(request))
     } else {
       setIsButton(false);
     }
@@ -99,6 +113,10 @@ const Login = ({navigation}) => {
           ImagePopUp={ImagePopupError3x}
           textButton={'Coba Nanti'}
         />
+        <PopUpError visible={stateGlobal.isPopupError3xTest} onPressButton={()=>dispatch(setIsPopupError3xTest(false))} ImagePopUp={ImagePopupError3x} value={'Kata sandi yang anda masukkan sudah 3 kali salah, Coba setelah 10 menit '} textButton={'Coba Nanti'}/>
+        <PopUpError visible={stateGlobal.isPopupInternetNotStable} onPressButton={()=>dispatch(setIsPopupInternetNotStable(false))} ImagePopUp={ImagePopupError3x} value={'Oops! Koneksi internet anda tidak stabil, muat ulang halaman'} textButton={'Coba Nanti'}/>
+        <PopUpError visible={stateGlobal.isPopupRequestTimedOut} onPressButton={()=>dispatch(setIsPopupRequestTimedOut(false))} ImagePopUp={ImageTimerRuns} value={'Oops! Waktu anda Habis'} textButton={'Coba Nanti'}/>
+    
         <View style={styles.ContainerBody}>
           <View style={styles.ContainerHeader}>
             <TextTitleOnBoarding value={'Hallo!'} />
@@ -124,11 +142,15 @@ const Login = ({navigation}) => {
               value={email}
               onChangeText={handleCheckValidEmail}
               autoCapitalize={'none'}
+              keyboardType={'email-address'}
             />
             {checkValidEmail ? (
               <Text style={styles.TextWrong}>Format email salah</Text>
             ) : null}
             <NegatifCase value={email} text={'Anda harus mengisi bagian ini'} />
+            {email!='client@gmail.com' ?
+(null):( <NegatifCase text={'Email tidak terdaftar'} value={''} />)
+}
           </View>
 
           <View style={styles.FormLogin}>

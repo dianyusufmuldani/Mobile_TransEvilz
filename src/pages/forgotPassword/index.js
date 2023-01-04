@@ -49,7 +49,9 @@ const ForgotPassword = ({navigation}) => {
       setIsButton(false);
       setCheckValidEmail(false)
     }
- 
+    else if(email=='client@gmail.com'){
+      setIsButton(false)
+    }
       else if (checkValidEmail == false&&email!='') {
         console.log('isi Isbutton',isButton);
         setIsButton(true);
@@ -112,6 +114,9 @@ const ForgotPassword = ({navigation}) => {
           ) : (
             (null)
           )}
+          {email!='client@gmail.com' ?
+(null):( <NegatifCase text={'Email tidak terdaftar'} value={''} />)
+}
           <NegatifCase value={email} text={'Anda harus mengisi bagian ini'}/>
         </View>
       </ScrollView>

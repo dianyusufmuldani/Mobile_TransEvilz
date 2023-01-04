@@ -13,6 +13,7 @@ const TextField = ({
   numberOfLines,
   NegatifCase,
   editable,
+  maxLength
 }) => {
   return (
     <>
@@ -28,6 +29,7 @@ const TextField = ({
           style={style}
           numberOfLines={numberOfLines}
           editable={editable}
+          maxLength={maxLength}
         />
       </View>
       {/* {value == '' ? (

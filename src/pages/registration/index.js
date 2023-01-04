@@ -39,6 +39,7 @@ const Registration = ({navigation}) => {
   const [codeRegion, setCodeRegion] = useState(null);
   const [showCountry, setShowCountry] = useState(false);
   const [checkNumberRegister, setCheckNumberRegister] = useState(null);
+  const [numberRegistered, setNumberRegistered]=useState(null)
   const dispatch = useDispatch();
   const stateUsers = useSelector(state => state.users);
   const stateGlobal = useSelector(state => state.global);
@@ -82,11 +83,24 @@ const Registration = ({navigation}) => {
   }, [country]);
   const handleKirim = () => {
     Keyboard.dismiss();
-    if (fullNoHp != '+6281234567890') {
-      setCheckNumberRegister(false);
-    } else {
+    if  (fullNoHp== '+6285111222333'){
+      console.log('INI')
+      setNumberRegistered('')
+      setCheckNumberRegister(true)
+    } 
+    else if((fullNoHp == '+6281234567890') ) {
       dispatch(setIsButtonRegistration(false));
       navigation.navigate('OTP');
+    }
+    else if(noHp.length<=12){
+      
+      setCheckNumberRegister(false);
+      console.log('ITU')
+      setNumberRegistered(true)
+    }
+    
+    else{
+      console.log('INI ELSE')
     }
   };
 
@@ -215,7 +229,7 @@ const Registration = ({navigation}) => {
                 }}
                 style={styles.ContainerNumber}
                 editable={country == '' ? false : true}
-                maxLength={20}
+                maxLength={12}
               />
             </View>
             <NegatifCase text={'Anda harus mengisi bagian ini'} value={noHp} />
@@ -223,6 +237,9 @@ const Registration = ({navigation}) => {
               text={'Format No.HP tidak sesuai'}
               value={checkNumberRegister}
             />
+             <NegatifCase text={'No.hp sudah terdaftar'} value={numberRegistered} />
+         
+          
             <View style={{marginTop: 20}} />
           </View>
         </View>

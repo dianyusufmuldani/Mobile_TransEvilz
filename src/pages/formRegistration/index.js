@@ -39,23 +39,24 @@ import {
 import ImageReceiveMessage from '../../../assets/popup/received_message_icon.png';
 import IconCalender from '../../../assets/formRegistration/calendar.svg';
 import IconUserImageAdd from '../../../assets/formRegistration/user-plus.svg';
+import TextDescriptionOnBoarding from '../../components/atoms/textDescriptionOnBoarding';
 
-const nationalityData = [
-  {
-    id: '1', // acts as primary key, should be unique and non-empty string
-    label: 'WNI',
-    value: 'WNI',
-    labelStyle: {fontSize: 14, fontWeight: '500'},
-    size: 15,
-  },
-  {
-    id: '2',
-    label: 'WNA',
-    value: 'WNA',
-    labelStyle: {fontSize: 14, fontWeight: '500'},
-    size: 15,
-  },
-];
+// const nationalityData = [
+//   {
+//     id: '1', // acts as primary key, should be unique and non-empty string
+//     label: 'WNI',
+//     value: 'WNI',
+//     labelStyle: {fontSize: 14, fontWeight: '500'},
+//     size: 15,
+//   },
+//   {
+//     id: '2',
+//     label: 'WNA',
+//     value: 'WNA',
+//     labelStyle: {fontSize: 14, fontWeight: '500'},
+//     size: 15,
+//   },
+// ];
 const genderData = [
   {
     id: '1', // acts as primary key, should be unique and non-empty string
@@ -82,7 +83,7 @@ const agreeTermsData = [
 
 const FormRegistration = ({navigation}) => {
   // const [isPopup, setisPopupSuccessFormRegistration] = useState(false);
-  const [nationality, setNationality] = useState(null);
+  // const [nationality, setNationality] = useState(null);
   const [typeDocument, setTypeDocument] = useState(null);
   const [noDocument, setNoDocument] = useState(null);
   const [gender, setGender] = useState(genderData);
@@ -166,12 +167,14 @@ const FormRegistration = ({navigation}) => {
 
   useEffect(() => {
     console.log('sampai sini', stateGlobal.isButtonFormRegistration);
-    console.log('isi state', agreeTerms);
+    console.log('isi state', typeDocument);
     if (email == '' || email == undefined) {
       dispatch(setIsButtonFormRegistration(false));
-    } else if (nationality == '' || nationality == undefined) {
-      dispatch(setIsButtonFormRegistration(false));
-    } else if (typeDocument == '' || typeDocument == undefined) {
+    }
+    //  else if (nationality == '' || nationality == undefined) {
+    //   dispatch(setIsButtonFormRegistration(false));
+    // } 
+    else if (typeDocument == '' || typeDocument == undefined) {
       dispatch(setIsButtonFormRegistration(false));
     } else if (noDocument == '' || noDocument == undefined) {
       dispatch(setIsButtonFormRegistration(false));
@@ -205,9 +208,9 @@ const FormRegistration = ({navigation}) => {
     }
   });
 
-  function onPressNationality(radioButtonsArray) {
-    setNationality(radioButtonsArray);
-  }
+  // function onPressNationality(radioButtonsArray) {
+  //   setNationality(radioButtonsArray);
+  // }
   function onPressGender(radioButtonsArray) {
     setGender(radioButtonsArray);
   }
@@ -223,7 +226,7 @@ const FormRegistration = ({navigation}) => {
   const handleLanjut = () => {
     const request = {
       email: email,
-      nationality: nationality,
+      // nationality: nationality,
       typeDocument: typeDocument,
       noDocument: noDocument,
       firstName: firstName,
@@ -284,7 +287,9 @@ const FormRegistration = ({navigation}) => {
               <IconUserImageAdd />
             )}
           </TouchableOpacity>
-
+          <View style={{alignSelf:'center', marginBottom:20}}>
+            <TextDescriptionOnBoarding value={'Tambah gambar '}/>
+            </View>
           <View style={{flexDirection: 'row'}}>
             <TextDefault value={'Email '} />
             <RequirementSymbols />
@@ -295,16 +300,18 @@ const FormRegistration = ({navigation}) => {
             onChangeText={handleCheckValidEmail}
           />
           {checkValidEmail ?
-
-
-
 ( <NegatifCase text={'Format email salah'} value={''} />) : null
 }
+{email=='admin@gmail.com' ?
+( <NegatifCase text={'Email sudah terdaftar'} value={''} />) : null
+}
+
+
           {email == '' ? (
             <NegatifCase text={'Anda harus mengisi bagian ini'} value={email} />
           ) : null}
         </View>
-        <View style={styles.FormStyle}>
+        {/* <View style={styles.FormStyle}>
           <View style={{flexDirection: 'row'}}>
             <TextDefault value={'Kewarganegaraan '} />
             <RequirementSymbols />
@@ -314,7 +321,7 @@ const FormRegistration = ({navigation}) => {
             onPress={onPressNationality}
             containerStyle={{flexDirection: 'row'}}
           />
-        </View>
+        </View> */}
         <View style={styles.FormStyle}>
           <View style={{flexDirection: 'row'}}>
             <TextDefault value={'Tipe Dokumen '} />
@@ -330,7 +337,7 @@ const FormRegistration = ({navigation}) => {
                 borderWidth: 0,
                 width: '100%',
               }}
-              placeholder="Pilih tipe dokumen"
+              placeholder="Pilih Tipe dokumen"
               inputStyles={{marginLeft: -15, paddingLeft: 10}}
               dropdownStyles={{
                 height: 130,
@@ -341,18 +348,36 @@ const FormRegistration = ({navigation}) => {
             />
           </View>
           <View style={{marginTop: 10}} />
-          {typeDocument != null ? (
-            <TextField
+          {typeDocument ? (
+            <>
+            {typeDocument=='Passport'?(<TextField
               placeholder={'Masukkan no dokumen'}
               value={noDocument}
-              onChangeText={value => setNoDocument(value)}
-            />
+              onChangeText={value => setNoDocument(value.replace(/\D/g, ''))}
+              maxLength={16}
+            />):(null)}
+            {typeDocument=='KTP'?(<TextField
+              placeholder={'Masukkan no dokumen'}
+              value={noDocument}
+              onChangeText={value => setNoDocument(value.replace(/\D/g, ''))}
+              maxLength={16}
+              keyboardType={'phone-pad'}
+            />):(null)}
+            {typeDocument=='SIM'?(<TextField
+              placeholder={'Masukkan no dokumen'}
+              value={noDocument}
+              onChangeText={value => setNoDocument(value.replace(/\D/g, ''))}
+              maxLength={12}
+              keyboardType={'phone-pad'}
+            />):(null)}
+            </>
           ) : (
             <TextInput
               placeholder={'Masukkan no dokumen'}
               value={noDocument}
               onChangeText={value => setNoDocument(value)}
               editable={false}
+              maxLength={16}
               style={styles.ContainerTextInputFalseNoDocument}
             />
           )}

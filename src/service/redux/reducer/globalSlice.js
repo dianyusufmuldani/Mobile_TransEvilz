@@ -4,6 +4,9 @@ const initialState = {
   data: '',
   isPopupIncorectOtp: false,
   isPopupSuccessFormRegistration: false,
+  isPopupError3xTest:false,
+  isPopupInternetNotStable:false,
+  isPopupRequestTimedOut:false,
   isButton: false,
   isPopupCreatePinSuccess: false,
   isButtonRegistration: false,
@@ -14,16 +17,28 @@ export const GlobalSlice = createSlice({
   initialState,
   reducers: {
     setIsPopupIncorectOtp: (state, action) => {
-      console.log('tes reducer popup');
+    
       state.isPopupIncorectOtp = action.payload;
     },
     setIsPopupSuccessFormRegistration: (state, action) => {
-      console.log('tes reducer popup');
+    
       state.isPopupSuccessFormRegistration = action.payload;
     },
     setIsPopupCreatePinSuccess: (state, action) => {
-      console.log('tes reducer popup');
+    
       state.isPopupCreatePinSuccess = action.payload;
+    },
+    setIsPopupError3xTest: (state, action) => {
+    
+      state.isPopupError3xTest = action.payload;
+    },
+    setIsPopupInternetNotStable: (state, action) => {
+    
+      state.isPopupInternetNotStable = action.payload;
+    },
+    setIsPopupRequestTimedOut: (state, action) => {
+    
+      state.isPopupRequestTimedOut = action.payload;
     },
     setIsButtonRegistration: (state, action) => {
       console.log('tes redicer button');
@@ -43,5 +58,8 @@ export const {
   setIsPopupCreatePinSuccess,
   setIsPopupSuccessFormRegistration,
   setIsButton,
+  setIsPopupError3xTest,
+  setIsPopupInternetNotStable,
+  setIsPopupRequestTimedOut
 } = GlobalSlice.actions;
 export default GlobalSlice.reducer;

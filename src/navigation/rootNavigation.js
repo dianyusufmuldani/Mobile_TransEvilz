@@ -26,6 +26,8 @@ import TransactionMethod from '../pages/transactionMethod';
 import TransactionSuccess from '../pages/transactionSuccess';
 import TermsAndConditions from '../pages/termsAndConditions';
 import TransferCardInternational from '../pages/transferCardInternational';
+import TransactionInternational from '../pages/transactionInternational';
+import PIN from '../pages/pin';
 const Stack = createNativeStackNavigator();
 const RootNavigation = () => {
   return (
@@ -87,7 +89,7 @@ const RootNavigation = () => {
           options={{headerShown: false}}
         />
         <Stack.Screen
-          name="Homepage"
+          name="HomepageNav"
           component={TabNav}
           options={{headerShown: false}}
         />
@@ -104,6 +106,16 @@ const RootNavigation = () => {
         <Stack.Screen
           name="TransferCardInternational"
           component={TransferCardInternational}
+          options={{headerShown: false}}
+        />
+        <Stack.Screen
+          name="TransactionInternational"
+          component={TransactionInternational}
+          options={{headerShown: false}}
+        />
+        <Stack.Screen
+          name="PIN"
+          component={PIN}
           options={{headerShown: false}}
         />
       </Stack.Navigator>

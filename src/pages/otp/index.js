@@ -18,11 +18,12 @@ import TextButton from '../../components/atoms/textButton';
 import {Colours} from '../../helpers/colours';
 import NumberKeyboard from '../../components/moleculs/numberKeyboard';
 import PopUpError from '../../components/organism/popupError';
-import {setIsPopupIncorectOtp} from '../../service/redux/reducer/globalSlice';
+import {setIsPopupIncorectOtp, setIsPopupRequestTimedOut} from '../../service/redux/reducer/globalSlice';
 
 //Import Assets
 import CancelKeyboardOtp from '../../../assets/otp/cancel_keyboard_otp.svg';
 import ImagePopupError from '../../../assets/popup/popup_error.png';
+import ImageTimerRuns from '../../../assets/popup/timer_runs.png'
 
 const OTP = ({navigation}) => {
   const [otp, setOtp] = useState([]);
@@ -33,6 +34,7 @@ const OTP = ({navigation}) => {
   const timerCallbackFunc = timerFlag => {
     setTimerEnd(timerFlag);
     console.log('Timeout', timerEnd);
+    dispatch(setIsPopupRequestTimedOut(true))
   };
   const dispatch = useDispatch();
   const stateGlobal = useSelector(state => state.global);
@@ -80,6 +82,7 @@ const OTP = ({navigation}) => {
         textButton={'Coba Lagi'}
         onPressButton={handleTryAgain}
       />
+      <PopUpError visible={stateGlobal.isPopupRequestTimedOut} onPressButton={()=>dispatch(setIsPopupRequestTimedOut(false))} ImagePopUp={ImageTimerRuns} value={'Oops! Waktu anda Habis'} textButton={'Coba Nanti'}/>
       <HeaderPages onPress={handleBack} />
       <ScrollView showsVerticalScrollIndicator={false}>
         <View style={styles.StyleTitle}>

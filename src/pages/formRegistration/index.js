@@ -104,6 +104,7 @@ const FormRegistration = ({navigation}) => {
   const stateGlobal = useSelector(state=>state.global);
 
   momentDate = moment(date).format('l');
+  momentAge= moment().diff(birtday, 'years', false)
   const [checkValidEmail, setCheckValidEmail] = useState(false);
   const [checkValidPassword, setCheckValidPassword] = useState(true);
   const handleCheckValidEmail = text => {
@@ -129,6 +130,7 @@ const FormRegistration = ({navigation}) => {
   };
 
   useEffect(() => {
+    console.log('isi Age', momentAge)
     if (email == null || email == '') {
       setCheckValidEmail(false);
     }
@@ -184,7 +186,11 @@ const FormRegistration = ({navigation}) => {
       dispatch(setIsButtonFormRegistration(false));
     } else if (birthplace == '' || birthplace == undefined) {
       dispatch(setIsButtonFormRegistration(false));
-    } else if (address == '' || address == undefined) {
+    } 
+    else if (momentAge <=17) {
+      dispatch(setIsButtonFormRegistration(false));
+    }
+      else if (address == '' || address == undefined) {
       dispatch(setIsButtonFormRegistration(false));
     } else if (gender == '' || gender == undefined) {
       dispatch(setIsButtonFormRegistration(false));
@@ -298,6 +304,7 @@ const FormRegistration = ({navigation}) => {
             placeholder={'Email'}
             value={email}
             onChangeText={handleCheckValidEmail}
+            
           />
           {checkValidEmail ?
 ( <NegatifCase text={'Format email salah'} value={''} />) : null
@@ -397,6 +404,7 @@ const FormRegistration = ({navigation}) => {
             placeholder={'Nama depan'}
             value={firstName}
             onChangeText={value => setFirstName(value)}
+            maxLength={15}
           />
           <NegatifCase
             text={'Anda harus mengisi bagian ini'}
@@ -412,6 +420,7 @@ const FormRegistration = ({navigation}) => {
             placeholder={'Nama Belakang'}
             value={lastName}
             onChangeText={value => setLastName(value)}
+            maxLength={15}
           />
           <NegatifCase
             text={'Anda harus mengisi bagian ini'}
@@ -427,6 +436,7 @@ const FormRegistration = ({navigation}) => {
             placeholder={'Tempat Lahir '}
             value={birthplace}
             onChangeText={value => setBirthplace(value)}
+            maxLength={15}
           />
           <NegatifCase
             text={'Anda harus mengisi bagian ini'}
@@ -462,7 +472,14 @@ const FormRegistration = ({navigation}) => {
               )}
             </View>
           </TouchableOpacity>
+          {momentAge<=17?
+          (<NegatifCase
+            text={'Umur tidak boleh kurang dari 17 tahun'}
+            value={''}
+          />):(null)
+        }
         </View>
+        
         <View style={styles.FormStyle}>
           <View style={{flexDirection: 'row'}}>
             <TextDefault value={'Alamat '} />
@@ -476,7 +493,7 @@ const FormRegistration = ({navigation}) => {
             onChangeText={value => setAddress(value)}
             style={styles.ContainerAddress}
             textAlignVertical="top"
-
+            maxLength={60}
           />
           <NegatifCase text={'Anda harus mengisi bagian ini'} value={address} />
         </View>

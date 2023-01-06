@@ -1,89 +1,50 @@
 //Import Library
 import React, {useEffect, useState} from 'react';
-import {View, StyleSheet, TouchableOpacity, Text, Image, ScrollView} from 'react-native';
+import {View, StyleSheet, TouchableOpacity, Text} from 'react-native';
 import {SelectList} from 'react-native-dropdown-select-list';
-import { useSelector, useDispatch } from 'react-redux';
 
 //Import Component
 import RequirementSymbols from '../../components/atoms/requirementSymbols';
 import TextDefault from '../../components/atoms/textDefault';
 import BlueButton from '../../components/moleculs/blueButton';
-import HeaderPagesBlue from '../../components/moleculs/headerPagesBlue';
+import HeaderPages from '../../components/moleculs/headerPages';
 import TextField from '../../components/moleculs/textField';
 import {Colours} from '../../helpers/colours';
-import { setIsButtonTransactionLocal, setIsPopupAccountNumberNotFound } from '../../service/redux/reducer/globalSlice';
-import PopUpError from '../../components/organism/popupError';
 
 //Import Assets
-import ImageBgTransaction from '../../../assets/transaction/bgTransaction.png'
-import IconIndonesia from '../../../assets/registration/openmoji_flag-indonesia.svg'
-import NegatifCase from '../../components/atoms/negatifCaseTextInput';
-import { setAccountNumber, setBankReceiver, setNameReceiver } from '../../service/redux/reducer/transferSlice';
-import ImagePopupError from '../../../assets/popup/popup_error.png';
 
-const Transaction = ({navigation}) => {
-  const stateGlobal=useSelector(state=>state.global)
-  const stateTransfer=useSelector(state=>state.transfer)
-  const dispatch=useDispatch()
-  // const [name, setName] = useState(null);
-  // const [noRek, setNoRek] = useState(null);
+const TransactionInternational = ({navigation}) => {
+  const [name, setName] = useState(null);
+  const [noRek, setNoRek] = useState(null);
   const [selected, setSelected] = React.useState('');
   const data = [
-    {key: '1', value: 'Mandiri'},
-    {key: '2', value: 'BCA'},
-    {key: '3', value: 'CIMB Niaga'},
-    {key: '4', value: 'BRI'},
-    {key: '5', value: 'BNI'},
-   
+    {key: '1', value: 'BCA'},
+    {key: '2', value: 'BSI'},
+    {key: '3', value: 'BRI'},
+    {key: '4', value: 'Mandiri'},
   ];
   const handleSelanjutnya = () => {
-    if(stateTransfer.accountNumber=='00000000'){
-      dispatch(setIsPopupAccountNumberNotFound(true))
-    }
-    else{
     navigation.navigate('TransactionMethod');
-  }
   };
   const handleReset = () => {
-    // setSelected('');
-    dispatch(setNameReceiver(null));
-    dispatch(setAccountNumber(null));
-  
+    setSelected('');
+    setName(null);
+    setNoRek(null);
   };
   useEffect(() => {
     console.log(selected);
-    if(selected==null||selected==''){
-    dispatch(setIsButtonTransactionLocal(false))
-    }
-    else if(stateTransfer.nameReceiver==null||stateTransfer.nameReceiver==''){
-      dispatch(setIsButtonTransactionLocal(false))
-    }
-    else if(stateTransfer.accountNumber==null||stateTransfer.accountNumber==''){
-      dispatch(setIsButtonTransactionLocal(false))
-    }
-   
-    else{
-      dispatch(setBankReceiver(selected))
-      dispatch(setIsButtonTransactionLocal(true))
-    }
   });
-  return (<>
+  return (
     <View style={styles.Container}>
-      <HeaderPagesBlue
+      <HeaderPages
         value={'Akun Bank'}
         hideShowTitle={true}
         onPress={() => navigation.goBack()}
       />
-      <PopUpError onPressButton={()=>dispatch(setIsPopupAccountNumberNotFound(false))} ImagePopUp={ImagePopupError} visible={stateGlobal.isPopupAccountNumberNotFound} textButton={'Coba Lagi'} value={'Oops! No. Rekening tujuan anda tidak ditemukan'}/>
-      <ScrollView style={styles.ContainerBody}>
-        <Image source={ImageBgTransaction} style={{top:0, position:'absolute'}}/>
+      <View style={styles.ContainerBody}>
         <View style={styles.ContainerCountTransaction}>
-          <View style={{flexDirection:'row', alignItems:'center'}}>
-          <IconIndonesia/>
-          <Text style={styles.TextFormatCurrencyCountry}>IDR</Text>
-          </View>
           <Text style={styles.TextTotal}>Total Transaksi</Text>
-          <Text style={styles.TextIDR}>{stateTransfer.totalTransactionLocal} IDR</Text>
+          <Text style={styles.TextIDR}>1.000.000 IDR</Text>
         </View>
 
         <View style={styles.FormInput}>
@@ -114,10 +75,9 @@ const Transaction = ({navigation}) => {
           </View>
           <TextField
             placeholder={'Masukkan Nama Penerima'}
-            value={stateTransfer.nameReceiver}
-            onChangeText={value => dispatch(setNameReceiver(value))}
+            value={name}
+            onChangeText={value => setName(value)}
           />
-           <NegatifCase value={stateTransfer.nameReceiver} text={'Anda harus mengisi bagian ini'}/>
         </View>
 
         <View style={styles.FormInput}>
@@ -127,32 +87,28 @@ const Transaction = ({navigation}) => {
           </View>
           <TextField
             placeholder={'Masukkan No. Rekening'}
-            value={stateTransfer.accountNumber}
-            onChangeText={value => dispatch(setAccountNumber(value.replace(/\D/g, '')))}
-            keyboardType={'numeric'}
+            value={noRek}
+            onChangeText={value => setNoRek(value)}
           />
-           <NegatifCase value={stateTransfer.accountNumber} text={'Anda harus mengisi bagian ini'}/>
         </View>
-      </ScrollView>
-      
-    </View>
-    <View style={styles.ContainerButton}>
+      </View>
+      <View style={styles.ContainerButton}>
         <TouchableOpacity style={styles.ButtonAturUlang} onPress={handleReset}>
           <Text style={styles.TextAturUlang}>Atur Ulang</Text>
         </TouchableOpacity>
         <View style={styles.ButtonSelanjutnya}>
           <BlueButton
             value={'Selanjutnya'}
-            isButton={stateGlobal.isButtonTransactionLocal}
+            isButton={true}
             onPress={handleSelanjutnya}
           />
         </View>
       </View>
-    </>
+    </View>
   );
 };
 
-export default Transaction;
+export default TransactionInternational;
 const styles = StyleSheet.create({
   Container: {
     flex: 1,
@@ -197,23 +153,23 @@ const styles = StyleSheet.create({
     color: '#FFFFFF',
   },
   ContainerCountTransaction: {
-
+    backgroundColor: '#DCBE23',
     width: '100%',
     alignItems: 'center',
     alignSelf: 'center',
     height: 115,
     borderRadius: 10,
+    marginTop: 30,
     justifyContent: 'center',
-    // top:-135,
   },
   TextTotal: {
-    color: '#7A7A7A',
+    color: '#FFFFFF',
     fontSize: 14,
-    fontWeight: '500',
+    fontWeight: '700',
   },
   TextIDR: {
     color: '#FFFFFF',
-    fontSize: 30,
+    fontSize: 20,
     fontWeight: '700',
   },
   FormInput: {
@@ -222,16 +178,9 @@ const styles = StyleSheet.create({
   ContainerButton: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    // position: 'absolute',
-    bottom: 0,
+    position: 'absolute',
+    bottom: 20,
     alignSelf: 'center',
-    backgroundColor:'#FFFFFF',
-    height:80,
-    alignItems:'center',
-    width:'100%',
-    paddingHorizontal:20,
-    elevation:20
-  
   },
   ButtonAturUlang: {
     width: '45%',
@@ -240,21 +189,13 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: '#DC3328',
     borderRadius: 8,
-    height:42
   },
   ButtonSelanjutnya: {
     width: '45%',
-    
   },
   TextAturUlang: {
     color: '#DC3328',
     fontSize: 16,
     fontWeight: '700',
   },
-  TextFormatCurrencyCountry:{
-    color:'#3A3A3A',
-    fontSize:12,
-    fontWeight:'700',
-    marginLeft:10
-  }
 });

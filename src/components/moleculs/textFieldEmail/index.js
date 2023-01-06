@@ -24,6 +24,7 @@ const TextFieldEmail = ({
         onContentSizeChange={onContentSizeChange}
         style={style}
         numberOfLines={numberOfLines}
+  
       />
     </View>
   );

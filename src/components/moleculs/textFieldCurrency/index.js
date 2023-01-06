@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {
   TextInput,
   View,
@@ -30,7 +30,7 @@ const TextFieldCurrency = ({
   IconCurrency,
 }) => {
   const [hideSelectList, setHideSelectList] = useState(false);
-  const [country, setCountry] = useState(Indonesia);
+  const [country, setCountry] = useState(UnitedStates);
   const handleAustralia = ()=>{
     setCountry(Australia);
     setHideSelectList(!hideSelectList);
@@ -51,6 +51,9 @@ const TextFieldCurrency = ({
     setCountry(UnitedStates);
     setHideSelectList(!hideSelectList);
   };
+  useEffect(()=>{
+    console.log('isi Field Negara', country)
+  })
 
   return (
     <>
@@ -84,29 +87,25 @@ const TextFieldCurrency = ({
             <TouchableOpacity
               style={styles.ListCountry}
               onPress={handleAustralia}>
-              {/* <IconAustralia/> */}
+                <Image source={Australia}/>
+    
               <Text style={{paddingLeft: 10}}>Australia</Text>
             </TouchableOpacity>
 
        <TouchableOpacity style={styles.ListCountry} onPress={handleJapan}>
-              {/* <IconJapan/> */}
+      
+              <Image source={Japan}/>
               <Text style={{paddingLeft: 10}}>Jepang</Text>
             </TouchableOpacity>
 
-            <TouchableOpacity
-              style={styles.ListCountry}
-              onPress={handleIndonesia}>
-              {/* <IconIndonesia/> */}
-              <Text style={{paddingLeft: 10}}>Indonesia</Text>
-            </TouchableOpacity>
-
+       
        <TouchableOpacity style={styles.ListCountry} onPress={handleSingapore}>
-              {/* <IconSingapore/> */}
+       <Image source={Singapore}/>
               <Text style={{paddingLeft: 10}}>Singapore</Text>
             </TouchableOpacity>
 
             <TouchableOpacity style={styles.ListCountry} onPress={handleUS}>
-              {/* <IconUS/> */}
+            <Image source={UnitedStates}/>
               <Text style={{paddingLeft: 10}}>United States of America</Text>
             </TouchableOpacity>
 

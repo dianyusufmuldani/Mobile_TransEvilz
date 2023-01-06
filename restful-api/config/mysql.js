@@ -1,10 +1,10 @@
-var mysql2 = require('mysql2')
+var mysql = require('mysql')
 
-var con = mysql2.createConnection({
+var con = mysql.createConnection({
     host:"localhost",
     user:"root",
     password:"Pejuangkuda88!!",
-    database: "transevilzz"
+    database: "transevliz"
 })
 
 con.connect(function(err){
@@ -12,6 +12,4 @@ con.connect(function(err){
     console.log("Koneksi berhasil")
 })
 
-// con.on('error', function(err) {
-//   console.log("[mysql error]",err);
-// });
+module.exports =con;

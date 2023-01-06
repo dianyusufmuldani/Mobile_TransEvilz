@@ -101,6 +101,7 @@ const CreateNewPassword = ({navigation}) => {
             placeholder={'Kata sandi baru'}
             value={password}
             onChangeText={handleCheckValidPassword}
+            maxLength={16}
           />
           {checkValidPassword ? (
           (null)
@@ -121,6 +122,7 @@ const CreateNewPassword = ({navigation}) => {
             placeholder={'Konfirmasi kata sandi baru'}
             value={confirmPassword}
             onChangeText={value => setConfirmPassword(value)}
+            maxLength={16}
           />
           {checkMatchPassword ? (
             (null)

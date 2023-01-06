@@ -30,7 +30,7 @@ import NegatifCase from '../../components/atoms/negatifCaseTextInput';
 //Import Assets
 import ImageFingerprint from '../../../assets/login/Fingerprint.png';
 import ImagePopupError3x from '../../../assets/popup/popup_error.png';
-import ImageTimerRuns from '../../../assets/popup/timer_runs.png'
+
 
 const Login = ({navigation}) => {
   const [isButton, setIsButton] = useState(false);
@@ -69,8 +69,9 @@ const Login = ({navigation}) => {
     return true;
   };
   useEffect(() => {
-     
-    console.log('cek state users', stateUsers.data)
+    // const request={};
+    //  dispatch(getUsers(request))
+    // console.log('cek state users', stateUsers.data)
     if (email == null || email == '') {
       setIsButton(false);
       setCheckValidEmail(false);
@@ -84,8 +85,8 @@ const Login = ({navigation}) => {
     }
     else if (checkValidEmail == false && checkValidPassword == false) {
       setIsButton(true);
-      const request = {};
-    dispatch(getUsers(request))
+    //   const request = {};
+    // dispatch(getUsers(request))
     } else {
       setIsButton(false);
     }
@@ -97,7 +98,7 @@ const Login = ({navigation}) => {
     navigation.navigate('Registration');
   };
   const handleLogin = () => {
-    navigation.navigate('Homepage');
+    navigation.navigate('HomepageNav');
   };
   const handleForgotPassword = () => {
     navigation.navigate('ForgotPassword');
@@ -115,7 +116,7 @@ const Login = ({navigation}) => {
         />
         <PopUpError visible={stateGlobal.isPopupError3xTest} onPressButton={()=>dispatch(setIsPopupError3xTest(false))} ImagePopUp={ImagePopupError3x} value={'Kata sandi yang anda masukkan sudah 3 kali salah, Coba setelah 10 menit '} textButton={'Coba Nanti'}/>
         <PopUpError visible={stateGlobal.isPopupInternetNotStable} onPressButton={()=>dispatch(setIsPopupInternetNotStable(false))} ImagePopUp={ImagePopupError3x} value={'Oops! Koneksi internet anda tidak stabil, muat ulang halaman'} textButton={'Coba Nanti'}/>
-        <PopUpError visible={stateGlobal.isPopupRequestTimedOut} onPressButton={()=>dispatch(setIsPopupRequestTimedOut(false))} ImagePopUp={ImageTimerRuns} value={'Oops! Waktu anda Habis'} textButton={'Coba Nanti'}/>
+        
     
         <View style={styles.ContainerBody}>
           <View style={styles.ContainerHeader}>
@@ -143,6 +144,7 @@ const Login = ({navigation}) => {
               onChangeText={handleCheckValidEmail}
               autoCapitalize={'none'}
               keyboardType={'email-address'}
+            
             />
             {checkValidEmail ? (
               <Text style={styles.TextWrong}>Format email salah</Text>

@@ -35,7 +35,7 @@ export const UsersSlice = createSlice({
       // state.password = action.payload.password;
       // state.confirmPassword = action.payload.confirmPassword;
       // state.agreeTerms = action.payload.agreeTerms;
-      console.log('halo guys', state.data);
+      console.log('OKE guys', state.data);
     },
   },
 });

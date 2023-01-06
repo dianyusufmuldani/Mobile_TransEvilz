@@ -1,27 +1,44 @@
 //Import Library
-import React, {useState} from 'react';
-import {View, StyleSheet, Text} from 'react-native';
+import React, {useEffect, useState} from 'react';
+import {View, StyleSheet, Text, Image} from 'react-native';
 import {SelectList} from 'react-native-dropdown-select-list';
+import { useSelector, useDispatch } from 'react-redux';
 
 //Import Component
 import TextDefault from '../../components/atoms/textDefault';
 import BlueButton from '../../components/moleculs/blueButton';
 import HeaderPages from '../../components/moleculs/headerPages';
+import { setIsButtonMethodLocal } from '../../service/redux/reducer/globalSlice';
 
 //Import Assets
 import {Colours} from '../../helpers/colours';
+import ImageBgTransaction from '../../../assets/transaction/bgTransaction.png'
+import IconIndonesia from '../../../assets/registration/openmoji_flag-indonesia.svg'
+
 
 const TransactionMethod = ({navigation}) => {
+  const dispatch=useDispatch()
+  const stateGlobal=useSelector(state=>state.global)
+  const stateTransfer=useSelector(state=>state.transfer)
   const [bankAccount, setBankAccount] = useState(false);
   const [creditCard, setCreditCard] = useState(false);
   const [debitCard, setDebitCard] = useState(false);
   const [selected, setSelected] = React.useState('');
   const data = [
-    {key: '1', value: 'BCA'},
-    {key: '2', value: 'BSI'},
-    {key: '3', value: 'BRI'},
-    {key: '4', value: 'Mandiri'},
+    {key: '1', value: 'Mandiri'},
+    {key: '2', value: 'BCA'},
+    {key: '3', value: 'CIMB Niaga'},
+    {key: '4', value: 'BRI'},
+    {key: '5', value: 'BNI'},
   ];
+  useEffect(()=>{
+    if(selected==null||selected==''){
+      dispatch(setIsButtonMethodLocal(false))
+    }
+    else{
+      dispatch(setIsButtonMethodLocal(true))
+    }
+  })
   const handleButtonBankAccount = () => {
     setBankAccount(true);
     setCreditCard(false);
@@ -45,9 +62,14 @@ const TransactionMethod = ({navigation}) => {
         onPress={() => navigation.goBack()}
       />
       <View style={styles.ContainerBody}>
+      <Image source={ImageBgTransaction} style={{top:0, position:'absolute'}}/>
         <View style={styles.ContainerCountTransaction}>
+          <View style={{flexDirection:'row', alignItems:'center'}}>
+          <IconIndonesia/>
+          <Text style={styles.TextFormatCurrencyCountry}>IDR ke IDR</Text>
+          </View>
           <Text style={styles.TextTotal}>Total Transaksi</Text>
-          <Text style={styles.TextIDR}>1.000.000 IDR</Text>
+          <Text style={styles.TextIDR}>{stateTransfer.totalTransactionLocal} IDR</Text>
         </View>
         <TextDefault value={'Metode Pembayaran'} />
 
@@ -70,8 +92,8 @@ const TransactionMethod = ({navigation}) => {
       <View style={styles.ContainerSelanjutnya}>
         <BlueButton
           value={'Selanjutnya'}
-          isButton={true}
-          onPress={() => navigation.navigate('TransactionSuccess')}
+          isButton={stateGlobal.isButtonMethodLocal}
+          onPress={() => navigation.navigate('PIN')}
         />
       </View>
     </View>
@@ -88,17 +110,7 @@ const styles = StyleSheet.create({
     alignSelf: 'center',
     width: '90%',
   },
-  ContainerCountTransaction: {
-    backgroundColor: '#DCBE23',
-    width: '100%',
-    alignItems: 'center',
-    alignSelf: 'center',
-    height: 115,
-    borderRadius: 10,
-    marginTop: 30,
-    justifyContent: 'center',
-    marginBottom: 41,
-  },
+
   TextTotal: {
     color: '#FFFFFF',
     fontSize: 14,
@@ -117,5 +129,32 @@ const styles = StyleSheet.create({
   },
   ContainerRadioButton: {
     marginTop: 20,
+  },
+  ContainerCountTransaction: {
+
+    width: '100%',
+    alignItems: 'center',
+    alignSelf: 'center',
+    height: 115,
+    borderRadius: 10,
+    justifyContent: 'center',
+    marginBottom:50
+    // top:-135,
+  },
+  TextFormatCurrencyCountry:{
+    color:'#3A3A3A',
+    fontSize:12,
+    fontWeight:'700',
+    marginLeft:10
+  },
+  TextTotal: {
+    color: '#7A7A7A',
+    fontSize: 14,
+    fontWeight: '500',
+  },
+  TextIDR: {
+    color: '#FFFFFF',
+    fontSize: 30,
+    fontWeight: '700',
   },
 });

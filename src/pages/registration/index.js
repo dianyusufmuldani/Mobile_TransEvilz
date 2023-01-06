@@ -36,7 +36,7 @@ import {setIsButtonRegistration} from '../../service/redux/reducer/globalSlice';
 const Registration = ({navigation}) => {
   const [country, setCountry] = React.useState('');
   const [noHp, setNoHp] = useState(null);
-  const [codeRegion, setCodeRegion] = useState(null);
+  const [codeRegion, setCodeRegion] = useState('+62');
   const [showCountry, setShowCountry] = useState(false);
   const [checkNumberRegister, setCheckNumberRegister] = useState(null);
   const [numberRegistered, setNumberRegistered]=useState(null)
@@ -50,9 +50,10 @@ const Registration = ({navigation}) => {
   };
   const fullNoHp = codeRegion + noHp;
   useEffect(() => {
-    if (country == '' || country == undefined) {
-      dispatch(setIsButtonRegistration(false));
-    } else if (noHp == '' || noHp == undefined) {
+    // if (country == '' || country == undefined) {
+    //   dispatch(setIsButtonRegistration(false));
+    // }
+     if (noHp == '' || noHp == undefined) {
       dispatch(setIsButtonRegistration(false));
       setCheckNumberRegister(true);
     } else {
@@ -120,7 +121,7 @@ const Registration = ({navigation}) => {
             />
           </View>
           <Image source={ImageMan} />
-          <View style={styles.FormNegara}>
+          {/* <View style={styles.FormNegara}>
             <View style={{flexDirection: 'row'}}>
               <TextDefault value={'Negara '} />
               <RequirementSymbols />
@@ -208,7 +209,7 @@ const Registration = ({navigation}) => {
                 </TouchableOpacity>
               </ScrollView>
             ) : null}
-          </View>
+          </View> */}
 
           <View style={styles.FormNoHP}>
             <View style={{flexDirection: 'row'}}>
@@ -228,8 +229,8 @@ const Registration = ({navigation}) => {
                   setNoHp(text.replace(/\D/g, ''));
                 }}
                 style={styles.ContainerNumber}
-                editable={country == '' ? false : true}
-                maxLength={12}
+                // editable={country == '' ? false : true}
+                maxLength={20}
               />
             </View>
             <NegatifCase text={'Anda harus mengisi bagian ini'} value={noHp} />

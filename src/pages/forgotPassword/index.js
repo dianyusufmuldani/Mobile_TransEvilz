@@ -108,6 +108,7 @@ const ForgotPassword = ({navigation}) => {
             placeholder={'Email'}
             value={email}
             onChangeText={handleCheckValidEmail}
+          
           />
           {checkValidEmail? (
             <Text style={styles.TextWrong}>Format email salah</Text>

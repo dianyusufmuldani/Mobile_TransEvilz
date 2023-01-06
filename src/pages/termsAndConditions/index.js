@@ -6,7 +6,7 @@ import HeaderPages from '../../components/moleculs/headerPages';
 const TermsAndConditions = ({navigation}) => {
   return (
     <View style={styles.Container}>
-      <HeaderPages hideShowTitle={true} value={'Syarat & Ketentuan'} />
+      <HeaderPages hideShowTitle={true} value={'Syarat & Ketentuan'} onPress={()=>navigation.goBack()} />
       <ScrollView style={styles.ContainerBody}>
         <View style={{flexDirection: 'row'}}>
           <Text style={styles.TextTitleNumber}>A</Text>

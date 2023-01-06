@@ -2,6 +2,7 @@
 import React, {useRef, useState} from 'react';
 import {View, StyleSheet, Text, Image} from 'react-native';
 import CountDownTimer from 'react-native-countdown-timer-hooks';
+import { useSelector, useDispatch } from 'react-redux';
 
 //Import Component
 import TextDefault from '../../components/atoms/textDefault';
@@ -13,6 +14,8 @@ import {Colours} from '../../helpers/colours';
 import ImageSuccess from '../../../assets/transactionSuccess/check_mark.png';
 
 const TransactionSuccess = ({navigation}) => {
+  const dispatch=useDispatch()
+  const stateTransfer=useSelector(state=>state.transfer)
   const refTimer = useRef();
 
   const [timerEnd, setTimerEnd] = useState(false);
@@ -60,15 +63,15 @@ const TransactionSuccess = ({navigation}) => {
           <View style={styles.ContainerTextDescription}>
             <TextDescriptionOnBoarding value={'Nama Penerima'} />
           </View>
-          <TextDefault value={'Aurora Nugroho'} />
+          <TextDefault value={stateTransfer.nameReceiver} />
           <View style={styles.ContainerTextDescription}>
             <TextDescriptionOnBoarding value={'Jenis Bank'} />
           </View>
-          <TextDefault value={'BCC Bank'} />
+          <TextDefault value={stateTransfer.bankReceiver} />
           <View style={styles.ContainerTextDescription}>
             <TextDescriptionOnBoarding value={'No. Rekening'} />
           </View>
-          <TextDefault value={'1234-5678-9101-1121-314'} />
+          <TextDefault value={stateTransfer.accountNumber} />
           <View style={styles.ContainerTextDescription}>
             <TextDescriptionOnBoarding value={'Virtual Akun'} />
           </View>
@@ -76,7 +79,7 @@ const TransactionSuccess = ({navigation}) => {
           <View style={styles.ContainerTextDescription}>
             <TextDescriptionOnBoarding value={'Total'} />
           </View>
-          <Text style={styles.TextCount}>1.000.000 IDR</Text>
+          <Text style={styles.TextCount}>{stateTransfer.totalTransactionLocal}</Text>
         </View>
       </View>
       <View style={styles.ContainerButtonFooter}>

@@ -1,9 +1,15 @@
 const express=require('express')
 const router= express.Router();
+const db= require('../config/mysql')
 
 router.get('/', (req, res, next)=>{
-res.status(200).json({
-    message:"Get Method Users"
+    var sql="SELECT * FROM users"
+    db.query(sql, (err, result)=>{
+        if(err) throw err
+        res.status(200).json({
+            message:"Get Method Users",
+            data:result
+            })
     })
 })
 
@@ -22,21 +28,16 @@ router.post('/', (req, res, next)=>{
     })
 })
 
-router.get('/:name', (req, res, next)=>{
-    const name=req.params.name;
-    if(name==='yusuf'){
+router.get('/:id', (req, res, next)=>{
+    const id=req.params.id;
+    var sql="SELECT * FROM users WHERE id="+id
+    db.query(sql, (err, result)=>{
+        if(err) throw err
         res.status(200).json({
-            message:"Nama betul"
-        })
-    }else{
-            res.status(200).json({
-                message:"Nama lain"
+            message:"Users ditemukan",
+            data:result
             })
-        }
-   
-    res.status(200).json({
-        message:"Get Method Users"
-        })
+    })
     })
 
     router.put('/', (req, res, next)=>{

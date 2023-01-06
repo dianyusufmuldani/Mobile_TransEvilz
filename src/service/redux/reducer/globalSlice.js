@@ -11,6 +11,12 @@ const initialState = {
   isPopupCreatePinSuccess: false,
   isButtonRegistration: false,
   isButtonFormRegistration: false,
+  isButtonTransferLocal:false,
+  isButtonTransactionLocal:false,
+  isButtonMethodLocal:false,
+  isButtonTransferInternational:false,
+  isPopupAccountNumberNotFound:false,
+  isPopupPinInvalid:false,
 };
 export const GlobalSlice = createSlice({
   name: 'global',
@@ -48,6 +54,30 @@ export const GlobalSlice = createSlice({
       console.log('tes redicer button');
       state.isButtonFormRegistration = action.payload;
     },
+    setIsButtonTransferLocal: (state, action) => {
+  
+      state.isButtonTransferLocal = action.payload;
+    },
+    setIsButtonTransactionLocal: (state, action) => {
+  
+      state.isButtonTransactionLocal = action.payload;
+    },
+    setIsButtonMethodLocal: (state, action) => {
+  
+      state.isButtonMethodLocal = action.payload;
+    },
+    setIsPopupAccountNumberNotFound: (state, action) => {
+  
+      state.isPopupAccountNumberNotFound = action.payload;
+    },
+    setIsPopupPinInvalid: (state, action) => {
+  
+      state.isPopupPinInvalid = action.payload;
+    },
+    setIsButtonTransferInternational: (state, action) => {
+  
+      state.isButtonTransferInternational = action.payload;
+    },
   },
 });
 
@@ -60,6 +90,12 @@ export const {
   setIsButton,
   setIsPopupError3xTest,
   setIsPopupInternetNotStable,
-  setIsPopupRequestTimedOut
+  setIsPopupRequestTimedOut,
+  setIsButtonTransferLocal,
+  setIsButtonTransactionLocal,
+  setIsButtonMethodLocal,
+  setIsPopupAccountNumberNotFound,
+  setIsPopupPinInvalid,
+  setIsButtonTransferInternational
 } = GlobalSlice.actions;
 export default GlobalSlice.reducer;

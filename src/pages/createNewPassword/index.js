@@ -1,6 +1,13 @@
 //Import Library
 import React, {useState, useEffect} from 'react';
-import {View, StyleSheet, Image, Text, ScrollView, BackHandler} from 'react-native';
+import {
+  View,
+  StyleSheet,
+  Image,
+  Text,
+  ScrollView,
+  BackHandler,
+} from 'react-native';
 
 //Import Component
 import TextDefault from '../../components/atoms/textDefault';
@@ -103,14 +110,15 @@ const CreateNewPassword = ({navigation}) => {
             onChangeText={handleCheckValidPassword}
             maxLength={16}
           />
-          {checkValidPassword ? (
-          (null)
-          ) : (
+          {checkValidPassword ? null : (
             <Text style={styles.TextWrong}>
               Kata sandi harus berisi huruf besar, angka dan simbol (@ * # &)
             </Text>
           )}
-          <NegatifCase value={password} text={'Anda harus mengisi bagian ini'}/>
+          <NegatifCase
+            value={password}
+            text={'Anda harus mengisi bagian ini'}
+          />
         </View>
 
         <View style={styles.FormStyle}>
@@ -124,15 +132,15 @@ const CreateNewPassword = ({navigation}) => {
             onChangeText={value => setConfirmPassword(value)}
             maxLength={16}
           />
-          {checkMatchPassword ? (
-            (null)
-          ) : (
+          {checkMatchPassword ? null : (
             <Text style={styles.TextWrong}>
               Konfirmasi kata sandi tidak sesuai
             </Text>
           )}
-          <NegatifCase value={confirmPassword} text={'Anda harus mengisi bagian ini'}/>
-     
+          <NegatifCase
+            value={confirmPassword}
+            text={'Anda harus mengisi bagian ini'}
+          />
         </View>
       </ScrollView>
       <View style={styles.ContainerKirim}>

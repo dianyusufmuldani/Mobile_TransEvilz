@@ -1,81 +1,89 @@
 //Import Library
-import React, { useEffect, useState } from 'react';
-import {View, StyleSheet, Text, TextInput, TouchableOpacity, Image, ScrollView} from 'react-native';
+import React, {useEffect, useState} from 'react';
+import {
+  View,
+  StyleSheet,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  Image,
+  ScrollView,
+} from 'react-native';
+import {useDispatch, useSelector} from 'react-redux';
 
 //Import Component
 import HeaderPages from '../../components/moleculs/headerPages';
-import TextFieldCurrency from '../../components/moleculs/textFieldCurrency';
 import TextDescriptionOnBoarding from '../../components/atoms/textDescriptionOnBoarding';
 import BlueButton from '../../components/moleculs/blueButton';
 import {Colours} from '../../helpers/colours';
-import { setIsButtonTransferInternational } from '../../service/redux/reducer/globalSlice';
+import {setIsButtonTransferInternational} from '../../service/redux/reducer/globalSlice';
+import { setCountryDestination, setKursInternational, setNominalDestination, setTotalTransactionInternational, setNominalIndonesia } from '../../service/redux/reducer/transferSlice';
 
 //Import Assets
 import IconIndonesia from '../../../assets/transferCard/openmoji_flag-indonesia.svg';
-import IconUSA from '../../../assets/transferCard/openmoji_flag-united-states.svg';
 import Singapore from '../../../assets/transferCard/openmoji_flag-singapore.png';
 import UnitedStates from '../../../assets/transferCard/openmoji_flag-united-states.png';
 import Australia from '../../../assets/transferCard/openmoji_flag-australia.png';
 import Japan from '../../../assets/transferCard/openmoji_flag-japan.png';
 import IconArrowDown from '../../../assets/transferCard/icon_arrow_down.svg';
-import { useDispatch, useSelector } from 'react-redux';
-
 
 const TransferCardInternational = ({navigation}) => {
-  const dispatch=useDispatch();
-  const stateGlobal=useSelector(state=>state.global)
+  const dispatch = useDispatch();
+  const stateGlobal = useSelector(state => state.global);
+  const stateTransfer=useSelector(state=>state.transfer)
   const [hideSelectList, setHideSelectList] = useState(false);
-  const [country, setCountry] = useState(UnitedStates);
-  const [currencyConversion, setCurrencyConversion]=useState(0)
-  const [valuePlaceholder, setValuePlaceHolder]=useState('USD')
-  const [kurs, setKurs]=useState(15677)
-  const [currencyIndonesia, setCurrencyIndonesia]=useState(null)
-  const [totalTransactionInternational, setTotalTransactionInternational]=useState('0')
-  const [adminInternational, setAdminInternational]=useState(100000)
-  const handleAustralia = ()=>{
-    setCountry(Australia);
+    useState('0');
+  const handleAustralia = () => {
+    dispatch(setCountryDestination('AUD'));
     setHideSelectList(!hideSelectList);
-    setValuePlaceHolder('AUD')
-    setKurs(10550)
+    dispatch(setKursInternational(10550));
   };
 
-  const handleJapan = ()=>{
-    setCountry(Japan);
+  const handleJapan = () => {
+    dispatch(setCountryDestination('JPY'));
     setHideSelectList(!hideSelectList);
-    setValuePlaceHolder('JPY')
-    setKurs(116)
+    dispatch(setKursInternational(116));
   };
-  const handleSingapore = ()=>{
-    setCountry(Singapore);
+  const handleSingapore = () => {
+    dispatch(setCountryDestination('SGD'));
     setHideSelectList(!hideSelectList);
-    setValuePlaceHolder('SGD')
-    setKurs(11634)
+    dispatch(setKursInternational(11634));
   };
-  const handleUS = ()=>{
-    setCountry(UnitedStates);
+  const handleUS = () => {
+    dispatch(setCountryDestination('USD'));
     setHideSelectList(!hideSelectList);
-    setValuePlaceHolder('USD')
-    setKurs(15677)
+    dispatch(setKursInternational(15677));
   };
-  useEffect(()=>{
-    console.log('isi Field Negara', currencyConversion)
-    if(currencyIndonesia==null||currencyIndonesia==''){
-      setTotalTransactionInternational(0)
+  useEffect(() => {
+    console.log('isi Field Negara', stateTransfer.nominalIndonesia);
+    if (stateTransfer.nominalIndonesia == null || stateTransfer.nominalIndonesia == '') {
+      dispatch(setTotalTransactionInternational(0));
+      dispatch(setNominalDestination(''));
+    } else if (stateTransfer.nominalIndonesia >= 100000) {
+      dispatch(setNominalDestination(Number(stateTransfer.nominalIndonesia) / Number(stateTransfer.kursInternational)));
+      dispatch(setTotalTransactionInternational(
+        Number(stateTransfer.nominalIndonesia) + stateTransfer.adminInternational,
+      ));
+      dispatch(setIsButtonTransferInternational(true));
+    } else if (stateTransfer.nominalIndonesia != null || stateTransfer.nominalIndonesia != '') {
+      if(stateTransfer.nominalIndonesia==0){
+        dispatch(setNominalDestination('0'));
+        dispatch(setTotalTransactionInternational(0));
+        dispatch(setIsButtonTransferInternational(false));
+        console.log('sekarangdIsini')
+      }
+      else{
+        dispatch(setNominalDestination(Number(stateTransfer.nominalIndonesia) / Number(stateTransfer.kursInternational)));
+        dispatch(setTotalTransactionInternational(
+          Number(stateTransfer.nominalIndonesia) + stateTransfer.adminInternational,
+        ));
+        dispatch(setIsButtonTransferInternational(false));
+        console.log('dIsini')
+      }
     }
-    else if(currencyIndonesia>=100000){
-      setCurrencyConversion(Number(currencyIndonesia)/Number(kurs))
-      setTotalTransactionInternational(Number(currencyIndonesia)+adminInternational)
-      dispatch(setIsButtonTransferInternational(true))
-    }
-    else if(currencyIndonesia!=null||currencyIndonesia!=''){
-      setCurrencyConversion(Number(currencyIndonesia)/Number(kurs))
-      setTotalTransactionInternational(Number(currencyIndonesia)+adminInternational)
-      dispatch(setIsButtonTransferInternational(false))
-    }
-    
-  })
+  });
   const handleSelanjutnya = () => {
-    navigation.navigate('Transaction');
+    navigation.navigate('TransactionInternational');
   };
   return (
     <View style={styles.Container}>
@@ -86,79 +94,98 @@ const TransferCardInternational = ({navigation}) => {
       />
       <View style={styles.ContainerBody}>
         <View style={styles.ContainerFieldCurrency}>
-      
           <View style={styles.ContainerFlag}>
-          <IconIndonesia/>
+            <IconIndonesia />
           </View>
-          <TextInput style={styles.ContainerTextInputFlag} placeholder={'IDR'}  onChangeText={(value)=>setCurrencyIndonesia(value.replace(/\D/g, ''))} keyboardType={'number-pad'} value={currencyIndonesia} />
-          
-          
+          <TextInput
+            style={styles.ContainerTextInputFlag}
+            placeholder={'IDR'}
+            onChangeText={value =>
+              dispatch(setNominalIndonesia(value.replace(/\D/g, '')))
+            }
+            keyboardType={'numeric'}
+            value={stateTransfer.nominalIndonesia}
+          />
         </View>
         <View style={styles.ContainerFieldCurrency}>
-          {/* <TextFieldCurrency /> */}
           <View style={styles.Container}>
-        <View style={styles.ContainerTextInput}>
+            <View style={styles.ContainerTextInput}>
+              <TouchableOpacity
+                style={styles.Country}
+                onPress={() => setHideSelectList(!hideSelectList)}>
+                {stateTransfer.countryDestination=='USD'?
+                (<Image source={UnitedStates} style={{width: 30, height: 30}} />)
+                :(null)
+                }
+                {stateTransfer.countryDestination=='AUD'?
+                (<Image source={Australia} style={{width: 30, height: 30}} />)
+                :(null)
+                }
+                {stateTransfer.countryDestination=='JPY'?
+                (<Image source={Japan} style={{width: 30, height: 30}} />)
+                :(null)
+                }
+                {stateTransfer.countryDestination=='SGD'?
+                (<Image source={Singapore} style={{width: 30, height: 30}} />)
+                :(null)
+                }
+                <View style={{marginLeft: 10}}>
+                  <IconArrowDown />
+                </View>
+              </TouchableOpacity>
 
-         <TouchableOpacity  style={styles.Country} onPress={()=>setHideSelectList(!hideSelectList)}>
-    
-            <Image source={country} style={{width: 30, height: 30}} />
-
-
-
-          <View style={{marginLeft:10}}>
-              <IconArrowDown />
+              <View style={styles.Currency}>
+                <TextInput
+                  placeholder={stateTransfer.countryDestination}
+                  value={(stateTransfer.nominalDestination=='')?null:`${Number(stateTransfer.nominalDestination).toFixed(3)}`}
+                  onChangeText={value => dispatch(setNominalDestination(value))}
+                  keyboardType={'numeric'}
+                  editable={false}
+                  style={{color: '#000000'}}
+                />
+              </View>
             </View>
-          </TouchableOpacity>
+            {hideSelectList ? (
+              <ScrollView style={styles.ContainerSelectList}>
+                <TouchableOpacity
+                  style={styles.ListCountry}
+                  onPress={handleAustralia}>
+                  <Image source={Australia} />
 
-        <View style={styles.Currency}>
-            <TextInput
-              placeholder={valuePlaceholder}
-              value={`${currencyConversion.toFixed(2)}`}
-              onChangeText={(value)=>setCurrencyConversion(value)}
-              keyboardType={'numeric'}
+                  <Text style={{paddingLeft: 10}}>Australia</Text>
+                </TouchableOpacity>
 
-          />
+                <TouchableOpacity
+                  style={styles.ListCountry}
+                  onPress={handleJapan}>
+                  <Image source={Japan} />
+                  <Text style={{paddingLeft: 10}}>Jepang</Text>
+                </TouchableOpacity>
+
+                <TouchableOpacity
+                  style={styles.ListCountry}
+                  onPress={handleSingapore}>
+                  <Image source={Singapore} />
+                  <Text style={{paddingLeft: 10}}>Singapore</Text>
+                </TouchableOpacity>
+
+                <TouchableOpacity style={styles.ListCountry} onPress={handleUS}>
+                  <Image source={UnitedStates} />
+                  <Text style={{paddingLeft: 10}}>
+                    United States of America
+                  </Text>
+                </TouchableOpacity>
+              </ScrollView>
+            ) : null}
           </View>
-        </View>
-        {hideSelectList ? (
-          <ScrollView style={styles.ContainerSelectList}>
-            <TouchableOpacity
-              style={styles.ListCountry}
-              onPress={handleAustralia}>
-                <Image source={Australia}/>
-    
-              <Text style={{paddingLeft: 10}}>Australia</Text>
-            </TouchableOpacity>
-
-       <TouchableOpacity style={styles.ListCountry} onPress={handleJapan}>
-      
-              <Image source={Japan}/>
-              <Text style={{paddingLeft: 10}}>Jepang</Text>
-            </TouchableOpacity>
-
-       
-       <TouchableOpacity style={styles.ListCountry} onPress={handleSingapore}>
-       <Image source={Singapore}/>
-              <Text style={{paddingLeft: 10}}>Singapore</Text>
-            </TouchableOpacity>
-
-            <TouchableOpacity style={styles.ListCountry} onPress={handleUS}>
-            <Image source={UnitedStates}/>
-              <Text style={{paddingLeft: 10}}>United States of America</Text>
-            </TouchableOpacity>
-
-        </ScrollView>) : (null)
-      }
-
-    </View>
         </View>
         <View style={styles.TextNilaiKurs}>
           <TextDescriptionOnBoarding value={'Nilai Kurs Saat ini'} />
-          <TextDescriptionOnBoarding value={kurs+" IDR"} />
+          <TextDescriptionOnBoarding value={stateTransfer.kursInternational + ' IDR'} />
         </View>
         <View style={styles.TextNilaiKurs}>
           <TextDescriptionOnBoarding value={'Biaya Admin'} />
-          <TextDescriptionOnBoarding value={'100.000 IDR'} />
+          <TextDescriptionOnBoarding value={stateTransfer.adminInternational} />
         </View>
       </View>
       <View style={styles.ContainerFooter}>
@@ -168,7 +195,9 @@ const TransferCardInternational = ({navigation}) => {
             sebelum pukul 23:00
           </Text>
           <Text style={styles.TextTitleFooter}>Total Transaksi</Text>
-          <Text style={styles.TextCurrencyFooter}>{totalTransactionInternational+" IDR"}</Text>
+          <Text style={styles.TextCurrencyFooter}>
+            {stateTransfer.totalTransactionInternational + ' IDR'}
+          </Text>
 
           <View style={styles.ContainerSelanjutnya}>
             <BlueButton
@@ -195,13 +224,23 @@ const styles = StyleSheet.create({
   ContainerFieldCurrency: {
     width: '90%',
     marginTop: 24,
-    flexDirection:'row'
+    flexDirection: 'row',
   },
-  ContainerFlag:{
-    backgroundColor:'#EAF3FF', height:39,borderTopLeftRadius:10, borderBottomLeftRadius:10, width:'15%', justifyContent:'center', alignItems:'center'
+  ContainerFlag: {
+    backgroundColor: '#EAF3FF',
+    height: 39,
+    borderTopLeftRadius: 10,
+    borderBottomLeftRadius: 10,
+    width: '15%',
+    justifyContent: 'center',
+    alignItems: 'center',
   },
-  ContainerTextInputFlag:{
-    backgroundColor:'#F1F7FF', height:39, borderTopRightRadius:10, borderBottomRightRadius:10, width:'85%'
+  ContainerTextInputFlag: {
+    backgroundColor: '#F1F7FF',
+    height: 39,
+    borderTopRightRadius: 10,
+    borderBottomRightRadius: 10,
+    width: '85%',
   },
   TextNilaiKurs: {
     flexDirection: 'row',
@@ -273,7 +312,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     paddingLeft: 10,
     alignItems: 'center',
-    marginTop: 10,
+    marginTop: 1,
     backgroundColor: '#F1F7FF',
     height: 40,
     borderRadius: 10,

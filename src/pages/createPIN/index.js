@@ -22,11 +22,10 @@ const CreatePIN = ({navigation}) => {
   const [pin, setPin] = useState(null);
   const [isButton, setIsButton] = useState(false);
   const [confirmPin, setConfirmPin] = useState(null);
-  const stateGlobal = useSelector(state=>state.global);
+  const stateGlobal = useSelector(state => state.global);
   const dispatch = useDispatch();
   useEffect(() => {
     if (pin == null || pin == undefined) {
-
       setIsButton(false);
     } else if (confirmPin == null || confirmPin == undefined) {
       setIsButton(false);
@@ -44,11 +43,9 @@ const CreatePIN = ({navigation}) => {
   });
   const handleKirim = () => {
     dispatch(setIsPopupCreatePinSuccess(true));
-
   };
   const handleCancelPopUp = () => {
     dispatch(setIsPopupCreatePinSuccess(false));
-
   };
   const handleLanjutkanLogin = () => {
     dispatch(setIsPopupCreatePinSuccess(false));
@@ -112,10 +109,11 @@ const CreatePIN = ({navigation}) => {
             text={'Anda harus mengisi bagian ini'}
             value={confirmPin}
           />
-          {pin == confirmPin || confirmPin == null ||confirmPin==''?
-          (null) :
-            (<NegatifCase text={'Pin tidak sama'} value={''} />)
-          }
+          {pin == confirmPin ||
+          confirmPin == null ||
+          confirmPin == '' ? null : (
+            <NegatifCase text={'Pin tidak sama'} value={''} />
+          )}
         </View>
       </View>
       <View style={styles.ButtonKirim}>

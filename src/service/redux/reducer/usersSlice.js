@@ -21,20 +21,8 @@ export const UsersSlice = createSlice({
   initialState,
   reducers: {
     setUsers: (state, action) => {
+      console.log('Hit API ');
       state.data = action.payload;
-      // state.email = action.payload.email;
-      // state.nationality = action.payload.nationality;
-      // state.typeDocument = action.payload.typeDocument;
-      // state.noDocument = action.payload.noDocument;
-      // state.firstName = action.payload.firstName;
-      // state.lastName = action.payload.lastName;
-      // state.birthplace = action.payload.birthplace;
-      // state.birthday = action.payload.birthday;
-      // state.address = action.payload.address;
-      // state.gender = action.payload.gender;
-      // state.password = action.payload.password;
-      // state.confirmPassword = action.payload.confirmPassword;
-      // state.agreeTerms = action.payload.agreeTerms;
       console.log('OKE guys', state.data);
     },
   },

@@ -1,5 +1,5 @@
 import React from 'react';
-import {StyleSheet, View, TouchableOpacity, Text} from 'react-native';
+import {StyleSheet, TouchableOpacity, Text} from 'react-native';
 const NumberKeyboard = ({onPress, value}) => {
   return (
     <TouchableOpacity onPress={onPress} style={styles.CoverNumberKeyboard}>

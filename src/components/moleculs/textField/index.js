@@ -1,5 +1,5 @@
 import React from 'react';
-import {TextInput, View, StyleSheet, Text} from 'react-native';
+import {TextInput, View, StyleSheet} from 'react-native';
 
 const TextField = ({
   placeholder,
@@ -13,7 +13,7 @@ const TextField = ({
   numberOfLines,
   NegatifCase,
   editable,
-  maxLength
+  maxLength,
 }) => {
   return (
     <>

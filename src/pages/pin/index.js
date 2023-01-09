@@ -1,35 +1,30 @@
 //Import Library
-import React, {useEffect, useRef, useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {
   View,
   StyleSheet,
-  Text,
   TouchableOpacity,
   TextInput,
   ScrollView,
 } from 'react-native';
-import CountDownTimer from 'react-native-countdown-timer-hooks';
-import {useDispatch, useSelector} from 'react-redux';
+import {useSelector, useDispatch} from 'react-redux';
 
 //Import Component
 import HeaderPages from '../../components/moleculs/headerPages';
-import TextDescriptionOnBoarding from '../../components/atoms/textDescriptionOnBoarding';
-import TextButton from '../../components/atoms/textButton';
 import {Colours} from '../../helpers/colours';
 import NumberKeyboard from '../../components/moleculs/numberKeyboard';
 import PopUpError from '../../components/organism/popupError';
-import {setIsPopupIncorectOtp, setIsPopupRequestTimedOut, setIsPopupPinInvalid} from '../../service/redux/reducer/globalSlice';
+import {setIsPopupPinInvalid} from '../../service/redux/reducer/globalSlice';
 
 //Import Assets
 import CancelKeyboardPin from '../../../assets/otp/cancel_keyboard_otp.svg';
 import ImagePopupError from '../../../assets/popup/popup_error.png';
-import ImageTimerRuns from '../../../assets/popup/timer_runs.png'
 import TextButtonBlue from '../../components/atoms/textButtonBlue';
 
 const PIN = ({navigation}) => {
+  const stateTransfer=useSelector(state=>state.transfer)
   const [pin, setPin] = useState([]);
   const [allPin, setAllPin] = useState(null);
-
 
   const dispatch = useDispatch();
   const stateGlobal = useSelector(state => state.global);
@@ -46,12 +41,17 @@ const PIN = ({navigation}) => {
       console.log('isi All OTP', pin);
       if (allPin != pinRegister) {
         setPin([]);
-        dispatch(setIsPopupPinInvalid(true))
+        dispatch(setIsPopupPinInvalid(true));
       }
     } else if (allPin == pinRegister) {
-
-    dispatch(setIsPopupPinInvalid(false))
-      navigation.navigate('TransactionSuccess');
+      dispatch(setIsPopupPinInvalid(false));
+      if(stateTransfer.countryDestination==null||stateTransfer.countryDestination==''){
+        navigation.navigate('TransactionSuccess');
+      }
+      else{
+        navigation.navigate('TransactionSuccessInternational');
+      }
+      
     }
   });
   const handleDeletePin = item => {
@@ -59,22 +59,24 @@ const PIN = ({navigation}) => {
   };
   const handleBack = () => {
     navigation.goBack();
- 
   };
-  const handleForgotPin = () => {
-    
-  };
+  const handleForgotPin = () => {};
 
   return (
     <View style={styles.Container}>
-
-      <PopUpError visible={stateGlobal.isPopupPinInvalid} onPressButton={()=>dispatch(setIsPopupPinInvalid(false))} ImagePopUp={ImagePopupError} value={'Oops! Pin Evilz yang anda masukkan salah'} textButton={'Coba Lagi'}/>
-      <HeaderPages onPress={handleBack} value={'Masukkan Pin Evilz'} hideShowTitle={true} />
+      <PopUpError
+        visible={stateGlobal.isPopupPinInvalid}
+        onPressButton={() => dispatch(setIsPopupPinInvalid(false))}
+        ImagePopUp={ImagePopupError}
+        value={'Oops! Pin Evilz yang anda masukkan salah'}
+        textButton={'Coba Lagi'}
+      />
+      <HeaderPages
+        onPress={handleBack}
+        value={'Masukkan Pin Evilz'}
+        hideShowTitle={true}
+      />
       <ScrollView showsVerticalScrollIndicator={false}>
-       
-
-       
-
         <View style={styles.ContainerContentPin}>
           <TextInput
             placeholder="Masukkan 6 digit Pin Evilz"
@@ -85,12 +87,10 @@ const PIN = ({navigation}) => {
           />
         </View>
         <View style={styles.KirimUlang}>
-         
-       
-            <TextButtonBlue
-              value={'Lupa Pin Evilz ?'}
-              onPress={handleForgotPin}
-            />
+          <TextButtonBlue
+            value={'Lupa Pin Evilz ?'}
+            onPress={handleForgotPin}
+          />
         </View>
         <View style={styles.ViewNumberKeyboard}>
           <NumberKeyboard value={1} onPress={() => setPin([...pin, 1])} />
@@ -108,14 +108,12 @@ const PIN = ({navigation}) => {
           <NumberKeyboard value={9} onPress={() => setPin([...pin, 9])} />
         </View>
         <View style={styles.ViewNumberKeyboard}>
-        <View style={styles.ButtonKeyboardBlank}/>
+          <View style={styles.ButtonKeyboardBlank} />
           <NumberKeyboard value={0} onPress={() => setPin([...pin, 0])} />
           <TouchableOpacity onPress={handleDeletePin}>
             <CancelKeyboardPin style={styles.IconCancelKeyboardPin} />
           </TouchableOpacity>
         </View>
-
-        
       </ScrollView>
     </View>
   );
@@ -149,10 +147,9 @@ const styles = StyleSheet.create({
   KirimUlang: {
     flexDirection: 'row',
     marginBottom: 50,
-    width:'90%',
-    alignSelf:'center',
-    justifyContent:'flex-end',
-  
+    width: '90%',
+    alignSelf: 'center',
+    justifyContent: 'flex-end',
   },
   borderStyleBase: {
     width: 30,
@@ -196,17 +193,15 @@ const styles = StyleSheet.create({
     color: '#7A7A7A',
     fontSize: 12,
     fontWeight: '400',
-
   },
-  ButtonKeyboardBlank:{
-   
-      backgroundColor: 'transparent',
-      width: 60,
-      height: 60,
-      alignItems: 'center',
-      justifyContent: 'center',
-      borderRadius: 100,
-      marginHorizontal: 27,
-      marginBottom: 25,
-  }
+  ButtonKeyboardBlank: {
+    backgroundColor: 'transparent',
+    width: 60,
+    height: 60,
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderRadius: 100,
+    marginHorizontal: 27,
+    marginBottom: 25,
+  },
 });

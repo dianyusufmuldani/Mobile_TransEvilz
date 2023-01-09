@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React from 'react';
 import {StyleSheet, TouchableOpacity, View, Text} from 'react-native';
 import BackIcon from '../../../../assets/otp/arrow-left.svg';
 const HeaderPagesBlue = ({onPress, hideShowTitle, value, showBackButton}) => {

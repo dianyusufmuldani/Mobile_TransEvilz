@@ -7,7 +7,6 @@ import {
   Text,
   TouchableOpacity,
 } from 'react-native';
-import IconXCancel from '../../../../assets/popup/x.svg';
 import BlueButton from '../../moleculs/blueButton';
 
 const PopUpError = ({

@@ -47,7 +47,9 @@ const User = ({navigation}) => {
           <SwitchingApp />
         </View>
 
-        <TouchableOpacity style={styles.CardFeature} onPress={()=>navigation.navigate('TermsAndConditions')}>
+        <TouchableOpacity
+          style={styles.CardFeature}
+          onPress={() => navigation.navigate('TermsAndConditions')}>
           <TextDefault value={'Syarat & Ketentuan'} />
           <IconArrowRight />
         </TouchableOpacity>

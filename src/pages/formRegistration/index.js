@@ -101,10 +101,10 @@ const FormRegistration = ({navigation}) => {
   const [matchPassword, setMatchPassword] = useState(true);
   const dispatch = useDispatch();
   const stateUsers = useSelector(state => state.users);
-  const stateGlobal = useSelector(state=>state.global);
+  const stateGlobal = useSelector(state => state.global);
 
   momentDate = moment(date).format('l');
-  momentAge= moment().diff(birtday, 'years', false)
+  momentAge = moment().diff(birtday, 'years', false);
   const [checkValidEmail, setCheckValidEmail] = useState(false);
   const [checkValidPassword, setCheckValidPassword] = useState(true);
   const handleCheckValidEmail = text => {
@@ -130,15 +130,15 @@ const FormRegistration = ({navigation}) => {
   };
 
   useEffect(() => {
-    console.log('isi Age', momentAge)
+    console.log('isi Age', momentAge);
     if (email == null || email == '') {
       setCheckValidEmail(false);
     }
-    if (password == '' || password == null){
+    if (password == '' || password == null) {
       setCheckValidPassword(true);
     }
-    if (confirmPassword != null || confirmPassword != undefined){
-      if (confirmPassword == ''){
+    if (confirmPassword != null || confirmPassword != undefined) {
+      if (confirmPassword == '') {
         setMatchPassword(true);
       } else if (password != confirmPassword) {
         setMatchPassword(false);
@@ -175,7 +175,7 @@ const FormRegistration = ({navigation}) => {
     }
     //  else if (nationality == '' || nationality == undefined) {
     //   dispatch(setIsButtonFormRegistration(false));
-    // } 
+    // }
     else if (typeDocument == '' || typeDocument == undefined) {
       dispatch(setIsButtonFormRegistration(false));
     } else if (noDocument == '' || noDocument == undefined) {
@@ -186,30 +186,24 @@ const FormRegistration = ({navigation}) => {
       dispatch(setIsButtonFormRegistration(false));
     } else if (birthplace == '' || birthplace == undefined) {
       dispatch(setIsButtonFormRegistration(false));
-    } 
-    else if (momentAge <=17) {
+    } else if (momentAge <= 17) {
       dispatch(setIsButtonFormRegistration(false));
-    }
-      else if (address == '' || address == undefined) {
+    } else if (address == '' || address == undefined) {
       dispatch(setIsButtonFormRegistration(false));
     } else if (gender == '' || gender == undefined) {
       dispatch(setIsButtonFormRegistration(false));
     } else if (password == '' || password == undefined) {
       dispatch(setIsButtonFormRegistration(false));
       setCheckValidPassword(true);
-    }
-    else if (checkValidPassword == false){
+    } else if (checkValidPassword == false) {
       dispatch(setIsButtonFormRegistration(false));
     } else if (matchPassword == false) {
       dispatch(setIsButtonFormRegistration(false));
     } else if (confirmPassword == '' || confirmPassword == undefined) {
       dispatch(setIsButtonFormRegistration(false));
-
-
     } else if (agreeTerms == '' || agreeTerms == undefined) {
       dispatch(setIsButtonFormRegistration(false));
     } else if (password == confirmPassword) {
-
       dispatch(setIsButtonFormRegistration(true));
     }
   });
@@ -262,7 +256,7 @@ const FormRegistration = ({navigation}) => {
     mediaType: 'photo',
   };
 
-  const openGallery = async()=>{
+  const openGallery = async () => {
     const result = await launchImageLibrary(options);
     setPhoto(result.assets[0].uri);
     console.log('isi Photo', photo);
@@ -280,7 +274,7 @@ const FormRegistration = ({navigation}) => {
       <HeaderPages
         hideShowTitle={true}
         value={'Registration'}
-        onPress={() => navigation.goBack()}
+        onPress={() => navigation.navigate('Registration')}
       />
       <View style={styles.ContainerBody}>
         <View style={styles.FormStyle}>
@@ -293,9 +287,9 @@ const FormRegistration = ({navigation}) => {
               <IconUserImageAdd />
             )}
           </TouchableOpacity>
-          <View style={{alignSelf:'center', marginBottom:20}}>
-            <TextDescriptionOnBoarding value={'Tambah gambar '}/>
-            </View>
+          <View style={{alignSelf: 'center', marginBottom: 20}}>
+            <TextDescriptionOnBoarding value={'Tambah gambar '} />
+          </View>
           <View style={{flexDirection: 'row'}}>
             <TextDefault value={'Email '} />
             <RequirementSymbols />
@@ -304,15 +298,13 @@ const FormRegistration = ({navigation}) => {
             placeholder={'Email'}
             value={email}
             onChangeText={handleCheckValidEmail}
-            
           />
-          {checkValidEmail ?
-( <NegatifCase text={'Format email salah'} value={''} />) : null
-}
-{email=='admin@gmail.com' ?
-( <NegatifCase text={'Email sudah terdaftar'} value={''} />) : null
-}
-
+          {checkValidEmail ? (
+            <NegatifCase text={'Format email salah'} value={''} />
+          ) : null}
+          {email == 'admin@gmail.com' ? (
+            <NegatifCase text={'Email sudah terdaftar'} value={''} />
+          ) : null}
 
           {email == '' ? (
             <NegatifCase text={'Anda harus mengisi bagian ini'} value={email} />
@@ -357,26 +349,38 @@ const FormRegistration = ({navigation}) => {
           <View style={{marginTop: 10}} />
           {typeDocument ? (
             <>
-            {typeDocument=='Passport'?(<TextField
-              placeholder={'Masukkan no dokumen'}
-              value={noDocument}
-              onChangeText={value => setNoDocument(value.replace(/\D/g, ''))}
-              maxLength={16}
-            />):(null)}
-            {typeDocument=='KTP'?(<TextField
-              placeholder={'Masukkan no dokumen'}
-              value={noDocument}
-              onChangeText={value => setNoDocument(value.replace(/\D/g, ''))}
-              maxLength={16}
-              keyboardType={'phone-pad'}
-            />):(null)}
-            {typeDocument=='SIM'?(<TextField
-              placeholder={'Masukkan no dokumen'}
-              value={noDocument}
-              onChangeText={value => setNoDocument(value.replace(/\D/g, ''))}
-              maxLength={12}
-              keyboardType={'phone-pad'}
-            />):(null)}
+              {typeDocument == 'Passport' ? (
+                <TextField
+                  placeholder={'Masukkan no dokumen'}
+                  value={noDocument}
+                  onChangeText={value =>
+                    setNoDocument(value)
+                  }
+                  maxLength={16}
+                />
+              ) : null}
+              {typeDocument == 'KTP' ? (
+                <TextField
+                  placeholder={'Masukkan no dokumen'}
+                  value={noDocument}
+                  onChangeText={value =>
+                    setNoDocument(value.replace(/\D/g, ''))
+                  }
+                  maxLength={16}
+                  keyboardType={'numeric'}
+                />
+              ) : null}
+              {typeDocument == 'SIM' ? (
+                <TextField
+                  placeholder={'Masukkan no dokumen'}
+                  value={noDocument}
+                  onChangeText={value =>
+                    setNoDocument(value.replace(/\D/g, ''))
+                  }
+                  maxLength={12}
+                  keyboardType={'numeric'}
+                />
+              ) : null}
             </>
           ) : (
             <TextInput
@@ -472,14 +476,14 @@ const FormRegistration = ({navigation}) => {
               )}
             </View>
           </TouchableOpacity>
-          {momentAge<=17?
-          (<NegatifCase
-            text={'Umur tidak boleh kurang dari 17 tahun'}
-            value={''}
-          />):(null)
-        }
+          {momentAge <= 17 ? (
+            <NegatifCase
+              text={'Umur tidak boleh kurang dari 17 tahun'}
+              value={''}
+            />
+          ) : null}
         </View>
-        
+
         <View style={styles.FormStyle}>
           <View style={{flexDirection: 'row'}}>
             <TextDefault value={'Alamat '} />
@@ -523,7 +527,9 @@ const FormRegistration = ({navigation}) => {
             <></>
           ) : (
             <NegatifCase
-              text={'Kata sandi harus berisi huruf besar, angka dan simbol (@ * # &)'}
+              text={
+                'Kata sandi harus berisi huruf besar, angka dan simbol (@ * # &)'
+              }
               value={''}
             />
           )}
@@ -544,10 +550,9 @@ const FormRegistration = ({navigation}) => {
             maxLength={16}
           />
 
-          {matchPassword ? (null) : 
-            (<NegatifCase text={'Kata sandi tidak sama'} value={''} />)
-
-          }
+          {matchPassword ? null : (
+            <NegatifCase text={'Kata sandi tidak sama'} value={''} />
+          )}
           <NegatifCase
             text={'Anda harus mengisi bagian ini'}
             value={confirmPassword}
@@ -648,8 +653,6 @@ const styles = StyleSheet.create({
     width: '100%',
     borderRadius: 10,
     paddingLeft: 10,
-
-
   },
   TextWrong: {
     color: '#DC3328',
@@ -661,5 +664,4 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
-
 });

@@ -6,5 +6,5 @@ export const rootReducer = {
   users: usersSlice,
   global: globalSlice,
   otp: otpSlice,
-  transfer: transferSlice
+  transfer: transferSlice,
 };

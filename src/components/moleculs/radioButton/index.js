@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, {useState} from 'react';
 import {View, StyleSheet, Text, TouchableOpacity} from 'react-native';
 
 const RadioButton = ({Value1, Value2, TextRadio1, TextRadio2, selected}) => {

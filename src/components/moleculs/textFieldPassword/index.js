@@ -1,6 +1,5 @@
 import React, {useState} from 'react';
 import {TextInput, View, StyleSheet, TouchableOpacity} from 'react-native';
-import IconHidePassword from '../../../../assets/login/IconHidePassword.svg';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 const TextFieldPassword = ({
   placeholder,

@@ -6,7 +6,11 @@ import HeaderPages from '../../components/moleculs/headerPages';
 const TermsAndConditions = ({navigation}) => {
   return (
     <View style={styles.Container}>
-      <HeaderPages hideShowTitle={true} value={'Syarat & Ketentuan'} onPress={()=>navigation.goBack()} />
+      <HeaderPages
+        hideShowTitle={true}
+        value={'Syarat & Ketentuan'}
+        onPress={() => navigation.goBack()}
+      />
       <ScrollView style={styles.ContainerBody}>
         <View style={{flexDirection: 'row'}}>
           <Text style={styles.TextTitleNumber}>A</Text>
@@ -96,7 +100,7 @@ const TermsAndConditions = ({navigation}) => {
             transaksi perbankan tertentu melalui TransEvilz dan/atau sarana lain
             yang ditentukan oleh TransEvilz.
           </Text>
-          </View>
+        </View>
         <View style={{flexDirection: 'row'}}>
           <Text style={styles.TextTitleNumber}>B</Text>
           <Text style={styles.TextTitle}>Ketentuan</Text>
@@ -180,8 +184,7 @@ const styles = StyleSheet.create({
     paddingTop: 20,
   },
   TextNumber: {
-
-        textAlign:'center',
+    textAlign: 'center',
     width: '5%',
   },
   ButtonLanjut: {
@@ -189,4 +192,4 @@ const styles = StyleSheet.create({
     marginTop: 20,
     alignSelf: 'center',
   },
-})
+});

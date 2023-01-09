@@ -1,6 +1,6 @@
 //Import Library
 import React, {useState} from 'react';
-import {View, Alert} from 'react-native';
+import {View} from 'react-native';
 import Toggle from 'react-native-toggle-element';
 
 const SwitchingApp = () => {

@@ -1,96 +1,286 @@
 //Import Library
-import React, {useEffect, useState} from 'react';
-import {View, StyleSheet, TouchableOpacity, Text} from 'react-native';
+import React, {useEffect} from 'react';
+import {
+  View,
+  StyleSheet,
+  TouchableOpacity,
+  Text,
+  Image,
+  ScrollView,
+} from 'react-native';
 import {SelectList} from 'react-native-dropdown-select-list';
+import {useSelector, useDispatch} from 'react-redux';
 
 //Import Component
 import RequirementSymbols from '../../components/atoms/requirementSymbols';
 import TextDefault from '../../components/atoms/textDefault';
 import BlueButton from '../../components/moleculs/blueButton';
-import HeaderPages from '../../components/moleculs/headerPages';
+import HeaderPagesBlue from '../../components/moleculs/headerPagesBlue';
 import TextField from '../../components/moleculs/textField';
 import {Colours} from '../../helpers/colours';
+import {
+  setIsButtonTransactionLocal,
+  setIsPopupAccountNumberNotFound,
+} from '../../service/redux/reducer/globalSlice';
+import PopUpError from '../../components/organism/popupError';
 
 //Import Assets
+import ImageBgTransaction from '../../../assets/transaction/bgTransaction.png';
+import IconIndonesia from '../../../assets/registration/openmoji_flag-indonesia.svg';
+import NegatifCase from '../../components/atoms/negatifCaseTextInput';
+import {
+  setAccountNumberInternational,
+  setBankReceiver,
+  setBankReceiverInternational,
+  setNameReceiverInternational,
+  setSwiftCode
+} from '../../service/redux/reducer/transferSlice';
+import ImagePopupError from '../../../assets/popup/popup_error.png';
+import Singapore from '../../../assets/transferCard/openmoji_flag-singapore.png';
+import UnitedStates from '../../../assets/transferCard/openmoji_flag-united-states.png';
+import Australia from '../../../assets/transferCard/openmoji_flag-australia.png';
+import Japan from '../../../assets/transferCard/openmoji_flag-japan.png';
 
 const TransactionInternational = ({navigation}) => {
-  const [name, setName] = useState(null);
-  const [noRek, setNoRek] = useState(null);
+  const stateGlobal = useSelector(state => state.global);
+  const stateTransfer = useSelector(state => state.transfer);
+  const dispatch = useDispatch();
+
   const [selected, setSelected] = React.useState('');
-  const data = [
-    {key: '1', value: 'BCA'},
-    {key: '2', value: 'BSI'},
-    {key: '3', value: 'BRI'},
-    {key: '4', value: 'Mandiri'},
+  const dataUS = [
+    {key: '1', value: 'Bank Of America'},
+    {key: '2', value: 'JPMorgan Chase,'},
+    {key: '3', value: 'Wells Fargo'},
+    {key: '4', value: 'Citigroup'},
+    {key: '5', value: 'Goldman Sachs Group'}
+  ];
+  const dataSGD = [
+    {key: '1', value: 'DBS Singapore'},
+    {key: '2', value: 'UOB Singapore'},
+    {key: '3', value: 'Citibank Singapore'},
+    {key: '4', value: 'Maybank Singapore'},
+    {key: '5', value: 'SBI Singapore'}
+  ];
+  const dataJPY = [
+    {key: '1', value: 'Mizuho Bank'},
+    {key: '2', value: 'Mizuho Corporate Bank'},
+    {key: '3', value: 'Mizuho Trust & Banking Co'},
+    {key: '4', value: 'Chiba Kogyo Bank'},
+    {key: '5', value: 'Trust & Custody Services Bank'}
+  ];
+  const dataAUD = [
+    {key: '1', value: 'Commonwealth Bank of Australia'},
+    {key: '2', value: 'ANZ'},
+    {key: '3', value: 'NAB Westpasck'},
+    {key: '4', value: 'Bank of Queensland'}
   ];
   const handleSelanjutnya = () => {
-    navigation.navigate('TransactionMethod');
+    if (stateTransfer.accountNumberInternational == '00000000') {
+      dispatch(setIsPopupAccountNumberNotFound(true));
+    } else {
+      navigation.navigate('TransactionMethodInternational');
+    }
   };
   const handleReset = () => {
-    setSelected('');
-    setName(null);
-    setNoRek(null);
+    // setSelected('');
+    dispatch(setNameReceiverInternational(null));
+    dispatch(setAccountNumberInternational(null));
+    dispatch(setSwiftCode(null))
   };
   useEffect(() => {
     console.log(selected);
+    if (selected == null || selected == '') {
+      dispatch(setIsButtonTransactionLocal(false));
+    } else if (
+      stateTransfer.nameReceiverInternational == null ||
+      stateTransfer.nameReceiverInternational == ''
+    ) {
+      dispatch(setIsButtonTransactionLocal(false));
+    } else if (
+      stateTransfer.accountNumberInternational == null ||
+      stateTransfer.accountNumberInternational == ''
+    ) {
+      dispatch(setIsButtonTransactionLocal(false));
+    } 
+    else if (
+      stateTransfer.swiftCode == null ||
+      stateTransfer.swiftCode == ''
+    ) {
+      dispatch(setIsButtonTransactionLocal(false));
+    }
+      else {
+      dispatch(setBankReceiverInternational(selected));
+      dispatch(setIsButtonTransactionLocal(true));
+    }
   });
   return (
-    <View style={styles.Container}>
-      <HeaderPages
-        value={'Akun Bank'}
-        hideShowTitle={true}
-        onPress={() => navigation.goBack()}
-      />
-      <View style={styles.ContainerBody}>
-        <View style={styles.ContainerCountTransaction}>
-          <Text style={styles.TextTotal}>Total Transaksi</Text>
-          <Text style={styles.TextIDR}>1.000.000 IDR</Text>
-        </View>
-
-        <View style={styles.FormInput}>
-          <View style={{flexDirection: 'row'}}>
-            <TextDefault value={'Pilih Bank '} />
-            <RequirementSymbols />
-          </View>
-          <SelectList
-            setSelected={val => setSelected(val)}
-            data={data}
-            save="value"
-            boxStyles={{
-              backgroundColor: '#F1F7FF',
-              borderWidth: 0,
-              width: '100%',
-            }}
-            placeholder="Pilih Bank"
-            inputStyles={{marginLeft: -15}}
-            search={false}
-            dropdownStyles={{backgroundColor: '#F1F7FF', borderWidth: 0}}
+    <>
+      <View style={styles.Container}>
+        <HeaderPagesBlue
+          value={'Akun Bank'}
+          hideShowTitle={true}
+          onPress={() => navigation.goBack()}
+        />
+        <PopUpError
+          onPressButton={() => dispatch(setIsPopupAccountNumberNotFound(false))}
+          ImagePopUp={ImagePopupError}
+          visible={stateGlobal.isPopupAccountNumberNotFound}
+          textButton={'Coba Lagi'}
+          value={'Oops! No. Rekening tujuan anda tidak ditemukan'}
+        />
+        <ScrollView style={styles.ContainerBody}>
+          <Image
+            source={ImageBgTransaction}
+            style={{top: 10, position: 'absolute'}}
           />
-        </View>
-
-        <View style={styles.FormInput}>
-          <View style={{flexDirection: 'row'}}>
-            <TextDefault value={'Nama Penerima '} />
-            <RequirementSymbols />
+          <View style={styles.ContainerCountTransaction}>
+            <View style={{flexDirection: 'row', alignItems: 'center'}}>
+              <IconIndonesia />
+              <Text style={styles.TextFormatCurrencyCountry}>IDR ke {stateTransfer.countryDestination}</Text>
+              {stateTransfer.countryDestination=='USD'?
+                (<Image source={UnitedStates} style={{marginLeft:10}} />)
+                :(null)
+                }
+                {stateTransfer.countryDestination=='AUD'?
+                (<Image source={Australia} style={{marginLeft:10}} />)
+                :(null)
+                }
+                {stateTransfer.countryDestination=='JPY'?
+                (<Image source={Japan} style={{marginLeft:10}} />)
+                :(null)
+                }
+                {stateTransfer.countryDestination=='SGD'?
+                (<Image source={Singapore} style={{marginLeft:10}} />)
+                :(null)
+                }
+            </View>
+            <Text style={styles.TextTotal}>Total Transaksi</Text>
+            <Text style={styles.TextIDR}>
+              {stateTransfer.totalTransactionInternational} IDR
+            </Text>
           </View>
-          <TextField
-            placeholder={'Masukkan Nama Penerima'}
-            value={name}
-            onChangeText={value => setName(value)}
-          />
-        </View>
 
-        <View style={styles.FormInput}>
-          <View style={{flexDirection: 'row'}}>
-            <TextDefault value={'No. Rekening'} />
-            <RequirementSymbols />
+          <View style={styles.FormInput}>
+            <View style={{flexDirection: 'row'}}>
+              <TextDefault value={'Pilih Bank '} />
+              <RequirementSymbols />
+            </View>
+            {stateTransfer.countryDestination=='USD'?
+            (<SelectList
+              setSelected={val => setSelected(val)}
+              data={dataUS}
+              save="value"
+              boxStyles={{
+                backgroundColor: '#F1F7FF',
+                borderWidth: 0,
+                width: '100%',
+              }}
+              placeholder="Pilih Bank"
+              inputStyles={{marginLeft: -15}}
+              search={false}
+              dropdownStyles={{backgroundColor: '#F1F7FF', borderWidth: 0}}
+            />):(null)}
+            {stateTransfer.countryDestination=='SGD'?
+            (<SelectList
+              setSelected={val => setSelected(val)}
+              data={dataSGD}
+              save="value"
+              boxStyles={{
+                backgroundColor: '#F1F7FF',
+                borderWidth: 0,
+                width: '100%',
+              }}
+              placeholder="Pilih Bank"
+              inputStyles={{marginLeft: -15}}
+              search={false}
+              dropdownStyles={{backgroundColor: '#F1F7FF', borderWidth: 0}}
+            />):(null)}
+            {stateTransfer.countryDestination=='JPY'?
+            (<SelectList
+              setSelected={val => setSelected(val)}
+              data={dataJPY}
+              save="value"
+              boxStyles={{
+                backgroundColor: '#F1F7FF',
+                borderWidth: 0,
+                width: '100%',
+              }}
+              placeholder="Pilih Bank"
+              inputStyles={{marginLeft: -15}}
+              search={false}
+              dropdownStyles={{backgroundColor: '#F1F7FF', borderWidth: 0}}
+            />):(null)}
+            {stateTransfer.countryDestination=='AUD'?
+            (<SelectList
+              setSelected={val => setSelected(val)}
+              data={dataAUD}
+              save="value"
+              boxStyles={{
+                backgroundColor: '#F1F7FF',
+                borderWidth: 0,
+                width: '100%',
+              }}
+              placeholder="Pilih Bank"
+              inputStyles={{marginLeft: -15}}
+              search={false}
+              dropdownStyles={{backgroundColor: '#F1F7FF', borderWidth: 0}}
+            />):(null)}
           </View>
-          <TextField
-            placeholder={'Masukkan No. Rekening'}
-            value={noRek}
-            onChangeText={value => setNoRek(value)}
-          />
-        </View>
+
+          <View style={styles.FormInput}>
+            <View style={{flexDirection: 'row'}}>
+              <TextDefault value={'Nama Penerima '} />
+              <RequirementSymbols />
+            </View>
+            <TextField
+              placeholder={'Masukkan Nama Penerima'}
+              value={stateTransfer.nameReceiverInternational}
+              onChangeText={value => dispatch(setNameReceiverInternational(value))}
+            />
+            <NegatifCase
+              value={stateTransfer.nameReceiverInternational}
+              text={'Anda harus mengisi bagian ini'}
+            />
+          </View>
+
+          <View style={styles.FormInput}>
+            <View style={{flexDirection: 'row'}}>
+              <TextDefault value={'No. Rekening '} />
+              <RequirementSymbols />
+            </View>
+            <TextField
+              placeholder={'Masukkan No. Rekening'}
+              value={stateTransfer.accountNumberInternational}
+              onChangeText={value =>
+                dispatch(setAccountNumberInternational(value.replace(/\D/g, '')))
+              }
+              keyboardType={'numeric'}
+            />
+            <NegatifCase
+              value={stateTransfer.accountNumberInternational}
+              text={'Anda harus mengisi bagian ini'}
+            />
+          </View>
+
+          <View style={styles.FormInput}>
+            <View style={{flexDirection: 'row'}}>
+              <TextDefault value={'Kode Swift '} />
+              <RequirementSymbols />
+            </View>
+            <TextField
+              placeholder={'Masukkan No. Rekening'}
+              value={stateTransfer.swiftCode}
+              onChangeText={value =>
+                dispatch(setSwiftCode(value.replace(/\D/g, '')))
+              }
+              keyboardType={'numeric'}
+            />
+            <NegatifCase
+              value={stateTransfer.swiftCode}
+              text={'Anda harus mengisi bagian ini'}
+            />
+          </View>
+        </ScrollView>
       </View>
       <View style={styles.ContainerButton}>
         <TouchableOpacity style={styles.ButtonAturUlang} onPress={handleReset}>
@@ -99,12 +289,12 @@ const TransactionInternational = ({navigation}) => {
         <View style={styles.ButtonSelanjutnya}>
           <BlueButton
             value={'Selanjutnya'}
-            isButton={true}
+            isButton={stateGlobal.isButtonTransactionLocal}
             onPress={handleSelanjutnya}
           />
         </View>
       </View>
-    </View>
+    </>
   );
 };
 
@@ -153,23 +343,23 @@ const styles = StyleSheet.create({
     color: '#FFFFFF',
   },
   ContainerCountTransaction: {
-    backgroundColor: '#DCBE23',
     width: '100%',
     alignItems: 'center',
     alignSelf: 'center',
     height: 115,
     borderRadius: 10,
-    marginTop: 30,
     justifyContent: 'center',
+    marginTop:10
+    // top:-135,
   },
   TextTotal: {
-    color: '#FFFFFF',
+    color: '#7A7A7A',
     fontSize: 14,
-    fontWeight: '700',
+    fontWeight: '500',
   },
   TextIDR: {
     color: '#FFFFFF',
-    fontSize: 20,
+    fontSize: 30,
     fontWeight: '700',
   },
   FormInput: {
@@ -178,9 +368,15 @@ const styles = StyleSheet.create({
   ContainerButton: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    position: 'absolute',
-    bottom: 20,
+    // position: 'absolute',
+    bottom: 0,
     alignSelf: 'center',
+    backgroundColor: '#FFFFFF',
+    height: 80,
+    alignItems: 'center',
+    width: '100%',
+    paddingHorizontal: 20,
+    elevation: 20,
   },
   ButtonAturUlang: {
     width: '45%',
@@ -189,6 +385,7 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: '#DC3328',
     borderRadius: 8,
+    height: 42,
   },
   ButtonSelanjutnya: {
     width: '45%',
@@ -197,5 +394,11 @@ const styles = StyleSheet.create({
     color: '#DC3328',
     fontSize: 16,
     fontWeight: '700',
+  },
+  TextFormatCurrencyCountry: {
+    color: '#3A3A3A',
+    fontSize: 12,
+    fontWeight: '700',
+    marginLeft: 10,
   },
 });

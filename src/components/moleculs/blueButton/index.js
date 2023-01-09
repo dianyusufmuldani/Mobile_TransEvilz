@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React from 'react';
 import {Text, StyleSheet, TouchableOpacity, View} from 'react-native';
 
 const BlueButton = ({value, onPress, isButton}) => {

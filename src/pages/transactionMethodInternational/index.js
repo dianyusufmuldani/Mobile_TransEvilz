@@ -15,8 +15,12 @@ import {Colours} from '../../helpers/colours';
 import ImageBgTransaction from '../../../assets/transaction/bgTransaction.png';
 import IconIndonesia from '../../../assets/registration/openmoji_flag-indonesia.svg';
 import HeaderPagesBlue from '../../components/moleculs/headerPagesBlue';
+import Singapore from '../../../assets/transferCard/openmoji_flag-singapore.png';
+import UnitedStates from '../../../assets/transferCard/openmoji_flag-united-states.png';
+import Australia from '../../../assets/transferCard/openmoji_flag-australia.png';
+import Japan from '../../../assets/transferCard/openmoji_flag-japan.png';
 
-const TransactionMethod = ({navigation}) => {
+const TransactionMethodInternational = ({navigation}) => {
   const dispatch = useDispatch();
   const stateGlobal = useSelector(state => state.global);
   const stateTransfer = useSelector(state => state.transfer);
@@ -51,11 +55,27 @@ const TransactionMethod = ({navigation}) => {
         <View style={styles.ContainerCountTransaction}>
           <View style={{flexDirection: 'row', alignItems: 'center'}}>
             <IconIndonesia />
-            <Text style={styles.TextFormatCurrencyCountry}>IDR ke IDR</Text>
+            <Text style={styles.TextFormatCurrencyCountry}>IDR ke {stateTransfer.countryDestination}</Text>
+            {stateTransfer.countryDestination=='USD'?
+                (<Image source={UnitedStates} style={{marginLeft:10}} />)
+                :(null)
+                }
+                {stateTransfer.countryDestination=='AUD'?
+                (<Image source={Australia} style={{marginLeft:10}} />)
+                :(null)
+                }
+                {stateTransfer.countryDestination=='JPY'?
+                (<Image source={Japan} style={{marginLeft:10}} />)
+                :(null)
+                }
+                {stateTransfer.countryDestination=='SGD'?
+                (<Image source={Singapore} style={{marginLeft:10}} />)
+                :(null)
+                }
           </View>
           <Text style={styles.TextTotal}>Total Transaksi</Text>
           <Text style={styles.TextIDR}>
-            {stateTransfer.totalTransactionLocal} IDR
+            {stateTransfer.totalTransactionInternational} IDR
           </Text>
         </View>
         <TextDefault value={'Metode Pembayaran'} />
@@ -87,7 +107,7 @@ const TransactionMethod = ({navigation}) => {
   );
 };
 
-export default TransactionMethod;
+export default TransactionMethodInternational;
 const styles = StyleSheet.create({
   Container: {
     flex: 1,

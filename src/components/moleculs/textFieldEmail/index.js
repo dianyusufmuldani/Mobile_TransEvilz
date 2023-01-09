@@ -1,5 +1,5 @@
 import React from 'react';
-import {TextInput, View, StyleSheet, Text} from 'react-native';
+import {TextInput, View, StyleSheet} from 'react-native';
 
 const TextFieldEmail = ({
   placeholder,
@@ -24,7 +24,6 @@ const TextFieldEmail = ({
         onContentSizeChange={onContentSizeChange}
         style={style}
         numberOfLines={numberOfLines}
-  
       />
     </View>
   );

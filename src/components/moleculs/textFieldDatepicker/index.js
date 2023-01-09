@@ -1,13 +1,5 @@
 import React, {useEffect, useState} from 'react';
-import {
-  View,
-  StyleSheet,
-  TouchableOpacity,
-  Text,
-  Button,
-  Platform,
-  TextInput,
-} from 'react-native';
+import {View, StyleSheet, TouchableOpacity, TextInput} from 'react-native';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import IconCalender from '../../../../assets/formRegistration/calendar.svg';
 import moment from 'moment';
@@ -26,12 +18,6 @@ const TextFieldDatepicker = ({placeholder, momentDate, onChangeText}) => {
     setShowDate(false);
     setDate(currentDate);
     let tempDate = new Date(currentDate);
-    let fDate =
-      tempDate.getDate() +
-      '/' +
-      (tempDate.getMonth() + 1) +
-      '/' +
-      tempDate.getFullYear();
   };
   const showMode = currentMode => {
     setShowDate(true);

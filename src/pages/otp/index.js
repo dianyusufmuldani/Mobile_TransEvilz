@@ -18,47 +18,67 @@ import TextButton from '../../components/atoms/textButton';
 import {Colours} from '../../helpers/colours';
 import NumberKeyboard from '../../components/moleculs/numberKeyboard';
 import PopUpError from '../../components/organism/popupError';
-import {setIsPopupIncorectOtp, setIsPopupRequestTimedOut} from '../../service/redux/reducer/globalSlice';
+import {
+  setIsPopupIncorectOtp,
+  setIsPopupRequestTimedOut,
+} from '../../service/redux/reducer/globalSlice';
 
 //Import Assets
 import CancelKeyboardOtp from '../../../assets/otp/cancel_keyboard_otp.svg';
 import ImagePopupError from '../../../assets/popup/popup_error.png';
-import ImageTimerRuns from '../../../assets/popup/timer_runs.png'
+import ImageTimerRuns from '../../../assets/popup/timer_runs.png';
+import { getOtp } from '../../service/redux/reducer/otpSlice';
 
 const OTP = ({navigation}) => {
+  const stateOtp=useSelector(state=>state.otp)
   const [otp, setOtp] = useState([]);
   const [allOtp, setAllOtp] = useState(null);
+  const [fixOtp, setFixOtp]=useState(null)
   const refTimer = useRef();
   const [timerEnd, setTimerEnd] = useState(false);
 
   const timerCallbackFunc = timerFlag => {
     setTimerEnd(timerFlag);
     console.log('Timeout', timerEnd);
-    dispatch(setIsPopupRequestTimedOut(true))
+    dispatch(setIsPopupRequestTimedOut(true));
   };
   const dispatch = useDispatch();
   const stateGlobal = useSelector(state => state.global);
 
   useEffect(() => {
     setAllOtp(otp.join(''));
-    const otpRegister = '000000';
+    setFixOtp(Number(allOtp))
+    console.log('ISI OTP BARU', otp);
+
     if (otp.length >= 7) {
       setOtp(otp.slice(0, -1));
       console.log('hapus ini');
     } else if (otp.length == 6) {
-      console.log('isi Regis', otpRegister);
-      console.log('isi All OTP', allOtp);
-      console.log('isi All OTP', otp);
-      if (allOtp != otpRegister) {
-        dispatch(setIsPopupIncorectOtp(true));
-        setOtp([]);
-      }
-    } else if (allOtp == otpRegister) {
-      setTimerEnd(true);
-      dispatch(setIsPopupIncorectOtp(false));
-      navigation.navigate('FormRegistration');
-    }
+      
+      const request = {
+        otp_code: fixOtp,
+  
+      };
+      dispatch(getOtp(request));
+      
+    } 
   });
+
+  useEffect(()=>{
+    if(stateOtp.data!=null||stateOtp.data!=undefined){
+      if (stateOtp.data.status='success') {
+        
+        setTimerEnd(true);
+        dispatch(setIsPopupIncorectOtp(false));
+        navigation.navigate('FormRegistration');
+      }
+      else{
+        setTimerEnd(true)
+        dispatch(setIsPopupIncorectOtp(true))
+      }
+    }
+    
+  },[stateOtp])
   const handleDeleteOtp = item => {
     setOtp(otp.slice(0, -1));
   };
@@ -71,6 +91,7 @@ const OTP = ({navigation}) => {
     setTimerEnd(false);
   };
   const handleTryAgain = () => {
+    setOtp([])
     dispatch(setIsPopupIncorectOtp(false));
   };
   return (
@@ -82,7 +103,13 @@ const OTP = ({navigation}) => {
         textButton={'Coba Lagi'}
         onPressButton={handleTryAgain}
       />
-      <PopUpError visible={stateGlobal.isPopupRequestTimedOut} onPressButton={()=>dispatch(setIsPopupRequestTimedOut(false))} ImagePopUp={ImageTimerRuns} value={'Oops! Waktu anda Habis'} textButton={'Coba Nanti'}/>
+      <PopUpError
+        visible={stateGlobal.isPopupRequestTimedOut}
+        onPressButton={() => dispatch(setIsPopupRequestTimedOut(false))}
+        ImagePopUp={ImageTimerRuns}
+        value={'Oops! Waktu anda Habis'}
+        textButton={'Coba Nanti'}
+      />
       <HeaderPages onPress={handleBack} />
       <ScrollView showsVerticalScrollIndicator={false}>
         <View style={styles.StyleTitle}>
@@ -150,14 +177,12 @@ const OTP = ({navigation}) => {
           <NumberKeyboard value={9} onPress={() => setOtp([...otp, 9])} />
         </View>
         <View style={styles.ViewNumberKeyboard}>
-        <View style={styles.ButtonKeyboardBlank}/>
+          <View style={styles.ButtonKeyboardBlank} />
           <NumberKeyboard value={0} onPress={() => setOtp([...otp, 0])} />
           <TouchableOpacity onPress={handleDeleteOtp}>
             <CancelKeyboardOtp style={styles.IconCancelKeyboardOtp} />
           </TouchableOpacity>
         </View>
-
-        
       </ScrollView>
     </View>
   );
@@ -236,15 +261,14 @@ const styles = StyleSheet.create({
     fontSize: 12,
     fontWeight: '400',
   },
-  ButtonKeyboardBlank:{
-   
-      backgroundColor: 'transparent',
-      width: 60,
-      height: 60,
-      alignItems: 'center',
-      justifyContent: 'center',
-      borderRadius: 100,
-      marginHorizontal: 27,
-      marginBottom: 25,
-  }
+  ButtonKeyboardBlank: {
+    backgroundColor: 'transparent',
+    width: 60,
+    height: 60,
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderRadius: 100,
+    marginHorizontal: 27,
+    marginBottom: 25,
+  },
 });

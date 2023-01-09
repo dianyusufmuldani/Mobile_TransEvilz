@@ -8,14 +8,7 @@ import {
   ScrollView,
   Image,
 } from 'react-native';
-import {SelectList} from 'react-native-dropdown-select-list';
-// import IconIndonesia from '../../../../assets/transferCard/openmoji_flag-indonesia.svg';
-import IconUSA from '../../../../assets/transferCard/openmoji_flag-united-states.svg';
 import IconArrowDown from '../../../../assets/transferCard/icon_arrow_down.svg';
-// import IconAustralia from '../../../../assets/registration/openmoji_flag-australia.svg'
-// import IconJapan from '../../../../assets/registration/openmoji_flag-japan.svg'
-// import IconSingapore from '../../../../assets/registration/openmoji_flag-singapore.svg'
-// import IconUS from '../../../../assets/registration/openmoji_flag-united-states'
 import Singapore from '../../../../assets/transferCard/openmoji_flag-singapore.png';
 import Indonesia from '../../../../assets/transferCard/openmoji_flag-indonesia.png';
 import UnitedStates from '../../../../assets/transferCard/openmoji_flag-united-states.png';
@@ -27,59 +20,53 @@ const TextFieldCurrency = ({
   value,
   onChangeText,
   keyboardType,
-  IconCurrency,
 }) => {
   const [hideSelectList, setHideSelectList] = useState(false);
   const [country, setCountry] = useState(UnitedStates);
-  const handleAustralia = ()=>{
+  const handleAustralia = () => {
     setCountry(Australia);
     setHideSelectList(!hideSelectList);
   };
-  const handleIndonesia = ()=>{
-    setCountry(Indonesia);
-    setHideSelectList(!hideSelectList);
-  };
-  const handleJapan = ()=>{
+
+  const handleJapan = () => {
     setCountry(Japan);
     setHideSelectList(!hideSelectList);
   };
-  const handleSingapore = ()=>{
+  const handleSingapore = () => {
     setCountry(Singapore);
     setHideSelectList(!hideSelectList);
   };
-  const handleUS = ()=>{
+  const handleUS = () => {
     setCountry(UnitedStates);
     setHideSelectList(!hideSelectList);
   };
-  useEffect(()=>{
-    console.log('isi Field Negara', country)
-  })
+  useEffect(() => {
+    console.log('isi Field Negara', country);
+  });
 
   return (
     <>
-
-    <View style={styles.Container}>
+      <View style={styles.Container}>
         <View style={styles.ContainerTextInput}>
-
-         <TouchableOpacity  style={styles.Country} onPress={()=>setHideSelectList(!hideSelectList)}>
+          <TouchableOpacity
+            style={styles.Country}
+            onPress={() => setHideSelectList(!hideSelectList)}>
             {/* <TextInput value={country} editable={false}/> */}
             <Image source={country} style={{width: 30, height: 30}} />
             {/* <IconIndonesia/> */}
 
-
-          <View style={{marginLeft:10}}>
+            <View style={{marginLeft: 10}}>
               <IconArrowDown />
             </View>
           </TouchableOpacity>
 
-        <View style={styles.Currency}>
+          <View style={styles.Currency}>
             <TextInput
               placeholder={placeholder}
               value={value}
               onChangeText={onChangeText}
               keyboardType={keyboardType}
-
-          />
+            />
           </View>
         </View>
         {hideSelectList ? (
@@ -87,35 +74,30 @@ const TextFieldCurrency = ({
             <TouchableOpacity
               style={styles.ListCountry}
               onPress={handleAustralia}>
-                <Image source={Australia}/>
-    
+              <Image source={Australia} />
+
               <Text style={{paddingLeft: 10}}>Australia</Text>
             </TouchableOpacity>
 
-       <TouchableOpacity style={styles.ListCountry} onPress={handleJapan}>
-      
-              <Image source={Japan}/>
+            <TouchableOpacity style={styles.ListCountry} onPress={handleJapan}>
+              <Image source={Japan} />
               <Text style={{paddingLeft: 10}}>Jepang</Text>
             </TouchableOpacity>
 
-       
-       <TouchableOpacity style={styles.ListCountry} onPress={handleSingapore}>
-       <Image source={Singapore}/>
+            <TouchableOpacity
+              style={styles.ListCountry}
+              onPress={handleSingapore}>
+              <Image source={Singapore} />
               <Text style={{paddingLeft: 10}}>Singapore</Text>
             </TouchableOpacity>
 
             <TouchableOpacity style={styles.ListCountry} onPress={handleUS}>
-            <Image source={UnitedStates}/>
+              <Image source={UnitedStates} />
               <Text style={{paddingLeft: 10}}>United States of America</Text>
             </TouchableOpacity>
-
-        </ScrollView>) : (null)
-      }
-
-    </View>
-
-
-
+          </ScrollView>
+        ) : null}
+      </View>
     </>
   );
 };
@@ -159,5 +141,4 @@ const styles = StyleSheet.create({
     height: 40,
     borderRadius: 10,
   },
-
 });

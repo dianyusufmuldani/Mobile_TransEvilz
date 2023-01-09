@@ -3,6 +3,7 @@ import React, {useRef, useState} from 'react';
 import {View, StyleSheet, Text, Image} from 'react-native';
 import CountDownTimer from 'react-native-countdown-timer-hooks';
 import {useDispatch, useSelector} from 'react-redux';
+import CountDown from 'react-native-countdown-component';
 
 //Import Component
 import TextDefault from '../../components/atoms/textDefault';
@@ -12,9 +13,9 @@ import {Colours} from '../../helpers/colours';
 
 //Import Assets
 import ImageSuccess from '../../../assets/transactionSuccess/check_mark.png';
-import { setAccountNumber, setCountryDestination, setNameReceiver, setNominalTransferLocal } from '../../service/redux/reducer/transferSlice';
+import { setAccountNumberInternational, setCountryDestination, setNameReceiverInternational, setNominalDestination, setNominalIndonesia, setSwiftCode } from '../../service/redux/reducer/transferSlice';
 
-const TransactionSuccess = ({navigation}) => {
+const TransactionSuccessInternational = ({navigation}) => {
   const dispatch=useDispatch()
   const stateTransfer = useSelector(state => state.transfer);
   const refTimer = useRef();
@@ -25,11 +26,15 @@ const TransactionSuccess = ({navigation}) => {
     setTimerEnd(timerFlag);
     console.log('Timeout', timerEnd);
   };
+  
   const handleButtonFooter=()=>{
-    dispatch(setNominalTransferLocal(null))
-    dispatch(setNameReceiver(null))
-    dispatch(setAccountNumber(null))
-    navigation.navigate('Homepage')
+    dispatch(setNominalIndonesia(null))
+    dispatch(setNominalDestination(null))
+    dispatch(setCountryDestination('USD'))
+    dispatch(setNameReceiverInternational(null))
+    dispatch(setAccountNumberInternational(null))
+    dispatch(setSwiftCode(null))
+    navigation.goBack()
   }
 
   return (
@@ -66,21 +71,30 @@ const TransactionSuccess = ({navigation}) => {
             paddingHorizontal: 30,
           }}
         />
+        {/* <CountDown
+        until={10}
+        onFinish={() => alert('finished')}
+        onPress={() => alert('hello')}
+        size={20}
+      /> */}
         <View style={styles.ContainerPayment}>
           <View style={styles.ContainerTextDescription}>
             <TextDescriptionOnBoarding value={'Nama Penerima'} />
           </View>
-          <TextDefault value={stateTransfer.nameReceiver} />
+          <TextDefault value={stateTransfer.nameReceiverInternational} />
           <View style={styles.ContainerTextDescription}>
             <TextDescriptionOnBoarding value={'Jenis Bank'} />
           </View>
-          <TextDefault value={stateTransfer.bankReceiver} />
-        
+          <TextDefault value={stateTransfer.bankReceiverInternational} />
+          <View style={styles.ContainerTextDescription}>
+            <TextDescriptionOnBoarding value={'Tipe Transaksi'} />
+          </View>
+          <TextDefault value={`IDR ke ${stateTransfer.countryDestination}`} />
           
           <View style={styles.ContainerTextDescription}>
             <TextDescriptionOnBoarding value={'No. Rekening'} />
           </View>
-          <TextDefault value={stateTransfer.accountNumber} />
+          <TextDefault value={stateTransfer.accountNumberInternational} />
           <View style={styles.ContainerTextDescription}>
             <TextDescriptionOnBoarding value={'Virtual Akun'} />
           </View>
@@ -89,7 +103,7 @@ const TransactionSuccess = ({navigation}) => {
             <TextDescriptionOnBoarding value={'Total'} />
           </View>
           <Text style={styles.TextCount}>
-            {stateTransfer.totalTransactionLocal}
+            {stateTransfer.totalTransactionInternational}
           </Text>
         </View>
       </View>
@@ -104,7 +118,7 @@ const TransactionSuccess = ({navigation}) => {
   );
 };
 
-export default TransactionSuccess;
+export default TransactionSuccessInternational;
 const styles = StyleSheet.create({
   Container: {
     flex: 1,

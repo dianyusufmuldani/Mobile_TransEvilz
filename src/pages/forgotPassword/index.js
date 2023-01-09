@@ -43,26 +43,21 @@ const ForgotPassword = ({navigation}) => {
     return true;
   };
   useEffect(() => {
-    console.log('isicheck email', checkValidEmail)
-    
-     if(email==null||email==''){
+    console.log('isicheck email', checkValidEmail);
+
+    if (email == null || email == '') {
       setIsButton(false);
-      setCheckValidEmail(false)
+      setCheckValidEmail(false);
+    } else if (email == 'client@gmail.com') {
+      setIsButton(false);
+    } else if (checkValidEmail == false && email != '') {
+      console.log('isi Isbutton', isButton);
+      setIsButton(true);
+    } else {
+      setIsButton(false);
+      setCheckValidEmail(true);
     }
-    else if(email=='client@gmail.com'){
-      setIsButton(false)
-    }
-      else if (checkValidEmail == false&&email!='') {
-        console.log('isi Isbutton',isButton);
-        setIsButton(true);
-      } 
-      else {
-        setIsButton(false);
-       setCheckValidEmail(true)
-      }
-    
-  
-    
+
     BackHandler.addEventListener('hardwareBackPress', backAction);
     return () =>
       BackHandler.removeEventListener('hardwareBackPress', backAction);
@@ -108,20 +103,17 @@ const ForgotPassword = ({navigation}) => {
             placeholder={'Email'}
             value={email}
             onChangeText={handleCheckValidEmail}
-          
           />
-          {checkValidEmail? (
+          {checkValidEmail ? (
             <Text style={styles.TextWrong}>Format email salah</Text>
-          ) : (
-            (null)
+          ) : null}
+          {email != 'client@gmail.com' ? null : (
+            <NegatifCase text={'Email tidak terdaftar'} value={''} />
           )}
-          {email!='client@gmail.com' ?
-(null):( <NegatifCase text={'Email tidak terdaftar'} value={''} />)
-}
-          <NegatifCase value={email} text={'Anda harus mengisi bagian ini'}/>
+          <NegatifCase value={email} text={'Anda harus mengisi bagian ini'} />
         </View>
       </ScrollView>
-      <View style={styles.ContainerKirim}>  
+      <View style={styles.ContainerKirim}>
         <BlueButton value={'Kirim'} onPress={handleKirim} isButton={isButton} />
       </View>
     </View>

@@ -1,23 +1,24 @@
 import {createSlice} from '@reduxjs/toolkit';
 
+
 const initialState = {
-  data: '',
+  data: null,
   adminLocal: 5000,
   nominalLocal: null,
   totalTransactionLocal: 0,
   nameReceiver: null,
   accountNumber: null,
   bankReceiver: null,
-  adminInternational:100000,
-  nominalIndonesia:null,
-  nominalDestination:'',
-  countryDestination:'USD',
-  totalTransactionInternational:null,
-  bankReceiverInternational:null,
-  nameReceiverInternational:null,
-  accountNumberInternational:null,
-  kursInternational:15677,
-  swiftCode:null
+  adminInternational: 100000,
+  nominalIndonesia: null,
+  nominalDestination: '',
+  countryDestination: 'USD',
+  totalTransactionInternational: null,
+  bankReceiverInternational: null,
+  nameReceiverInternational: null,
+  accountNumberInternational: null,
+  kursInternational: 15677,
+  swiftCode: null,
 };
 export const TransferSlice = createSlice({
   name: 'transfer',
@@ -65,10 +66,24 @@ export const TransferSlice = createSlice({
     setBankReceiverInternational: (state, action) => {
       state.bankReceiverInternational = action.payload;
     },
+    setTransfer: (state, action) => {
+      console.log('Masuk Transfer');
+      state.data = action.payload;
+    },
   },
 });
 
+// export const getTransfer = request => async dispatch => {
+//   try {
+//     const response = await hitTransfer(request);
+//     dispatch(setTransfer(response.data));
+//   } catch (err) {
+//     throw new Error(err);
+//   }
+// };
+
 export const {
+  setTransfer,
   setNominalTransferLocal,
   setBankReceiver,
   setTotalTransactionLocal,
@@ -82,6 +97,6 @@ export const {
   setSwiftCode,
   setAccountNumberInternational,
   setNameReceiverInternational,
-  setBankReceiverInternational
+  setBankReceiverInternational,
 } = TransferSlice.actions;
 export default TransferSlice.reducer;

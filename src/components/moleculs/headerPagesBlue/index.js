@@ -4,7 +4,7 @@ import BackIcon from '../../../../assets/otp/arrow-left.svg';
 const HeaderPagesBlue = ({onPress, hideShowTitle, value, showBackButton}) => {
   return (
     <View style={styles.Container}>
-      {showBackButton == false ? (
+      {showBackButton === false ? (
         <View style={styles.ContainerBlank} />
       ) : (
         <TouchableOpacity onPress={onPress}>
@@ -12,7 +12,7 @@ const HeaderPagesBlue = ({onPress, hideShowTitle, value, showBackButton}) => {
         </TouchableOpacity>
       )}
 
-      {hideShowTitle == true ? (
+      {hideShowTitle === true ? (
         <Text style={styles.TextStyle}>{value}</Text>
       ) : null}
       <View style={styles.ContainerBlank} />

@@ -25,7 +25,7 @@ const OnBoarding = ({navigation}) => {
       const slide = Math.ceil(
         nativeEvent.contentOffset.x / nativeEvent.layoutMeasurement.width,
       );
-      if (slide != imgActive) {
+      if (slide !== imgActive) {
         setImgActive(slide);
       }
     }

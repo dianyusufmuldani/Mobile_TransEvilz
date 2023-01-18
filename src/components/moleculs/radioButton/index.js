@@ -23,7 +23,7 @@ const RadioButton = ({Value1, Value2, TextRadio1, TextRadio2, selected}) => {
         <View style={styles.Container}>
           <TouchableOpacity onPress={handleRadio1}>
             <View style={styles.ContainerRadio}>
-              {isRadio1 == true ? <View style={styles.RadioOn} /> : null}
+              {isRadio1 === true ? <View style={styles.RadioOn} /> : null}
             </View>
           </TouchableOpacity>
           <Text style={styles.TextRadio}>{TextRadio1}</Text>
@@ -32,7 +32,7 @@ const RadioButton = ({Value1, Value2, TextRadio1, TextRadio2, selected}) => {
         <View style={styles.Container}>
           <TouchableOpacity onPress={handleRadio2}>
             <View style={styles.ContainerRadio}>
-              {isRadio2 == true ? <View style={styles.RadioOn} /> : null}
+              {isRadio2 === true ? <View style={styles.RadioOn} /> : null}
             </View>
           </TouchableOpacity>
           <Text style={styles.TextRadio}>{TextRadio2}</Text>

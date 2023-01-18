@@ -1,5 +1,6 @@
 import React from 'react';
 import {TextInput, View, StyleSheet} from 'react-native';
+import NegatifCase from '../../atoms/negatifCaseTextInput';
 
 const TextField = ({
   placeholder,
@@ -11,13 +12,20 @@ const TextField = ({
   onContentSizeChange,
   style,
   numberOfLines,
-  NegatifCase,
   editable,
   maxLength,
+  isNegatifCase1,
+  isNegatifCase2,
+  textNegatifCase1,
+  textNegatifCase2,
+  textNegatifCaseBlank
 }) => {
   return (
     <>
-      <View style={styles.Container}>
+      <View
+        style={value === '' ||
+        isNegatifCase1===true ||
+        isNegatifCase2===true ? styles.ContainerError : styles.Container}>
         <TextInput
           placeholder={placeholder}
           value={value}
@@ -32,9 +40,15 @@ const TextField = ({
           maxLength={maxLength}
         />
       </View>
-      {/* {value == '' ? (
-        <Text style={styles.NegatifCase}>{NegatifCase}</Text>
-      ) : null} */}
+      <NegatifCase text={textNegatifCaseBlank} value={value} />
+   
+    {isNegatifCase1 ?
+     <NegatifCase text={textNegatifCase1} value={''} />:null
+    }
+    {isNegatifCase2 ?
+     <NegatifCase text={textNegatifCase2} value={''} />:null
+    }
+
     </>
   );
 };
@@ -46,10 +60,20 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     width: '100%',
     paddingLeft: 10,
+    borderWidth: 1,
+    borderColor: '#F1F7FF',
   },
   NegatifCase: {
     fontSize: 14,
     fontWeight: '400',
     color: '#DC3328',
+  },
+  ContainerError: {
+    backgroundColor: '#F1F7FF',
+    borderRadius: 10,
+    width: '100%',
+    paddingLeft: 10,
+    borderWidth: 1,
+    borderColor: 'red',
   },
 });

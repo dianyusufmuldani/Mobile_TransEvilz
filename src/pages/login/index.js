@@ -22,8 +22,9 @@ import TextFieldPassword from '../../components/moleculs/textFieldPassword';
 import {Colours} from '../../helpers/colours';
 import TextFieldEmail from '../../components/moleculs/textFieldEmail';
 import PopUpError from '../../components/organism/popupError';
-import {getUsers} from '../../service/redux/reducer/usersSlice';
+import {getLogin, getUsers, setLogin} from '../../service/redux/reducer/usersSlice';
 import {
+  setIsLoading,
   setIsPopupError3xTest,
   setIsPopupInternetNotStable,
 } from '../../service/redux/reducer/globalSlice';
@@ -32,6 +33,9 @@ import NegatifCase from '../../components/atoms/negatifCaseTextInput';
 //Import Assets
 import ImageFingerprint from '../../../assets/login/Fingerprint.png';
 import ImagePopupError3x from '../../../assets/popup/popup_error.png';
+import ToastFailed from '../../components/moleculs/toastFailed';
+import ToastedFailed from '../../components/moleculs/toastFailed';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const Login = ({navigation}) => {
   const [isButton, setIsButton] = useState(false);
@@ -40,6 +44,8 @@ const Login = ({navigation}) => {
   const [checkValidEmail, setCheckValidEmail] = useState(false);
   const [checkValidPassword, setCheckValidPassword] = useState(false);
   const [isPopup3x, setIsPopup3x] = useState(false);
+  const [isToastedNotRegistered, setIsToastedNotRegistered]=useState(false)
+  const [counterLogin, setCounterLogin]=useState(0)
   const stateUsers = useSelector(state => state.users);
   const stateGlobal = useSelector(state => state.global);
   const dispatch = useDispatch();
@@ -49,8 +55,10 @@ const Login = ({navigation}) => {
     setEmail(text);
     if (re.test(text) || regex.test(text)) {
       setCheckValidEmail(false);
+      dispatch(setLogin(null))
     } else {
       setCheckValidEmail(true);
+      dispatch(setLogin(null))
     }
   };
   const handleCheckValidPassword = text => {
@@ -69,53 +77,103 @@ const Login = ({navigation}) => {
     BackHandler.exitApp();
     return true;
   };
-  useEffect(() => {
-    // const request = {};
-    // dispatch(getUsers(request));
-    console.log('cek state users', stateUsers.data);
-  }, []);
 
   useEffect(() => {
-    if (email == null || email == '') {
+    if (email === null || email === '') {
       setIsButton(false);
       setCheckValidEmail(false);
-    } else if (password == null || password == '') {
+    } else if (password === null || password === '') {
       setIsButton(false);
       setCheckValidPassword(false);
       console.log('isiCheck Email OKE', checkValidEmail);
-    } else if (email == 'client@gmail.com') {
+    } else if (email === 'client@gmail.com') {
       setIsButton(false);
-    } else if (checkValidEmail == false && checkValidPassword == false) {
+    } 
+      else if(counterLogin===3){
+        setIsButton(false)
+      }
+      else if (checkValidEmail === false && checkValidPassword === false) {
       setIsButton(true);
-      //   const request = {};
-      // dispatch(getUsers(request))
     } else {
       setIsButton(false);
     }
     BackHandler.addEventListener('hardwareBackPress', backAction);
     // return () =>
     //   BackHandler.removeEventListener('hardwareBackPress', backAction);
-  });
+  }, [email, password]);
   const handleRegistrasi = () => {
     navigation.navigate('Registration');
   };
   const handleLogin = () => {
-    navigation.navigate('HomepageNav');
+    
+    dispatch(setIsLoading(true));
+    const request = {
+      email: email,
+      password: password,
+    };
+    dispatch(getLogin(request));
+
+    
   };
+
+  useEffect(()=>{
+    console.log('isi coba', stateUsers)
+    console.log('counter', counterLogin);
+  })
+  useEffect(() => {
+    
+    console.log('stateUsers from pages Login', stateUsers.data);
+
+    if (stateUsers.login != null || stateUsers.login != undefined||stateUsers.data!=null||stateUsers.data!=undefined) {
+      dispatch(setIsLoading(false));
+      if (stateUsers.login === 200) {
+        if(stateUsers.data!==null){
+           if (stateUsers.data.user.userPin==false){
+            console.log('isi state users s', stateUsers.data.user.accessToken);
+            navigation.navigate('CreatePIN');
+        }
+        else {
+          navigation.navigate('HomepageNav');
+          }
+      } }
+      else if (stateUsers.login === 400) {
+        dispatch(setLogin(null))
+        setCounterLogin(counterLogin+1)
+        }
+      }
+  }, [stateUsers]);
+  useEffect(()=>{
+    if(counterLogin===0){
+    }
+    else if(counterLogin<3){
+      console.log('Login gagal nambah')
+      setIsToastedNotRegistered(true)
+    }
+    else{
+      dispatch(setIsPopupError3xTest(true))
+      console.log('Terblokir')
+      setIsButton(false)
+      setTimeout(() => {
+        setCounterLogin(0)
+        setIsButton(true)
+        }, 60000);
+    }
+  },[counterLogin])
+
+
+  // const getToken = async () => {
+  //   if (response && response.data.accessToken && stateUsers.data.user.accessToken) {
+  //   const token = await AsyncStorage.setItem('token', stateUsers.data.user.accessToken);
+  //   console.log('get token on notif ', token);
+  //   }
+  // };
   const handleForgotPassword = () => {
     navigation.navigate('ForgotPassword');
   };
   return (
-    <>
-      <ScrollView style={styles.Container}>
-        <PopUpError
-          visible={isPopup3x}
-          value={
-            'Kata sandi yang anda masukkan sudah 3 kali salah, Coba setelah 10 menit '
-          }
-          ImagePopUp={ImagePopupError3x}
-          textButton={'Coba Nanti'}
-        />
+    <View  style={styles.Container}>
+      <ScrollView>
+        <ToastedFailed visible={isToastedNotRegistered} onPressModal={()=>{setIsToastedNotRegistered(false), dispatch(setLogin(null))}} onPressButton={()=>{setIsToastedNotRegistered(false), dispatch(setLogin(null))}} width={'70%'} height={39} textToasted={'Email anda tidak terdaftar'}/>
         <PopUpError
           visible={stateGlobal.isPopupError3xTest}
           onPressButton={() => dispatch(setIsPopupError3xTest(false))}
@@ -153,20 +211,20 @@ const Login = ({navigation}) => {
               <TextDefault value={'Email '} />
               <RequirementSymbols />
             </View>
+
             <TextFieldEmail
               placeholder={'Email'}
               value={email}
               onChangeText={handleCheckValidEmail}
               autoCapitalize={'none'}
               keyboardType={'email-address'}
+              valueNegatifCase={email}
+              validValue={checkValidEmail}
+              textNegatifCase3={'Format email salah'}
+              textNegatifCaseBlank={'Anda harus mengisi bagian ini'}
+              isNegatifCase1={email==='admin@gmail.com'}
+              textNegatifCase1={'Email tidak terdaftar'}
             />
-            {checkValidEmail ? (
-              <Text style={styles.TextWrong}>Format email salah</Text>
-            ) : null}
-            <NegatifCase value={email} text={'Anda harus mengisi bagian ini'} />
-            {email != 'client@gmail.com' ? null : (
-              <NegatifCase text={'Email tidak terdaftar'} value={''} />
-            )}
           </View>
 
           <View style={styles.FormLogin}>
@@ -174,21 +232,27 @@ const Login = ({navigation}) => {
               <TextDefault value={'Kata sandi '} />
               <RequirementSymbols />
             </View>
-            <TextFieldPassword
-              placeholder={'Kata sandi'}
-              onChangeText={handleCheckValidPassword}
-              value={password}
-              maxLength={16}
-            />
-            {checkValidPassword == true && password != '' ? (
-              <Text style={styles.TextWrong}>
-                Kata sandi harus berisi huruf besar, angka dan simbol (@ * # &)
-              </Text>
-            ) : null}
-            <NegatifCase
-              value={password}
-              text={'Anda harus mengisi bagian ini'}
-            />
+            <View
+              style={password === '' ? styles.ContainerTextInputError : null}>
+              <View
+                style={
+                  checkValidPassword === false
+                    ? null
+                    : styles.ContainerTextInputError
+                }>
+                <TextFieldPassword
+                  placeholder={'Kata sandi'}
+                  onChangeText={handleCheckValidPassword}
+                  value={password}
+                  maxLength={16}
+                  blankValue={password}
+                  validValue={checkValidPassword}
+                  textNegatifCaseBlank={'Anda harus mengisi bagian ini'}
+                  textNegatifCase3={'Kata sandi harus berisi huruf besar, angka dan simbol (@ * # &)'}
+                />
+              </View>
+            </View>
+
             <View style={{alignSelf: 'flex-end'}}>
               <TextButtonBlue
                 value={'Lupa Kata sandi ?'}
@@ -201,7 +265,7 @@ const Login = ({navigation}) => {
       <View style={styles.ButtonLogin}>
         <BlueButton value={'Masuk'} onPress={handleLogin} isButton={isButton} />
       </View>
-    </>
+      </View>
   );
 };
 

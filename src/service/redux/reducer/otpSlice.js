@@ -1,15 +1,16 @@
-import {createSlice} from '@reduxjs/toolkit';
-import { hitOtp } from '../../api';
+import {createSlice, createAsyncThunk} from '@reduxjs/toolkit';
+import {hitOtp} from '../../api';
+import axios from 'axios';
 
 const initialState = {
-  data: null,
-  otp: null,
+  data: '',
+  // otp: null,
 };
 export const OtpSlice = createSlice({
   name: 'otp',
   initialState,
   reducers: {
-    setOtp: (state, action) => {
+    setOtpSlice: (state, action) => {
       state.data = action.payload;
       console.log('sukses otp slice');
     },
@@ -19,12 +20,12 @@ export const OtpSlice = createSlice({
 export const getOtp = request => async dispatch => {
   try {
     const response = await hitOtp(request);
-    dispatch(setOtp(response.data));
+    dispatch(setOtpSlice(response.status));
   } catch (err) {
-    throw new Error(err);
+    // throw new Error(err);
+    dispatch(setOtpSlice(err.response.status));
   }
 };
 
-
-export const {setOtp} = OtpSlice.actions;
+export const {setOtpSlice} = OtpSlice.actions;
 export default OtpSlice.reducer;

@@ -15,6 +15,7 @@ import {Colours} from '../../helpers/colours';
 import ImageBgTransaction from '../../../assets/transaction/bgTransaction.png';
 import IconIndonesia from '../../../assets/registration/openmoji_flag-indonesia.svg';
 import HeaderPagesBlue from '../../components/moleculs/headerPagesBlue';
+import { formatCurrencyWithoutComma } from '../../helpers/formatter/currencyFormatter';
 
 const TransactionMethod = ({navigation}) => {
   const dispatch = useDispatch();
@@ -29,7 +30,7 @@ const TransactionMethod = ({navigation}) => {
     {key: '5', value: 'BNI'},
   ];
   useEffect(() => {
-    if (selected == null || selected == '') {
+    if (selected === null || selected === '') {
       dispatch(setIsButtonMethodLocal(false));
     } else {
       dispatch(setIsButtonMethodLocal(true));
@@ -55,7 +56,7 @@ const TransactionMethod = ({navigation}) => {
           </View>
           <Text style={styles.TextTotal}>Total Transaksi</Text>
           <Text style={styles.TextIDR}>
-            {stateTransfer.totalTransactionLocal} IDR
+            {formatCurrencyWithoutComma(stateTransfer.totalTransactionLocal)}
           </Text>
         </View>
         <TextDefault value={'Metode Pembayaran'} />
@@ -98,7 +99,6 @@ const styles = StyleSheet.create({
     width: '90%',
   },
 
- 
   ContainerSelanjutnya: {
     width: '90%',
     alignSelf: 'center',
@@ -116,7 +116,7 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     justifyContent: 'center',
     marginBottom: 50,
-    marginTop:10
+    marginTop: 10,
     // top:-135,
   },
   TextFormatCurrencyCountry: {

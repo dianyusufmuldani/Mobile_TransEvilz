@@ -17,22 +17,29 @@ import {setIsPopupCreatePinSuccess} from '../../service/redux/reducer/globalSlic
 //Import Assets
 import IconInfo from '../../../assets/createPIN/info.svg';
 import ImageSuccess from '../../../assets/popup/Completed_successfully.png';
+import { getPin } from '../../service/redux/reducer/pinSlice';
+import ToastedSuccess from '../../components/moleculs/toastSuccess';
+// import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const CreatePIN = ({navigation}) => {
   const [pin, setPin] = useState(null);
   const [isButton, setIsButton] = useState(false);
   const [confirmPin, setConfirmPin] = useState(null);
+  const [isToastedSuccesPin, setIsToastedSuccessPin]=useState(false)
   const stateGlobal = useSelector(state => state.global);
+  const stateUsers=useSelector(state=>state.users)
+  const statePin=useSelector(state=>state.pin)
   const dispatch = useDispatch();
   useEffect(() => {
-    if (pin == null || pin == undefined) {
+    console.log('isi state Users di pages PIN', stateUsers)
+    if (pin === null || pin === undefined) {
       setIsButton(false);
-    } else if (confirmPin == null || confirmPin == undefined) {
+    } else if (confirmPin === null || confirmPin === undefined) {
       setIsButton(false);
-    } else if (pin == '' || confirmPin == '') {
+    } else if (pin === '' || confirmPin === '') {
       setIsButton(false);
-    } else if (pin.length == 6) {
-      if (pin == confirmPin) {
+    } else if (pin.length === 6) {
+      if (pin === confirmPin) {
         setIsButton(true);
       } else {
         setIsButton(false);
@@ -42,18 +49,45 @@ const CreatePIN = ({navigation}) => {
     }
   });
   const handleKirim = () => {
-    dispatch(setIsPopupCreatePinSuccess(true));
+    const request={pin:Number(pin)}
+    dispatch(getPin(request))
+    
   };
+
+  useEffect(()=>{
+    if(statePin.pinRedux!==null){
+      if(statePin.pinRedux===201){
+          console.log('success pin')
+          setIsToastedSuccessPin(true)
+      }
+      else if(statePin.pinRedux===401){
+        console.log('failed pin 401')
+      }
+      else{
+        console.log('failed pin any')
+      }
+    }
+
+  },[statePin])
   const handleCancelPopUp = () => {
     dispatch(setIsPopupCreatePinSuccess(false));
   };
   const handleLanjutkanLogin = () => {
     dispatch(setIsPopupCreatePinSuccess(false));
-
     navigation.navigate('Login');
   };
+
+  // useEffect(()=>{
+  //   if(stateUsers.data!==null){
+  //   if(stateUsers.data.user.userPin!==false){
+  //     setIsToastedSuccessPin(true)
+  //     // dispatch(setIsPopupCreatePinSuccess(true));
+  //   }
+  // }
+  // },[stateUsers.data])
   return (
     <View style={styles.Container}>
+      <ToastedSuccess visible={isToastedSuccesPin} onPressButton={()=>setIsToastedSuccessPin(false)} onPressModal={()=>setIsToastedSuccessPin(false)} textToasted={'Pin Evilz Berhasil disimpan'} height={40} width={'70%'}/>
       <PopUp
         visible={stateGlobal.isPopupCreatePinSuccess}
         onPressCancel={handleCancelPopUp}
@@ -90,8 +124,9 @@ const CreatePIN = ({navigation}) => {
             onChangeText={value => setPin(value)}
             maxLength={6}
             keyboardType={'numeric'}
+            textNegatifCaseBlank={'Anda harus mengisi bagian ini'}
           />
-          <NegatifCase text={'Anda harus mengisi bagian ini'} value={pin} />
+        
         </View>
         <View style={styles.FormTextInput}>
           <View style={{flexDirection: 'row'}}>
@@ -104,16 +139,10 @@ const CreatePIN = ({navigation}) => {
             maxLength={6}
             keyboardType={'numeric'}
             value={confirmPin}
+            textNegatifCaseBlank={'Anda harus mengisi bagian ini'}
+            isNegatifCase1={pin!==confirmPin&&confirmPin!==''&&confirmPin!==null}
+            textNegatifCase1={'Pin tidak sama'}
           />
-          <NegatifCase
-            text={'Anda harus mengisi bagian ini'}
-            value={confirmPin}
-          />
-          {pin == confirmPin ||
-          confirmPin == null ||
-          confirmPin == '' ? null : (
-            <NegatifCase text={'Pin tidak sama'} value={''} />
-          )}
         </View>
       </View>
       <View style={styles.ButtonKirim}>

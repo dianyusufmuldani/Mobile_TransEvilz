@@ -2,6 +2,7 @@ import {createSlice} from '@reduxjs/toolkit';
 
 const initialState = {
   data: '',
+  isLoading: false,
   isPopupIncorectOtp: false,
   isPopupSuccessFormRegistration: false,
   isPopupError3xTest: false,
@@ -17,11 +18,15 @@ const initialState = {
   isButtonTransferInternational: false,
   isPopupAccountNumberNotFound: false,
   isPopupPinInvalid: false,
+  isPopupErrorDate: false,
 };
 export const GlobalSlice = createSlice({
   name: 'global',
   initialState,
   reducers: {
+    setIsLoading: (state, action) => {
+      state.isLoading = action.payload;
+    },
     setIsPopupIncorectOtp: (state, action) => {
       state.isPopupIncorectOtp = action.payload;
     },
@@ -39,6 +44,9 @@ export const GlobalSlice = createSlice({
     },
     setIsPopupRequestTimedOut: (state, action) => {
       state.isPopupRequestTimedOut = action.payload;
+    },
+    setIsPopupErrorDate: (state, action) => {
+      state.isPopupErrorDate = action.payload;
     },
     setIsButtonRegistration: (state, action) => {
       console.log('tes redicer button');
@@ -70,6 +78,8 @@ export const GlobalSlice = createSlice({
 });
 
 export const {
+  setIsPopupErrorDate,
+  setIsLoading,
   setIsPopupIncorectOtp,
   setIsButtonFormRegistration,
   setIsButtonRegistration,

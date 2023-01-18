@@ -16,23 +16,46 @@ import {Colours} from '../../helpers/colours';
 //Import Assets
 import ImageGrafik from '../../../assets/homepage/image_analytics.png';
 import IconAustralia from '../../../assets/registration/openmoji_flag-australia.svg';
-import { useDispatch } from 'react-redux';
-import { setCountryDestination } from '../../service/redux/reducer/transferSlice';
+import {useDispatch, useSelector} from 'react-redux';
+import {
+  getTransfer,
+  setCountryDestination,
+} from '../../service/redux/reducer/transferSlice';
+import {getLogin} from '../../service/redux/reducer/usersSlice';
+import ImageUser from '../../../assets/user/kakashi.jpg';
 
 const Homepage = ({navigation}) => {
-  const dispatch=useDispatch();
+  const dispatch = useDispatch();
+  const stateTransfer = useSelector(state => state.transfer);
+  const stateUsers = useSelector(state => state.users);
   const handleBankAccountButton = () => {
-    dispatch(setCountryDestination(null))
+    dispatch(setCountryDestination(null));
     navigation.navigate('TransferCard');
   };
-  const handleButtonTransactionInternational=()=>{
-    dispatch(setCountryDestination('USD'))
-    navigation.navigate('TransferCardInternational')
-  }
+  const handleButtonTransactionInternational = () => {
+
+
+    dispatch(setCountryDestination('USD'));
+    navigation.navigate('TransferCardInternational');
+  };
   const backAction = () => {
     BackHandler.removeEventListener();
     return true;
   };
+
+  // useEffect(()=>{
+  //   const request = {
+  //     email,
+  //     password
+  //   };
+  // dispatch(getLogin(request))
+  // },[])
+
+  useEffect(() => {
+    // const request={}
+    // dispatch(getTransfer(request))
+    console.log('isi State Transfer', stateUsers.data.accessToken);
+  }, []);
   useEffect(() => {
     BackHandler.addEventListener('hardwareBackPress', backAction);
     // return () =>
@@ -43,10 +66,27 @@ const Homepage = ({navigation}) => {
       <ScrollView>
         <View style={styles.CardHeader}>
           <View style={styles.ContainerHeader}>
-            <Text style={styles.TitleHomePage}>Hai, Dinda Salsabila</Text>
-            <Text style={styles.TextGreeting}>
-              Selamat Datang di TransEvilz
-            </Text>
+            <View
+              style={{
+                flexDirection: 'row',
+                alignItems: 'center',
+                justifyContent: 'space-between',
+              }}>
+              <View>
+                <Text style={styles.TitleHomePage}>
+                  Hai, {stateUsers.data.user.fullname}
+                </Text>
+                <Text style={styles.TextGreeting}>
+                  Selamat Datang di TransEvilz
+                </Text>
+              </View>
+              <Image source=
+              {{
+                uri: `https://robohash.org/${stateUsers.data.user.fullname}`
+              }}
+              style={{width: 40, height: 40, borderRadius: 40, bottom: -10}}
+              />
+            </View>
 
             <Text style={styles.TextMethod}>Transaksi Terakhir :</Text>
             <ScrollView horizontal showsHorizontalScrollIndicator={false}>
@@ -56,7 +96,7 @@ const Homepage = ({navigation}) => {
                   <Text style={styles.CurrencyToCurrency}>IDR ke AUD</Text>
                 </View>
                 <Text style={styles.TransactionBank}>BCC - 123412341234</Text>
-                <Text style={styles.CountCurrency}>Rp 1.000.000</Text>
+                <Text style={styles.CountCurrency}>Rp 1,000,000.00</Text>
               </View>
               <View style={styles.ContainerCardTransaction}>
                 <View style={styles.WrapperCardTransaction}>
@@ -64,7 +104,7 @@ const Homepage = ({navigation}) => {
                   <Text style={styles.CurrencyToCurrency}>IDR ke AUD</Text>
                 </View>
                 <Text style={styles.TransactionBank}>BCC - 123412341234</Text>
-                <Text style={styles.CountCurrency}>Rp 1.000.000</Text>
+                <Text style={styles.CountCurrency}>Rp 1,000,000.00</Text>
               </View>
               <View style={styles.ContainerCardTransaction}>
                 <View style={styles.WrapperCardTransaction}>
@@ -72,7 +112,7 @@ const Homepage = ({navigation}) => {
                   <Text style={styles.CurrencyToCurrency}>IDR ke AUD</Text>
                 </View>
                 <Text style={styles.TransactionBank}>BCC - 123412341234</Text>
-                <Text style={styles.CountCurrency}>Rp 1.000.000</Text>
+                <Text style={styles.CountCurrency}>Rp 1,000,000.00</Text>
               </View>
               <View style={styles.ContainerCardTransaction}>
                 <View style={styles.WrapperCardTransaction}>
@@ -80,7 +120,7 @@ const Homepage = ({navigation}) => {
                   <Text style={styles.CurrencyToCurrency}>IDR ke AUD</Text>
                 </View>
                 <Text style={styles.TransactionBank}>BCC - 123412341234</Text>
-                <Text style={styles.CountCurrency}>Rp 1.000.000</Text>
+                <Text style={styles.CountCurrency}>Rp 1,000,000.00</Text>
               </View>
               <View style={styles.ContainerCardTransaction}>
                 <View style={styles.WrapperCardTransaction}>
@@ -88,7 +128,7 @@ const Homepage = ({navigation}) => {
                   <Text style={styles.CurrencyToCurrency}>IDR ke AUD</Text>
                 </View>
                 <Text style={styles.TransactionBank}>BCC - 123412341234</Text>
-                <Text style={styles.CountCurrency}>Rp 1.000.000</Text>
+                <Text style={styles.CountCurrency}>Rp 1,000,000.00</Text>
               </View>
             </ScrollView>
           </View>

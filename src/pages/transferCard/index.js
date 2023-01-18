@@ -18,6 +18,7 @@ import {setIsButtonTransferLocal} from '../../service/redux/reducer/globalSlice'
 //Import Assets
 import IconIndonesia from '../../../assets/transferCard/openmoji_flag-indonesia.svg';
 import HeaderPagesBlue from '../../components/moleculs/headerPagesBlue';
+import { formatCurrencyWithoutComma } from '../../helpers/formatter/currencyFormatter';
 
 const TransferCard = ({navigation}) => {
   const stateTransfer = useSelector(state => state.transfer);
@@ -32,21 +33,21 @@ const TransferCard = ({navigation}) => {
     if (stateTransfer.nominalLocal <= 0) {
       dispatch(setTotalTransactionLocal(0));
       dispatch(setIsButtonTransferLocal(false));
-    } else if (stateTransfer.nominalLocal >= 5000) {
+    } else if (stateTransfer.nominalLocal >= 10000) {
       dispatch(setIsButtonTransferLocal(true));
       dispatch(
         setTotalTransactionLocal(
           Number(stateTransfer.nominalLocal) + Number(stateTransfer.adminLocal),
         ),
       );
-    } else if (stateTransfer.nominalLocal <= 5000) {
+    } else if (stateTransfer.nominalLocal <= 10000) {
       dispatch(setIsButtonTransferLocal(false));
       dispatch(
         setTotalTransactionLocal(
           Number(stateTransfer.nominalLocal) + Number(stateTransfer.adminLocal),
         ),
       );
-    } else if (stateTransfer.nominalLocal != '') {
+    } else if (stateTransfer.nominalLocal !== '') {
       dispatch(
         setTotalTransactionLocal(
           Number(stateTransfer.nominalLocal) + Number(stateTransfer.adminLocal),
@@ -71,7 +72,11 @@ const TransferCard = ({navigation}) => {
             <IconIndonesia />
           </View>
           <TextInput
-            style={styles.ContainerTextInputFlag}
+            style={
+              stateTransfer.nominalLocal === ''||stateTransfer.nominalLocal<10000&&stateTransfer.nominalLocal!==null
+                ? styles.ContainerTextInputFlagError
+                : styles.ContainerTextInputFlag
+            }
             placeholder={'IDR'}
             value={stateTransfer.nominalLocal}
             onChangeText={value =>
@@ -80,7 +85,12 @@ const TransferCard = ({navigation}) => {
             keyboardType={'number-pad'}
           />
         </View>
-
+        {stateTransfer.nominalLocal < 10000 && stateTransfer.nominalLocal != ''&&stateTransfer.nominalLocal!==null ?
+          <NegatifCase
+            value={''}
+            text={'Minimal nominal transaksi Rp 10.000'}
+          />
+         : null}
         <NegatifCase
           value={stateTransfer.nominalLocal}
           text={'Anda harus mengisi bagian ini'}
@@ -89,7 +99,7 @@ const TransferCard = ({navigation}) => {
         <View style={styles.TextNilaiKurs}>
           <TextDescriptionOnBoarding value={'Biaya Admin'} />
           <TextDescriptionOnBoarding
-            value={stateTransfer.adminLocal + ' IDR'}
+            value={formatCurrencyWithoutComma(stateTransfer.adminLocal)}
           />
         </View>
       </View>
@@ -101,7 +111,7 @@ const TransferCard = ({navigation}) => {
         </Text>
         <Text style={styles.TextTitleFooter}>Total Transaksi</Text>
         <Text style={styles.TextCurrencyFooter}>
-          {stateTransfer.totalTransactionLocal + ' IDR'}
+          {formatCurrencyWithoutComma(stateTransfer.totalTransactionLocal)}
         </Text>
 
         <View style={styles.ContainerSelanjutnya}>
@@ -185,5 +195,16 @@ const styles = StyleSheet.create({
     borderTopRightRadius: 10,
     borderBottomRightRadius: 10,
     width: '85%',
+    borderWidth: 1,
+    borderColor: '#F1F7FF',
+  },
+  ContainerTextInputFlagError: {
+    backgroundColor: '#F1F7FF',
+    height: 39,
+    borderTopRightRadius: 10,
+    borderBottomRightRadius: 10,
+    width: '85%',
+    borderWidth: 1,
+    borderColor: 'red',
   },
 });

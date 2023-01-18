@@ -22,41 +22,45 @@ import PopUp from '../../components/organism/popup';
 import ImageGirlPassword from '../../../assets/forgotPassword/girl_tries_password.png';
 import ImageSuccess from '../../../assets/popup/Completed_successfully.png';
 import NegatifCase from '../../components/atoms/negatifCaseTextInput';
+import { useDispatch, useSelector } from 'react-redux';
+import { getNewPassword, setNewPassword } from '../../service/redux/reducer/usersSlice';
 
 const CreateNewPassword = ({navigation}) => {
+  const dispatch=useDispatch()
+  const stateUsers=useSelector(state=>state.users)
   const [password, setPassword] = useState(null);
   const [confirmPassword, setConfirmPassword] = useState(null);
   const [isButton, setIsButton] = useState(false);
   const [isPopup, setIsPopup] = useState(false);
-  const [checkValidPassword, setCheckValidPassword] = useState(true);
-  const [checkMatchPassword, setCheckMatchPassword] = useState(true);
+  const [checkValidPassword, setCheckValidPassword] = useState(false);
+  const [checkMatchPassword, setCheckMatchPassword] = useState(false);
   const handleCheckValidPassword = text => {
     let re = /\S+@\S+\.\S+/;
     let regex =
       /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@*#&])[A-Za-z\d#$@!%&*?]{8,16}$/;
     setPassword(text);
     if (re.test(text) || regex.test(text)) {
-      setCheckValidPassword(true);
-    } else {
       setCheckValidPassword(false);
+    } else {
+      setCheckValidPassword(true);
     }
   };
 
   useEffect(() => {
-    console.log('isi Match', checkValidPassword);
-    if (password == null || password == '') {
+    console.log('isi state', stateUsers);
+    if (password === null || password === '') {
       setIsButton(false);
-      setCheckValidPassword(true);
+      setCheckValidPassword(false);
       console.log('isi IF');
-    } else if (confirmPassword == null || confirmPassword == '') {
+    } else if (confirmPassword === null || confirmPassword === '') {
       setIsButton(false);
-      setCheckMatchPassword(true);
-    } else if (password != confirmPassword) {
       setCheckMatchPassword(false);
-      setIsButton(false);
-    } else if (password == confirmPassword) {
+    } else if (password !== confirmPassword) {
       setCheckMatchPassword(true);
-      if (checkValidPassword == true && checkMatchPassword == true) {
+      setIsButton(false);
+    } else if (password === confirmPassword) {
+      setCheckMatchPassword(false);
+      if (checkValidPassword === false && checkMatchPassword === false) {
         setIsButton(true);
       }
     }
@@ -72,6 +76,7 @@ const CreateNewPassword = ({navigation}) => {
     setIsPopup(false);
   };
   const handleButtonFooter = () => {
+    dispatch(getNewPassword({email:stateUsers.newPassword.email,password:password}))
     setIsPopup(true);
   };
   const backAction = () => {
@@ -109,16 +114,11 @@ const CreateNewPassword = ({navigation}) => {
             value={password}
             onChangeText={handleCheckValidPassword}
             maxLength={16}
+            validValue={checkValidPassword}
+            textNegatifCaseBlank={'Anda harus mengisi bagian ini'}
+            textNegatifCase3={'Kata sandi harus berisi huruf besar, angka dan simbol (@ * # &)'}
           />
-          {checkValidPassword ? null : (
-            <Text style={styles.TextWrong}>
-              Kata sandi harus berisi huruf besar, angka dan simbol (@ * # &)
-            </Text>
-          )}
-          <NegatifCase
-            value={password}
-            text={'Anda harus mengisi bagian ini'}
-          />
+     
         </View>
 
         <View style={styles.FormStyle}>
@@ -131,16 +131,12 @@ const CreateNewPassword = ({navigation}) => {
             value={confirmPassword}
             onChangeText={value => setConfirmPassword(value)}
             maxLength={16}
+            validValue={checkMatchPassword}
+            textNegatifCaseBlank={'Anda harus mengisi bagian ini'}
+            isNegatifCase1={password!==confirmPassword&&confirmPassword!==''&&confirmPassword!==null}
+            textNegatifCase1={'Kata sandi tidak sama'}
           />
-          {checkMatchPassword ? null : (
-            <Text style={styles.TextWrong}>
-              Konfirmasi kata sandi tidak sesuai
-            </Text>
-          )}
-          <NegatifCase
-            value={confirmPassword}
-            text={'Anda harus mengisi bagian ini'}
-          />
+          
         </View>
       </ScrollView>
       <View style={styles.ContainerKirim}>

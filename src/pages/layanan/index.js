@@ -12,11 +12,12 @@ import IconMaps from '../../../assets/layanan/maps.svg';
 import IconMessage from '../../../assets/layanan/message.svg';
 import IconWhatsapp from '../../../assets/layanan/whatsapp.svg';
 import IconPhone from '../../../assets/layanan/phone.svg';
+import HeaderPagesBlue from '../../components/moleculs/headerPagesBlue';
 
 const Layanan = ({navigation}) => {
   return (
     <View style={styles.Container}>
-      <HeaderPages
+      <HeaderPagesBlue
         value={'Layanan Pengaduan'}
         hideShowTitle={true}
         showBackButton={false}

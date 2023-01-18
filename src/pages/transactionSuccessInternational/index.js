@@ -1,9 +1,10 @@
 //Import Library
 import React, {useRef, useState} from 'react';
-import {View, StyleSheet, Text, Image} from 'react-native';
-import CountDownTimer from 'react-native-countdown-timer-hooks';
+import {View, StyleSheet, Text, Image, TouchableOpacity} from 'react-native';
+// import CountDownTimer from 'react-native-countdown-timer-hooks';
 import {useDispatch, useSelector} from 'react-redux';
-import CountDown from 'react-native-countdown-component';
+import Clipboard from '@react-native-community/clipboard';
+import CountDown from 'react-native-countdown-fixed'
 
 //Import Component
 import TextDefault from '../../components/atoms/textDefault';
@@ -13,11 +14,21 @@ import {Colours} from '../../helpers/colours';
 
 //Import Assets
 import ImageSuccess from '../../../assets/transactionSuccess/check_mark.png';
-import { setAccountNumberInternational, setCountryDestination, setNameReceiverInternational, setNominalDestination, setNominalIndonesia, setSwiftCode } from '../../service/redux/reducer/transferSlice';
+import {
+  setAccountNumberInternational,
+  setCountryDestination,
+  setNameReceiverInternational,
+  setNominalDestination,
+  setNominalIndonesia,
+  setSwiftCode,
+} from '../../service/redux/reducer/transferSlice';
+import IconCopy from '../../../assets/transactionSuccess/copy.svg';
+import { formatCurrencyWithoutComma } from '../../helpers/formatter/currencyFormatter';
 
 const TransactionSuccessInternational = ({navigation}) => {
-  const dispatch=useDispatch()
+  const dispatch = useDispatch();
   const stateTransfer = useSelector(state => state.transfer);
+  const stateUsers = useSelector(state => state.users);
   const refTimer = useRef();
 
   const [timerEnd, setTimerEnd] = useState(false);
@@ -26,16 +37,16 @@ const TransactionSuccessInternational = ({navigation}) => {
     setTimerEnd(timerFlag);
     console.log('Timeout', timerEnd);
   };
-  
-  const handleButtonFooter=()=>{
-    dispatch(setNominalIndonesia(null))
-    dispatch(setNominalDestination(null))
-    dispatch(setCountryDestination('USD'))
-    dispatch(setNameReceiverInternational(null))
-    dispatch(setAccountNumberInternational(null))
-    dispatch(setSwiftCode(null))
-    navigation.goBack()
-  }
+
+  const handleButtonFooter = () => {
+    dispatch(setNominalIndonesia(null));
+    dispatch(setNominalDestination(null));
+    dispatch(setCountryDestination('USD'));
+    dispatch(setNameReceiverInternational(null));
+    dispatch(setAccountNumberInternational(null));
+    dispatch(setSwiftCode(null));
+    navigation.navigate('Homepage');
+  };
 
   return (
     <View style={styles.Container}>
@@ -45,38 +56,25 @@ const TransactionSuccessInternational = ({navigation}) => {
         </View>
         <View style={styles.ContainerTextTitle}>
           <Text style={styles.TextTitle}>
-            Selamat Dinda Salsabila, Proses anda berhasil{' '}
+            Selamat {stateUsers.data.user.fullname}, Proses anda berhasil{' '}
           </Text>
         </View>
         <Text style={styles.TextDescription}>
           Selesaikan Pembayaran sebelum{' '}
         </Text>
-        <CountDownTimer
-          ref={refTimer}
-          timestamp={86399}
-          timerCallback={timerCallbackFunc}
-          containerStyle={{
-            height: 56,
-            width: '100%',
-            justifyContent: 'center',
-            alignItems: 'center',
-            borderRadius: 35,
-            backgroundColor: 'transparent',
-          }}
-          textStyle={{
-            fontSize: 18,
-            color: '#2ACA10',
-            fontWeight: '700',
-            letterSpacing: 5.25,
-            paddingHorizontal: 30,
-          }}
-        />
-        {/* <CountDown
-        until={10}
-        onFinish={() => alert('finished')}
+        <CountDown
+        until={84610}
+        onFinish={() => console.log('END')}
         onPress={() => alert('hello')}
-        size={20}
-      /> */}
+        size={18}
+        digitTxtStyle={{color:'#2ACA10'}}
+        digitStyle={{backgroundColor:'transparent', marginHorizontal:15, left:-20}}
+        separatorStyle={{color:'#2ACA10'}}
+        timeLabels={{h: 'Jam', m: 'Menit', s: 'Detik'}}
+        timeToShow={['H','M', 'S']}
+        timeLabelStyle={{ color:'#2ACA10', fontSize:16, right:-15, top:-36, fontWeight:'700'}}
+        />
+        
         <View style={styles.ContainerPayment}>
           <View style={styles.ContainerTextDescription}>
             <TextDescriptionOnBoarding value={'Nama Penerima'} />
@@ -90,7 +88,7 @@ const TransactionSuccessInternational = ({navigation}) => {
             <TextDescriptionOnBoarding value={'Tipe Transaksi'} />
           </View>
           <TextDefault value={`IDR ke ${stateTransfer.countryDestination}`} />
-          
+
           <View style={styles.ContainerTextDescription}>
             <TextDescriptionOnBoarding value={'No. Rekening'} />
           </View>
@@ -98,12 +96,18 @@ const TransactionSuccessInternational = ({navigation}) => {
           <View style={styles.ContainerTextDescription}>
             <TextDescriptionOnBoarding value={'Virtual Akun'} />
           </View>
-          <TextDefault value={'9999-5678-0033-1121-314'} />
+          <View style={{flexDirection: 'row', alignSelf: 'center'}}>
+            <TextDefault value={'9999-5678-0033-1121-314'} />
+            <TouchableOpacity
+              onPress={() => Clipboard.setString('9999-5678-0033-1121-314')}>
+              <IconCopy style={{marginLeft: 10}} />
+            </TouchableOpacity>
+          </View>
           <View style={styles.ContainerTextDescription}>
             <TextDescriptionOnBoarding value={'Total'} />
           </View>
           <Text style={styles.TextCount}>
-            {stateTransfer.totalTransactionInternational}
+            {formatCurrencyWithoutComma(stateTransfer.totalTransactionInternational)}
           </Text>
         </View>
       </View>

@@ -19,6 +19,7 @@ import Singapore from '../../../assets/transferCard/openmoji_flag-singapore.png'
 import UnitedStates from '../../../assets/transferCard/openmoji_flag-united-states.png';
 import Australia from '../../../assets/transferCard/openmoji_flag-australia.png';
 import Japan from '../../../assets/transferCard/openmoji_flag-japan.png';
+import { formatCurrencyWithoutComma } from '../../helpers/formatter/currencyFormatter';
 
 const TransactionMethodInternational = ({navigation}) => {
   const dispatch = useDispatch();
@@ -33,7 +34,7 @@ const TransactionMethodInternational = ({navigation}) => {
     {key: '5', value: 'BNI'},
   ];
   useEffect(() => {
-    if (selected == null || selected == '') {
+    if (selected === null || selected === '') {
       dispatch(setIsButtonMethodLocal(false));
     } else {
       dispatch(setIsButtonMethodLocal(true));
@@ -55,27 +56,25 @@ const TransactionMethodInternational = ({navigation}) => {
         <View style={styles.ContainerCountTransaction}>
           <View style={{flexDirection: 'row', alignItems: 'center'}}>
             <IconIndonesia />
-            <Text style={styles.TextFormatCurrencyCountry}>IDR ke {stateTransfer.countryDestination}</Text>
-            {stateTransfer.countryDestination=='USD'?
+            <Text style={styles.TextFormatCurrencyCountry}>
+              IDR ke {stateTransfer.countryDestination}
+            </Text>
+            {stateTransfer.countryDestination == 'USD' ?
                 (<Image source={UnitedStates} style={{marginLeft:10}} />)
-                :(null)
-                }
-                {stateTransfer.countryDestination=='AUD'?
-                (<Image source={Australia} style={{marginLeft:10}} />)
-                :(null)
-                }
-                {stateTransfer.countryDestination=='JPY'?
-                (<Image source={Japan} style={{marginLeft:10}} />)
-                :(null)
-                }
-                {stateTransfer.countryDestination=='SGD'?
-                (<Image source={Singapore} style={{marginLeft:10}} />)
-                :(null)
-                }
+             : (null)}
+            {stateTransfer.countryDestination == 'AUD' ? (
+              <Image source={Australia} style={{marginLeft: 10}} />
+            ) : null}
+            {stateTransfer.countryDestination == 'JPY' ? (
+              <Image source={Japan} style={{marginLeft: 10}} />
+            ) : null}
+            {stateTransfer.countryDestination == 'SGD' ? (
+              <Image source={Singapore} style={{marginLeft: 10}} />
+            ) : null}
           </View>
           <Text style={styles.TextTotal}>Total Transaksi</Text>
           <Text style={styles.TextIDR}>
-            {stateTransfer.totalTransactionInternational} IDR
+            {formatCurrencyWithoutComma(stateTransfer.totalTransactionInternational)}
           </Text>
         </View>
         <TextDefault value={'Metode Pembayaran'} />
@@ -118,7 +117,6 @@ const styles = StyleSheet.create({
     width: '90%',
   },
 
- 
   ContainerSelanjutnya: {
     width: '90%',
     alignSelf: 'center',
@@ -136,7 +134,7 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     justifyContent: 'center',
     marginBottom: 50,
-    marginTop:10
+    marginTop: 10,
     // top:-135,
   },
   TextFormatCurrencyCountry: {

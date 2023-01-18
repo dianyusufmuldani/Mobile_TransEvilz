@@ -17,7 +17,13 @@ import TextDescriptionOnBoarding from '../../components/atoms/textDescriptionOnB
 import BlueButton from '../../components/moleculs/blueButton';
 import {Colours} from '../../helpers/colours';
 import {setIsButtonTransferInternational} from '../../service/redux/reducer/globalSlice';
-import { setCountryDestination, setKursInternational, setNominalDestination, setTotalTransactionInternational, setNominalIndonesia } from '../../service/redux/reducer/transferSlice';
+import {
+  setCountryDestination,
+  setKursInternational,
+  setNominalDestination,
+  setTotalTransactionInternational,
+  setNominalIndonesia,
+} from '../../service/redux/reducer/transferSlice';
 
 //Import Assets
 import IconIndonesia from '../../../assets/transferCard/openmoji_flag-indonesia.svg';
@@ -26,13 +32,17 @@ import UnitedStates from '../../../assets/transferCard/openmoji_flag-united-stat
 import Australia from '../../../assets/transferCard/openmoji_flag-australia.png';
 import Japan from '../../../assets/transferCard/openmoji_flag-japan.png';
 import IconArrowDown from '../../../assets/transferCard/icon_arrow_down.svg';
+import NegatifCase from '../../components/atoms/negatifCaseTextInput';
+import HeaderPagesBlue from '../../components/moleculs/headerPagesBlue';
+import { formatCurrencyWithoutComma } from '../../helpers/formatter/currencyFormatter';
 
 const TransferCardInternational = ({navigation}) => {
   const dispatch = useDispatch();
   const stateGlobal = useSelector(state => state.global);
-  const stateTransfer=useSelector(state=>state.transfer)
+  const stateTransfer = useSelector(state=>state.transfer);
+  const stateUsers = useSelector(state=>state.users);
   const [hideSelectList, setHideSelectList] = useState(false);
-    useState('0');
+  useState('0');
   const handleAustralia = () => {
     dispatch(setCountryDestination('AUD'));
     setHideSelectList(!hideSelectList);
@@ -56,29 +66,50 @@ const TransferCardInternational = ({navigation}) => {
   };
   useEffect(() => {
     console.log('isi Field Negara', stateTransfer.nominalIndonesia);
-    if (stateTransfer.nominalIndonesia == null || stateTransfer.nominalIndonesia == '') {
+    if (
+      stateTransfer.nominalIndonesia == null ||
+      stateTransfer.nominalIndonesia == ''
+    ) {
       dispatch(setTotalTransactionInternational(0));
       dispatch(setNominalDestination(''));
     } else if (stateTransfer.nominalIndonesia >= 100000) {
-      dispatch(setNominalDestination(Number(stateTransfer.nominalIndonesia) / Number(stateTransfer.kursInternational)));
-      dispatch(setTotalTransactionInternational(
-        Number(stateTransfer.nominalIndonesia) + stateTransfer.adminInternational,
-      ));
+      dispatch(
+        setNominalDestination(
+          Number(stateTransfer.nominalIndonesia) /
+            Number(stateTransfer.kursInternational),
+        ),
+      );
+      dispatch(
+        setTotalTransactionInternational(
+          Number(stateTransfer.nominalIndonesia) +
+            stateTransfer.adminInternational,
+        ),
+      );
       dispatch(setIsButtonTransferInternational(true));
-    } else if (stateTransfer.nominalIndonesia != null || stateTransfer.nominalIndonesia != '') {
-      if(stateTransfer.nominalIndonesia==0){
+    } else if (
+      stateTransfer.nominalIndonesia != null ||
+      stateTransfer.nominalIndonesia != ''
+    ) {
+      if (stateTransfer.nominalIndonesia == 0){
         dispatch(setNominalDestination('0'));
         dispatch(setTotalTransactionInternational(0));
         dispatch(setIsButtonTransferInternational(false));
-        console.log('sekarangdIsini')
-      }
-      else{
-        dispatch(setNominalDestination(Number(stateTransfer.nominalIndonesia) / Number(stateTransfer.kursInternational)));
-        dispatch(setTotalTransactionInternational(
-          Number(stateTransfer.nominalIndonesia) + stateTransfer.adminInternational,
-        ));
+        console.log('sekarangdIsini');
+      } else {
+        dispatch(
+          setNominalDestination(
+            Number(stateTransfer.nominalIndonesia) /
+              Number(stateTransfer.kursInternational),
+          ),
+        );
+        dispatch(
+          setTotalTransactionInternational(
+            Number(stateTransfer.nominalIndonesia) +
+              stateTransfer.adminInternational,
+          ),
+        );
         dispatch(setIsButtonTransferInternational(false));
-        console.log('dIsini')
+        console.log('dIsini');
       }
     }
   });
@@ -87,7 +118,7 @@ const TransferCardInternational = ({navigation}) => {
   };
   return (
     <View style={styles.Container}>
-      <HeaderPages
+      <HeaderPagesBlue
         hideShowTitle={true}
         value={'Masukkan Nominal'}
         onPress={() => navigation.goBack()}
@@ -98,36 +129,54 @@ const TransferCardInternational = ({navigation}) => {
             <IconIndonesia />
           </View>
           <TextInput
-            style={styles.ContainerTextInputFlag}
+            style={
+              stateTransfer.nominalIndonesia === ''||stateTransfer.nominalIndonesia<100000&&stateTransfer.nominalIndonesia!==null
+                ? styles.ContainerTextInputFlagError
+                : styles.ContainerTextInputFlag
+            }
             placeholder={'IDR'}
             onChangeText={value =>
               dispatch(setNominalIndonesia(value.replace(/\D/g, '')))
             }
             keyboardType={'numeric'}
-            value={stateTransfer.nominalIndonesia}
+            value={Number(stateTransfer.nominalIndonesia)}
           />
         </View>
+
+        <NegatifCase
+          value={stateTransfer.nominalIndonesia}
+          text={'Anda harus mengisi bagian ini'}
+        />
+        {stateTransfer.nominalIndonesia <= 99999 &&
+        stateTransfer.nominalIndonesia !== ''&&stateTransfer.nominalIndonesia!==null ? (
+          <NegatifCase
+            value={''}
+            text={'Minimal nominal transaksi Rp 100.000'}
+          />
+        ) : null}
+
         <View style={styles.ContainerFieldCurrency}>
           <View style={styles.Container}>
             <View style={styles.ContainerTextInput}>
               <TouchableOpacity
                 style={styles.Country}
                 onPress={() => setHideSelectList(!hideSelectList)}>
-                {stateTransfer.countryDestination=='USD'?
-                (<Image source={UnitedStates} style={{width: 30, height: 30}} />)
-                :(null)
+                {stateTransfer.countryDestination == 'USD' ?
+                  <Image
+                    source={UnitedStates}
+                    style={{width: 30, height: 30}}
+                    /> : (null)}
+                {stateTransfer.countryDestination == 'AUD' ?
+                  <Image source={Australia} style={{width: 30, height: 30}} />
+                : (null)
                 }
-                {stateTransfer.countryDestination=='AUD'?
-                (<Image source={Australia} style={{width: 30, height: 30}} />)
-                :(null)
+                {stateTransfer.countryDestination == 'JPY' ?
+                  <Image source={Japan} style={{width: 30, height: 30}} />
+                : (null)
                 }
-                {stateTransfer.countryDestination=='JPY'?
-                (<Image source={Japan} style={{width: 30, height: 30}} />)
-                :(null)
-                }
-                {stateTransfer.countryDestination=='SGD'?
-                (<Image source={Singapore} style={{width: 30, height: 30}} />)
-                :(null)
+                {stateTransfer.countryDestination == 'SGD' ?
+                  <Image source={Singapore} style={{width: 30, height: 30}} />
+                : (null)
                 }
                 <View style={{marginLeft: 10}}>
                   <IconArrowDown />
@@ -137,7 +186,13 @@ const TransferCardInternational = ({navigation}) => {
               <View style={styles.Currency}>
                 <TextInput
                   placeholder={stateTransfer.countryDestination}
-                  value={(stateTransfer.nominalDestination=='')?null:`${Number(stateTransfer.nominalDestination).toFixed(3)}`}
+                  value={
+                    stateTransfer.nominalDestination == ''
+                      ? null
+                      : `${Number(stateTransfer.nominalDestination)
+                          .toFixed(2)
+                          .replace(/\d(?=(\d{3})+\.)/g, '$&,')}`
+                  }
                   onChangeText={value => dispatch(setNominalDestination(value))}
                   keyboardType={'numeric'}
                   editable={false}
@@ -145,6 +200,7 @@ const TransferCardInternational = ({navigation}) => {
                 />
               </View>
             </View>
+
             {hideSelectList ? (
               <ScrollView style={styles.ContainerSelectList}>
                 <TouchableOpacity
@@ -181,11 +237,20 @@ const TransferCardInternational = ({navigation}) => {
         </View>
         <View style={styles.TextNilaiKurs}>
           <TextDescriptionOnBoarding value={'Nilai Kurs Saat ini'} />
-          <TextDescriptionOnBoarding value={stateTransfer.kursInternational + ' IDR'} />
+          <TextDescriptionOnBoarding
+          value={formatCurrencyWithoutComma(stateTransfer.kursInternational)}
+            // value={
+            //   Number(stateTransfer.kursInternational)
+            //     .toFixed(2)
+            //     .replace(/\d(?=(\d{3})+\.)/g, '$&,') + ' IDR'
+            // }
+          />
         </View>
         <View style={styles.TextNilaiKurs}>
           <TextDescriptionOnBoarding value={'Biaya Admin'} />
-          <TextDescriptionOnBoarding value={stateTransfer.adminInternational} />
+          <TextDescriptionOnBoarding
+            value={formatCurrencyWithoutComma(stateTransfer.adminInternational)}
+          />
         </View>
       </View>
       <View style={styles.ContainerFooter}>
@@ -196,7 +261,7 @@ const TransferCardInternational = ({navigation}) => {
           </Text>
           <Text style={styles.TextTitleFooter}>Total Transaksi</Text>
           <Text style={styles.TextCurrencyFooter}>
-            {stateTransfer.totalTransactionInternational + ' IDR'}
+            {(stateTransfer.totalTransactionInternational)}
           </Text>
 
           <View style={styles.ContainerSelanjutnya}>
@@ -219,7 +284,7 @@ const styles = StyleSheet.create({
     backgroundColor: Colours.background,
   },
   ContainerBody: {
-    alignItems: 'center',
+    alignSelf: 'center',
   },
   ContainerFieldCurrency: {
     width: '90%',
@@ -241,12 +306,21 @@ const styles = StyleSheet.create({
     borderTopRightRadius: 10,
     borderBottomRightRadius: 10,
     width: '85%',
+    borderWidth: 1,
+    borderColor: '#F1F7FF',
+  },
+  ContainerTextInputFlagError: {
+    backgroundColor: '#F1F7FF',
+    height: 39,
+    borderTopRightRadius: 10,
+    borderBottomRightRadius: 10,
+    width: '85%',
+    borderWidth: 1,
+    borderColor: 'red',
   },
   TextNilaiKurs: {
     flexDirection: 'row',
-    width: '90%',
     justifyContent: 'space-between',
-    alignSelf: 'center',
     marginTop: 24,
   },
   ContainerSelanjutnya: {

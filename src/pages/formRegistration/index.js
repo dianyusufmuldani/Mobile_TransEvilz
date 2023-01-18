@@ -1,5 +1,5 @@
 //Import Library
-import React, {useEffect, useState} from 'react';
+import React, {useEffect, useRef, useState} from 'react';
 import {
   View,
   StyleSheet,
@@ -15,6 +15,12 @@ import moment from 'moment';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import {useDispatch, useSelector} from 'react-redux';
 import {launchCamera, launchImageLibrary} from 'react-native-image-picker';
+import RadioForm, {
+  RadioButton,
+  RadioButtonInput,
+  RadioButtonLabel,
+} from 'react-native-simple-radio-button';
+
 
 //Import Component
 import RequirementSymbols from '../../components/atoms/requirementSymbols';
@@ -26,9 +32,9 @@ import BlueButton from '../../components/moleculs/blueButton';
 import PopUp from '../../components/organism/popup';
 import {Colours} from '../../helpers/colours';
 import TextFieldEmail from '../../components/moleculs/textFieldEmail';
-import {setUsers} from '../../service/redux/reducer/usersSlice';
+import {setRegisterStatus, setUsers} from '../../service/redux/reducer/usersSlice';
 import {getUsers} from '../../service/redux/reducer/usersSlice';
-import RadioButton from '../../components/moleculs/radioButton';
+// import RadioButton from '../../components/moleculs/radioButton';
 import NegatifCase from '../../components/atoms/negatifCaseTextInput';
 import {
   setIsPopupSuccessFormRegistration,
@@ -40,45 +46,11 @@ import ImageReceiveMessage from '../../../assets/popup/received_message_icon.png
 import IconCalender from '../../../assets/formRegistration/calendar.svg';
 import IconUserImageAdd from '../../../assets/formRegistration/user-plus.svg';
 import TextDescriptionOnBoarding from '../../components/atoms/textDescriptionOnBoarding';
+var ListAgreeTerms = [{value: 'Setuju'}];
 
-// const nationalityData = [
-//   {
-//     id: '1', // acts as primary key, should be unique and non-empty string
-//     label: 'WNI',
-//     value: 'WNI',
-//     labelStyle: {fontSize: 14, fontWeight: '500'},
-//     size: 15,
-//   },
-//   {
-//     id: '2',
-//     label: 'WNA',
-//     value: 'WNA',
-//     labelStyle: {fontSize: 14, fontWeight: '500'},
-//     size: 15,
-//   },
-// ];
-const genderData = [
-  {
-    id: '1', // acts as primary key, should be unique and non-empty string
-    label: 'Laki-laki',
-    value: 'Laki-laki',
-    labelStyle: {fontSize: 14, fontWeight: '500'},
-    size: 15,
-  },
-  {
-    id: '2',
-    label: 'Perempuan',
-    value: 'Perempuan',
-    labelStyle: {fontSize: 14, fontWeight: '500'},
-    size: 15,
-  },
-];
-const agreeTermsData = [
-  {
-    id: '1', // acts as primary key, should be unique and non-empty string
-    value: 'Setuju',
-    size: 15,
-  },
+var listGender = [
+  {label: 'Laki-laki', value: 'Laki-laki'},
+  {label: 'Perempuan', value: 'Perempuan'},
 ];
 
 const FormRegistration = ({navigation}) => {
@@ -86,7 +58,7 @@ const FormRegistration = ({navigation}) => {
   // const [nationality, setNationality] = useState(null);
   const [typeDocument, setTypeDocument] = useState(null);
   const [noDocument, setNoDocument] = useState(null);
-  const [gender, setGender] = useState(genderData);
+  const [gender, setGender] = useState(null);
   const [firstName, setFirstName] = useState(null);
   const [lastName, setLastName] = useState(null);
   const [birthplace, setBirthplace] = useState(null);
@@ -98,23 +70,28 @@ const FormRegistration = ({navigation}) => {
   const [email, setEmail] = useState(null);
   const [date, setDate] = useState(new Date());
   const [showDate, setShowDate] = useState(false);
-  const [matchPassword, setMatchPassword] = useState(true);
+  const [matchPassword, setMatchPassword] = useState(false);
   const dispatch = useDispatch();
   const stateUsers = useSelector(state => state.users);
   const stateGlobal = useSelector(state => state.global);
 
-  momentDate = moment(date).format('l');
-  momentAge = moment().diff(birtday, 'years', false);
+  // momentDate = moment(date).format('l');
+  
   const [checkValidEmail, setCheckValidEmail] = useState(false);
-  const [checkValidPassword, setCheckValidPassword] = useState(true);
+  const [checkValidPassword, setCheckValidPassword] = useState(false);
+  const [checkRegistered, setCheckRegistered]=useState(false)
   const handleCheckValidEmail = text => {
     let re = /\S+@\S+\.\S+/;
     let regex = /^[\+]?[(]?[0-9]{3}[)]?[-\s\.]?[0-9]{3}[-\s\.]?[0-9]{4,6}$/im;
     setEmail(text);
     if (re.test(text) || regex.test(text)) {
       setCheckValidEmail(false);
+      setCheckRegistered(false)
+      dispatch(setRegisterStatus(null))
     } else {
       setCheckValidEmail(true);
+      setCheckRegistered(false)
+      dispatch(setRegisterStatus(null))
     }
   };
   const handleCheckValidPassword = text => {
@@ -123,30 +100,36 @@ const FormRegistration = ({navigation}) => {
       /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@*#&])[A-Za-z\d#$@!%&*?]{8,16}$/;
     setPassword(text);
     if (re.test(text) || regex.test(text)) {
-      setCheckValidPassword(true);
-    } else {
       setCheckValidPassword(false);
+    } else {
+      setCheckValidPassword(true);
     }
   };
+  const scrollRef = useRef();
+  useEffect(()=>{
+    if(birtday!==null){
+    setBirthday(moment(date).format('DD/MM/YYYY'))
+    }
+  }, [birtday])
 
   useEffect(() => {
-    console.log('isi Age', momentAge);
-    if (email == null || email == '') {
+    console.log('isi Age', stateUsers.registerStatus);
+    if (email === null || email === '') {
       setCheckValidEmail(false);
     }
-    if (password == '' || password == null) {
-      setCheckValidPassword(true);
+    if (password === '' || password === null) {
+      setCheckValidPassword(false);
     }
-    if (confirmPassword != null || confirmPassword != undefined) {
-      if (confirmPassword == '') {
-        setMatchPassword(true);
-      } else if (password != confirmPassword) {
+    if (confirmPassword !== null || confirmPassword !== undefined) {
+      if (confirmPassword === '') {
         setMatchPassword(false);
-      } else {
+      } else if (password !== confirmPassword) {
         setMatchPassword(true);
+      } else {
+        setMatchPassword(false);
       }
     } else {
-      setMatchPassword(true);
+      setMatchPassword(false);
     }
   });
 
@@ -154,7 +137,7 @@ const FormRegistration = ({navigation}) => {
     const currentDate = selectedDate || date;
     setShowDate(false);
     setDate(currentDate);
-    setBirthday(momentDate);
+    setBirthday(date)
     let tempDate = new Date(currentDate);
     let fDate =
       tempDate.getDate() +
@@ -168,42 +151,44 @@ const FormRegistration = ({navigation}) => {
   };
 
   useEffect(() => {
-    console.log('sampai sini', stateGlobal.isButtonFormRegistration);
-    console.log('isi state', typeDocument);
-    if (email == '' || email == undefined) {
+ 
+    console.log('isi state', stateUsers);
+    if (email === '' || email === null) {
       dispatch(setIsButtonFormRegistration(false));
     }
     //  else if (nationality == '' || nationality == undefined) {
     //   dispatch(setIsButtonFormRegistration(false));
     // }
-    else if (typeDocument == '' || typeDocument == undefined) {
+    else if (typeDocument === '' || typeDocument === null) {
       dispatch(setIsButtonFormRegistration(false));
-    } else if (noDocument == '' || noDocument == undefined) {
+    } else if (noDocument === '' || noDocument === null) {
       dispatch(setIsButtonFormRegistration(false));
-    } else if (firstName == '' || firstName == undefined) {
+    } else if (firstName === '' || firstName === null) {
       dispatch(setIsButtonFormRegistration(false));
-    } else if (lastName == '' || lastName == undefined) {
+    } else if (lastName === '' || lastName === null) {
       dispatch(setIsButtonFormRegistration(false));
-    } else if (birthplace == '' || birthplace == undefined) {
+    } else if (birthplace === '' || birthplace === null) {
       dispatch(setIsButtonFormRegistration(false));
-    } else if (momentAge <= 17) {
+    } else if (Number(moment().diff(date, 'years', false)) <= 17) {
       dispatch(setIsButtonFormRegistration(false));
-    } else if (address == '' || address == undefined) {
+    } else if (address === '' || address === null) {
       dispatch(setIsButtonFormRegistration(false));
-    } else if (gender == '' || gender == undefined) {
+    } else if (gender === '' || gender === null) {
       dispatch(setIsButtonFormRegistration(false));
-    } else if (password == '' || password == undefined) {
+    } else if (password === '' || password === null) {
       dispatch(setIsButtonFormRegistration(false));
-      setCheckValidPassword(true);
-    } else if (checkValidPassword == false) {
+      setCheckValidPassword(false);
+    } else if (checkValidEmail === true) {
       dispatch(setIsButtonFormRegistration(false));
-    } else if (matchPassword == false) {
+    } else if (checkValidPassword === true) {
       dispatch(setIsButtonFormRegistration(false));
-    } else if (confirmPassword == '' || confirmPassword == undefined) {
+    } else if (matchPassword === true) {
       dispatch(setIsButtonFormRegistration(false));
-    } else if (agreeTerms == '' || agreeTerms == undefined) {
+    } else if (confirmPassword === '' || confirmPassword === null) {
       dispatch(setIsButtonFormRegistration(false));
-    } else if (password == confirmPassword) {
+    } else if (agreeTerms === '' || agreeTerms === null) {
+      dispatch(setIsButtonFormRegistration(false));
+    } else if (password === confirmPassword) {
       dispatch(setIsButtonFormRegistration(true));
     }
   });
@@ -226,29 +211,47 @@ const FormRegistration = ({navigation}) => {
   const handleLanjut = () => {
     const request = {
       email: email,
-      // nationality: nationality,
-      typeDocument: typeDocument,
-      noDocument: noDocument,
-      firstName: firstName,
-      lastName: lastName,
-      birthplace: birthplace,
-      birtday: birtday,
+      doc_type: typeDocument,
+      doc_number: Number(noDocument),
+      firstname: firstName,
+      lastname: lastName,
+      birth_place: birthplace,
+      birth_date: date,
       address: address,
-      gender: gender,
+      sex: gender.value,
+      phone_number: stateUsers.noHp,
       password: password,
-      confirmPassword: confirmPassword,
-      agreeTerms: agreeTerms,
+      // confirmPassword: confirmPassword,
+      // agreeTerms: agreeTerms,
     };
     dispatch(getUsers(request));
-    dispatch(setIsPopupSuccessFormRegistration(true));
+    
   };
+  useEffect(()=>{
+    if(stateUsers.registerStatus!==null){
+      if(stateUsers.registerStatus===201){
+       dispatch(setIsPopupSuccessFormRegistration(true));
+       console.log('sukses buat')
+     }
+       else if(stateUsers.registerStatus===400){
+      console.log('gagal buat')
+      setCheckRegistered(true)
+      scrollRef.current?.scrollTo({
+        y: 0,
+        animated: true,
+      });
+      dispatch(setRegisterStatus(null))
+    }
+  }
+  },[stateUsers.registerStatus])
   const handleCancelPopUp = () => {
     dispatch(setIsPopupSuccessFormRegistration(false));
   };
   const handleAktivasiSekarang = () => {
     dispatch(setIsPopupSuccessFormRegistration(false));
     dispatch(setIsButtonFormRegistration(false));
-    navigation.navigate('CreatePIN');
+    dispatch(setRegisterStatus(null))
+    navigation.navigate('Login');
   };
   const [photo, setPhoto] = useState(null);
   let options = {
@@ -262,7 +265,7 @@ const FormRegistration = ({navigation}) => {
     console.log('isi Photo', photo);
   };
   return (
-    <ScrollView style={styles.Container}>
+    <ScrollView style={styles.Container} ref={scrollRef}>
       <PopUp
         visible={stateGlobal.isPopupSuccessFormRegistration}
         onPressCancel={handleCancelPopUp}
@@ -298,29 +301,16 @@ const FormRegistration = ({navigation}) => {
             placeholder={'Email'}
             value={email}
             onChangeText={handleCheckValidEmail}
+            validValue={checkValidEmail}
+            keyboardType={'email-address'}
+            textNegatifCase3={'Format email salah'}
+            textNegatifCaseBlank={'Anda harus mengisi bagian ini'}
+            isNegatifCase1={checkRegistered}
+            textNegatifCase1={'Email sudah terdaftar'}
           />
-          {checkValidEmail ? (
-            <NegatifCase text={'Format email salah'} value={''} />
-          ) : null}
-          {email == 'admin@gmail.com' ? (
-            <NegatifCase text={'Email sudah terdaftar'} value={''} />
-          ) : null}
 
-          {email == '' ? (
-            <NegatifCase text={'Anda harus mengisi bagian ini'} value={email} />
-          ) : null}
         </View>
-        {/* <View style={styles.FormStyle}>
-          <View style={{flexDirection: 'row'}}>
-            <TextDefault value={'Kewarganegaraan '} />
-            <RequirementSymbols />
-          </View>
-          <RadioGroup
-            radioButtons={nationalityData}
-            onPress={onPressNationality}
-            containerStyle={{flexDirection: 'row'}}
-          />
-        </View> */}
+
         <View style={styles.FormStyle}>
           <View style={{flexDirection: 'row'}}>
             <TextDefault value={'Tipe Dokumen '} />
@@ -353,11 +343,11 @@ const FormRegistration = ({navigation}) => {
                 <TextField
                   placeholder={'Masukkan no dokumen'}
                   value={noDocument}
-                  onChangeText={value =>
-                    setNoDocument(value)
-                  }
+                  onChangeText={value => setNoDocument(value)}
                   maxLength={16}
+                  textNegatifCaseBlank={'Anda harus mengisi bagian ini'}
                 />
+
               ) : null}
               {typeDocument == 'KTP' ? (
                 <TextField
@@ -368,6 +358,7 @@ const FormRegistration = ({navigation}) => {
                   }
                   maxLength={16}
                   keyboardType={'numeric'}
+                  textNegatifCaseBlank={'Anda harus mengisi bagian ini'}
                 />
               ) : null}
               {typeDocument == 'SIM' ? (
@@ -379,6 +370,7 @@ const FormRegistration = ({navigation}) => {
                   }
                   maxLength={12}
                   keyboardType={'numeric'}
+                  textNegatifCaseBlank={'Anda harus mengisi bagian ini'}
                 />
               ) : null}
             </>
@@ -393,10 +385,7 @@ const FormRegistration = ({navigation}) => {
             />
           )}
 
-          <NegatifCase
-            text={'Anda harus mengisi bagian ini'}
-            value={noDocument}
-          />
+  
         </View>
 
         <View style={styles.FormStyle}>
@@ -407,12 +396,9 @@ const FormRegistration = ({navigation}) => {
           <TextField
             placeholder={'Nama depan'}
             value={firstName}
-            onChangeText={value => setFirstName(value)}
+            onChangeText={value => setFirstName(value.replace(/[^a-z ]/gmi, ""))}
             maxLength={15}
-          />
-          <NegatifCase
-            text={'Anda harus mengisi bagian ini'}
-            value={firstName}
+            textNegatifCaseBlank={'Anda harus mengisi bagian ini'}
           />
         </View>
         <View style={styles.FormStyle}>
@@ -423,12 +409,9 @@ const FormRegistration = ({navigation}) => {
           <TextField
             placeholder={'Nama Belakang'}
             value={lastName}
-            onChangeText={value => setLastName(value)}
+            onChangeText={value => setLastName(value.replace(/[^a-z ]/gmi, ""))}
             maxLength={15}
-          />
-          <NegatifCase
-            text={'Anda harus mengisi bagian ini'}
-            value={lastName}
+            textNegatifCaseBlank={'Anda harus mengisi bagian ini'}
           />
         </View>
         <View style={styles.FormStyle}>
@@ -441,11 +424,10 @@ const FormRegistration = ({navigation}) => {
             value={birthplace}
             onChangeText={value => setBirthplace(value)}
             maxLength={15}
+            textNegatifCaseBlank={'Anda harus mengisi bagian ini'}
           />
-          <NegatifCase
-            text={'Anda harus mengisi bagian ini'}
-            value={birthplace}
-          />
+
+  
         </View>
         <View style={styles.FormStyle}>
           <View style={{flexDirection: 'row'}}>
@@ -455,11 +437,16 @@ const FormRegistration = ({navigation}) => {
           <TouchableOpacity
             onPress={() => showMode('date')}
             style={{width: '100%'}}>
-            <View style={styles.ContainerTextInputDate}>
+            <View
+              style={
+                Number(moment().diff(date, 'years', false)) <= 17&&birtday!==null
+                  ? styles.ContainerTextInputDateError
+                  : styles.ContainerTextInputDate
+              }>
               <TextInput
                 value={birtday}
                 editable={false}
-                placeholder={'mm/dd/yyyy'}
+                placeholder={'dd/mm/yyyy'}
                 style={styles.ContainerPlaceholderDate}
               />
 
@@ -476,7 +463,8 @@ const FormRegistration = ({navigation}) => {
               )}
             </View>
           </TouchableOpacity>
-          {momentAge <= 17 ? (
+
+          {Number(moment().diff(date, 'years', false)) <= 17 && birtday!==null ? (
             <NegatifCase
               text={'Umur tidak boleh kurang dari 17 tahun'}
               value={''}
@@ -495,10 +483,14 @@ const FormRegistration = ({navigation}) => {
             numberOfLines={4}
             value={address}
             onChangeText={value => setAddress(value)}
-            style={styles.ContainerAddress}
+            style={
+              address === ''
+                ? styles.ContainerAddressError
+                : styles.ContainerAddress
+            }
             textAlignVertical="top"
-            maxLength={60}
           />
+
           <NegatifCase text={'Anda harus mengisi bagian ini'} value={address} />
         </View>
         <View style={styles.FormStyle}>
@@ -506,11 +498,23 @@ const FormRegistration = ({navigation}) => {
             <TextDefault value={'Jenis Kelamin '} />
             <RequirementSymbols />
           </View>
-          <RadioGroup
-            radioButtons={gender}
-            onPress={onPressGender}
-            containerStyle={{flexDirection: 'row'}}
-          />
+ 
+          <RadioForm
+            radio_props={listGender}
+            initial={0}
+            onPress={value => {
+              setGender({value: value});
+            }}
+            formHorizontal={true}
+            labelStyle={{marginRight: 20}}
+            buttonSize={10}
+            buttonOuterSize={20}
+            buttonColor={'#73788A'}
+            selectedButtonColor={'#73788A'}
+            animation={false}
+            style={{marginTop:10}}
+
+        />
         </View>
         <View style={styles.FormStyle}>
           <View style={{flexDirection: 'row'}}>
@@ -522,20 +526,9 @@ const FormRegistration = ({navigation}) => {
             value={password}
             onChangeText={handleCheckValidPassword}
             maxLength={16}
-          />
-          {checkValidPassword ? (
-            <></>
-          ) : (
-            <NegatifCase
-              text={
-                'Kata sandi harus berisi huruf besar, angka dan simbol (@ * # &)'
-              }
-              value={''}
-            />
-          )}
-          <NegatifCase
-            text={'Anda harus mengisi bagian ini'}
-            value={password}
+            validValue={checkValidPassword}
+            textNegatifCaseBlank={'Anda harus mengisi bagian ini'}
+            textNegatifCase3={'Kata sandi harus berisi huruf besar, angka dan simbol (@ * # &)'}
           />
         </View>
         <View style={styles.FormStyle}>
@@ -548,22 +541,28 @@ const FormRegistration = ({navigation}) => {
             value={confirmPassword}
             onChangeText={value => setConfirmPassword(value)}
             maxLength={16}
-          />
-
-          {matchPassword ? null : (
-            <NegatifCase text={'Kata sandi tidak sama'} value={''} />
-          )}
-          <NegatifCase
-            text={'Anda harus mengisi bagian ini'}
-            value={confirmPassword}
+            textNegatifCaseBlank={'Anda harus mengisi bagian ini'}
+            isNegatifCase1={password!==confirmPassword&&confirmPassword!==''&&confirmPassword!==null}
+            textNegatifCase1={'Kata sandi tidak sama'}
+          
           />
         </View>
         <View style={styles.ViewAgreeTerms}>
-          <RadioGroup
-            radioButtons={agreeTermsData}
-            onPress={onPressAgreeTerms}
-            containerStyle={{flexDirection: 'row'}}
-          />
+     
+          <RadioForm
+            radio_props={ListAgreeTerms}
+            initial={2}
+            onPress={value => {
+              setAgreeTerms({value: value});
+            }}
+            formHorizontal={true}
+            buttonSize={7}
+            buttonOuterSize={15}
+            buttonColor={'#73788A'}
+            selectedButtonColor={'#73788A'}
+            animation={false}
+
+        />
           <Text style={styles.TextAgreeTerms}>Saya setuju dengan </Text>
           <TouchableOpacity
             onPress={() => navigation.navigate('TermsAndConditions')}>
@@ -596,7 +595,7 @@ const styles = StyleSheet.create({
   FormStyle: {
     width: '90%',
     alignItems: 'baseline',
-    marginTop: 30,
+    marginTop: 10,
   },
   TextAgreeTerms: {
     fontSize: 12,
@@ -608,8 +607,6 @@ const styles = StyleSheet.create({
     color: '#2075F3',
   },
   ViewAgreeTerms: {
-    alignItems: 'center',
-    justifyContent: 'center',
     flexDirection: 'row',
     marginTop: 30,
   },
@@ -625,6 +622,19 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     alignItems: 'center',
     paddingRight: 10,
+    borderWidth: 1,
+    borderColor: '#F1F7FF',
+  },
+  ContainerTextInputDateError: {
+    borderRadius: 10,
+    width: '100%',
+    backgroundColor: '#F1F7FF',
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    paddingRight: 10,
+    borderWidth: 1,
+    borderColor: 'red',
   },
   ContainerImageAdd: {
     width: 60,
@@ -653,6 +663,16 @@ const styles = StyleSheet.create({
     width: '100%',
     borderRadius: 10,
     paddingLeft: 10,
+    borderWidth: 1,
+    borderColor: '#F1F7FF',
+  },
+  ContainerAddressError: {
+    backgroundColor: '#F1F7FF',
+    width: '100%',
+    borderRadius: 10,
+    paddingLeft: 10,
+    borderWidth: 1,
+    borderColor: 'red',
   },
   TextWrong: {
     color: '#DC3328',
@@ -663,5 +683,15 @@ const styles = StyleSheet.create({
     borderRadius: 40,
     alignItems: 'center',
     justifyContent: 'center',
+  },
+  ContainerTextInputError: {
+    borderWidth: 1,
+    borderRadius: 10,
+    borderColor: 'red',
+    width: '100%',
+  },
+  ContainerTextInputValid: {
+    width: '100%',
+    borderRadius: 10,
   },
 });

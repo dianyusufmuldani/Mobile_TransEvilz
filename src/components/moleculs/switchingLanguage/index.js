@@ -14,7 +14,7 @@ const SwitchingLanguage = () => {
       <Toggle
         value={ToggleValue}
         onPress={toggle => setToggleValue(toggle)}
-        leftTitle={ToggleValue === false ? 'ID' : ''}
+        leftTitle={ToggleValue === false ? 'EN' : ''}
         rightTitle={ToggleValue === true ? 'ID' : ''}
         trackBar={{
           width: 45,

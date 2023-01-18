@@ -34,6 +34,7 @@ import {
   setNameReceiver,
 } from '../../service/redux/reducer/transferSlice';
 import ImagePopupError from '../../../assets/popup/popup_error.png';
+import { formatCurrencyWithoutComma } from '../../helpers/formatter/currencyFormatter';
 
 const Transaction = ({navigation}) => {
   const stateGlobal = useSelector(state => state.global);
@@ -49,7 +50,7 @@ const Transaction = ({navigation}) => {
     {key: '5', value: 'BNI'},
   ];
   const handleSelanjutnya = () => {
-    if (stateTransfer.accountNumber == '00000000') {
+    if (stateTransfer.accountNumber === '00000000') {
       dispatch(setIsPopupAccountNumberNotFound(true));
     } else {
       navigation.navigate('TransactionMethod');
@@ -62,16 +63,16 @@ const Transaction = ({navigation}) => {
   };
   useEffect(() => {
     console.log(selected);
-    if (selected == null || selected == '') {
+    if (selected === null || selected === '') {
       dispatch(setIsButtonTransactionLocal(false));
     } else if (
-      stateTransfer.nameReceiver == null ||
-      stateTransfer.nameReceiver == ''
+      stateTransfer.nameReceiver === null ||
+      stateTransfer.nameReceiver === ''
     ) {
       dispatch(setIsButtonTransactionLocal(false));
     } else if (
-      stateTransfer.accountNumber == null ||
-      stateTransfer.accountNumber == ''
+      stateTransfer.accountNumber === null ||
+      stateTransfer.accountNumber === ''
     ) {
       dispatch(setIsButtonTransactionLocal(false));
     } else {
@@ -106,11 +107,11 @@ const Transaction = ({navigation}) => {
             </View>
             <Text style={styles.TextTotal}>Total Transaksi</Text>
             <Text style={styles.TextIDR}>
-              {stateTransfer.totalTransactionLocal} IDR
+              {formatCurrencyWithoutComma(stateTransfer.totalTransactionLocal)}
             </Text>
           </View>
 
-          <View style={styles.FormInput}>
+          <View style={styles.FormInputBank}>
             <View style={{flexDirection: 'row'}}>
               <TextDefault value={'Pilih Bank '} />
               <RequirementSymbols />
@@ -140,11 +141,9 @@ const Transaction = ({navigation}) => {
               placeholder={'Masukkan Nama Penerima'}
               value={stateTransfer.nameReceiver}
               onChangeText={value => dispatch(setNameReceiver(value))}
+              textNegatifCaseBlank={'Anda harus mengisi bagian ini'}
             />
-            <NegatifCase
-              value={stateTransfer.nameReceiver}
-              text={'Anda harus mengisi bagian ini'}
-            />
+            
           </View>
 
           <View style={styles.FormInput}>
@@ -159,11 +158,9 @@ const Transaction = ({navigation}) => {
                 dispatch(setAccountNumber(value.replace(/\D/g, '')))
               }
               keyboardType={'numeric'}
+              textNegatifCaseBlank={'Anda harus mengisi bagian ini'}
             />
-            <NegatifCase
-              value={stateTransfer.accountNumber}
-              text={'Anda harus mengisi bagian ini'}
-            />
+            
           </View>
         </ScrollView>
       </View>
@@ -234,7 +231,7 @@ const styles = StyleSheet.create({
     height: 115,
     borderRadius: 10,
     justifyContent: 'center',
-    marginTop:10
+    marginTop: 10,
     // top:-135,
   },
   TextTotal: {
@@ -247,8 +244,11 @@ const styles = StyleSheet.create({
     fontSize: 30,
     fontWeight: '700',
   },
+  FormInputBank: {
+    marginTop: 60,
+  },
   FormInput: {
-    marginTop: 30,
+    marginTop: 10,
   },
   ContainerButton: {
     flexDirection: 'row',

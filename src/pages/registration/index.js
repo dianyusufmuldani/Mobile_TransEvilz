@@ -24,14 +24,15 @@ import ImageMan from '../../../assets/registration/Man_logging.png';
 import NegatifCase from '../../components/atoms/negatifCaseTextInput';
 import {useDispatch, useSelector} from 'react-redux';
 import {setIsButtonRegistration} from '../../service/redux/reducer/globalSlice';
+import {setNoHpRedux} from '../../service/redux/reducer/usersSlice';
+import ToastedFailed from '../../components/moleculs/toastFailed';
 
 const Registration = ({navigation}) => {
   const [country, setCountry] = React.useState('');
   const [noHp, setNoHp] = useState(null);
   const [codeRegion, setCodeRegion] = useState('+62');
   const [showCountry, setShowCountry] = useState(false);
-  const [checkNumberRegister, setCheckNumberRegister] = useState(null);
-  const [numberRegistered, setNumberRegistered] = useState(null);
+  const [isToastedRegistered, setIsToastedRegistered]=useState(false)
   const dispatch = useDispatch();
 
   const stateGlobal = useSelector(state => state.global);
@@ -40,62 +41,61 @@ const Registration = ({navigation}) => {
     BackHandler.removeEventListener();
     return true;
   };
+  console.log('isi noHp', noHp)
   const fullNoHp = codeRegion + noHp;
   useEffect(() => {
     // if (country == '' || country == undefined) {
     //   dispatch(setIsButtonRegistration(false));
     // }
-    if (noHp == '' || noHp == undefined) {
+    if (noHp === '' || noHp === null) {
       dispatch(setIsButtonRegistration(false));
-      setCheckNumberRegister(true);
-    } else {
-      dispatch(setIsButtonRegistration(true));
+    } else if(noHp.length<=10){
+      dispatch(setIsButtonRegistration(false));
+    }
+    else{
+      dispatch(setIsButtonRegistration(true)); 
     }
     BackHandler.addEventListener('hardwareBackPress', backAction);
     return () =>
       BackHandler.removeEventListener('hardwareBackPress', backAction);
-  });
+  },[noHp]);
 
   useEffect(() => {
-    if (country == 'Indonesia') {
+    if (country === 'Indonesia') {
       setCodeRegion('+62');
       setShowCountry(!showCountry);
-    } else if (country == 'Australia') {
+    } else if (country === 'Australia') {
       setCodeRegion('+61');
       setShowCountry(!showCountry);
-    } else if (country == 'Japan') {
+    } else if (country === 'Japan') {
       setCodeRegion('+81');
       setShowCountry(!showCountry);
-    } else if (country == 'Singapore') {
+    } else if (country === 'Singapore') {
       setCodeRegion('+65');
       setShowCountry(!showCountry);
-    } else if (country == 'United States of America') {
+    } else if (country === 'United States of America') {
       setCodeRegion('+1');
       setShowCountry(!showCountry);
     }
   }, [country]);
   const handleKirim = () => {
     Keyboard.dismiss();
-    if (fullNoHp == '+6285111222333') {
-      console.log('INI');
-      setNumberRegistered('');
-      setCheckNumberRegister(true);
-    } else if (fullNoHp == '+6281234567890') {
-      dispatch(setIsButtonRegistration(false));
+    
+      if (noHp.length <= 10) {
+  
+    }  else {
+      dispatch(setIsButtonRegistration(true));
+      dispatch(setNoHpRedux(Number(fullNoHp.replace(/[+]/g, ''))));
       navigation.navigate('OTP');
-    } else if (noHp.length <= 12) {
-      setCheckNumberRegister(false);
-      console.log('ITU');
-      setNumberRegistered(true);
-    } else {
-      console.log('INI ELSE');
     }
   };
 
   return (
-    <>
-      <ScrollView style={styles.Container}>
+
+    <View  style={styles.Container}>
         <HeaderPages onPress={() => navigation.goBack()} />
+      <ScrollView>
+        <ToastedFailed visible={isToastedRegistered} height={39} width={'70%'} textToasted={'No. Hp anda sudah terdaftar'} onPressModal={()=>setIsToastedRegistered(false)} onPressButton={()=>setIsToastedRegistered(false)} />
         <View style={styles.ContainerBody}>
           <View style={styles.Title}>
             <Text style={styles.TextStyle}>Selamat Datang di TransEvilz</Text>
@@ -123,7 +123,7 @@ const Registration = ({navigation}) => {
                 keyboardType={'numeric'}
                 value={noHp}
                 onChangeText={text => {
-                  setNoHp(text.replace(/\D/g, ''));
+                  toString(setNoHp(text.replace(/\D/g, '')));
                 }}
                 style={styles.ContainerNumber}
                 // editable={country == '' ? false : true}
@@ -131,14 +131,13 @@ const Registration = ({navigation}) => {
               />
             </View>
             <NegatifCase text={'Anda harus mengisi bagian ini'} value={noHp} />
+            {noHp!==null&&(noHp!==''&&noHp.length<=10)?
             <NegatifCase
               text={'Format No.HP tidak sesuai'}
-              value={checkNumberRegister}
-            />
-            <NegatifCase
-              text={'No.hp sudah terdaftar'}
-              value={numberRegistered}
-            />
+              value={''}
+            />:null
+            }
+         
 
             <View style={{marginTop: 20}} />
           </View>
@@ -149,9 +148,11 @@ const Registration = ({navigation}) => {
           value={'Kirim'}
           onPress={handleKirim}
           isButton={stateGlobal.isButtonRegistration}
+          // positionOn={'absolute'}
+          // positionOff={'absolute'}
         />
       </View>
-    </>
+      </View>
   );
 };
 
@@ -229,7 +230,7 @@ const styles = StyleSheet.create({
     paddingRight: 10,
   },
   IconUpDownDropdown: {
-    position: 'absolute',
+    // position: 'absolute',
     right: 20,
     bottom: 25,
   },

@@ -22,7 +22,7 @@ import ImagePopupError from '../../../assets/popup/popup_error.png';
 import TextButtonBlue from '../../components/atoms/textButtonBlue';
 
 const PIN = ({navigation}) => {
-  const stateTransfer=useSelector(state=>state.transfer)
+  const stateTransfer = useSelector(state => state.transfer);
   const [pin, setPin] = useState([]);
   const [allPin, setAllPin] = useState(null);
 
@@ -35,23 +35,24 @@ const PIN = ({navigation}) => {
     if (pin.length >= 7) {
       setPin(pin.slice(0, -1));
       console.log('hapus ini');
-    } else if (pin.length == 6) {
+    } else if (pin.length === 6) {
       console.log('isi Regis', pinRegister);
       console.log('isi All OTP', allPin);
       console.log('isi All OTP', pin);
-      if (allPin != pinRegister) {
+      if (allPin !== pinRegister) {
         setPin([]);
         dispatch(setIsPopupPinInvalid(true));
       }
-    } else if (allPin == pinRegister) {
+    } else if (allPin === pinRegister) {
       dispatch(setIsPopupPinInvalid(false));
-      if(stateTransfer.countryDestination==null||stateTransfer.countryDestination==''){
+      if (
+        stateTransfer.countryDestination === null ||
+        stateTransfer.countryDestination === ''
+      ) {
         navigation.navigate('TransactionSuccess');
-      }
-      else{
+      } else {
         navigation.navigate('TransactionSuccessInternational');
       }
-      
     }
   });
   const handleDeletePin = item => {
@@ -60,7 +61,9 @@ const PIN = ({navigation}) => {
   const handleBack = () => {
     navigation.goBack();
   };
-  const handleForgotPin = () => {};
+  const handleForgotPin = () => {
+    navigation.navigate('ForgotPin');
+  };
 
   return (
     <View style={styles.Container}>

@@ -5,7 +5,7 @@ import {
   StyleSheet,
   Image,
   Text,
-  BackHandler,
+  // BackHandler,
   ScrollView,
 } from 'react-native';
 
@@ -22,8 +22,13 @@ import PopUp from '../../components/organism/popup';
 import ImageGirlPassword from '../../../assets/forgotPassword/girl_tries_password.png';
 import ImageReceiveMessage from '../../../assets/popup/received_message_icon.png';
 import NegatifCase from '../../components/atoms/negatifCaseTextInput';
+import TextFieldEmail from '../../components/moleculs/textFieldEmail';
+import { useDispatch, useSelector } from 'react-redux';
+import { setNewPassword } from '../../service/redux/reducer/usersSlice';
 
 const ForgotPassword = ({navigation}) => {
+  const dispatch=useDispatch()
+  const stateUsers=useSelector(state=>state.users)
   const [email, setEmail] = useState(null);
   const [isButton, setIsButton] = useState(false);
   const [checkValidEmail, setCheckValidEmail] = useState(false);
@@ -38,19 +43,19 @@ const ForgotPassword = ({navigation}) => {
       setCheckValidEmail(true);
     }
   };
-  const backAction = () => {
-    BackHandler.removeEventListener();
-    return true;
-  };
+  // const backAction = () => {
+  //   BackHandler.removeEventListener();
+  //   return true;
+  // };
   useEffect(() => {
-    console.log('isicheck email', checkValidEmail);
+    // console.log('cek state', useState);
 
-    if (email == null || email == '') {
+    if (email === null || email === '') {
       setIsButton(false);
       setCheckValidEmail(false);
-    } else if (email == 'client@gmail.com') {
+    } else if (email === 'client@gmail.com') {
       setIsButton(false);
-    } else if (checkValidEmail == false && email != '') {
+    } else if (checkValidEmail === false && email !== '') {
       console.log('isi Isbutton', isButton);
       setIsButton(true);
     } else {
@@ -58,11 +63,12 @@ const ForgotPassword = ({navigation}) => {
       setCheckValidEmail(true);
     }
 
-    BackHandler.addEventListener('hardwareBackPress', backAction);
-    return () =>
-      BackHandler.removeEventListener('hardwareBackPress', backAction);
+    // BackHandler.addEventListener('hardwareBackPress', backAction);
+    // return () =>
+    //   BackHandler.removeEventListener('hardwareBackPress', backAction);
   });
   const handleKirim = () => {
+    dispatch(setNewPassword({email:email}))
     setIsPopup(true);
   };
   const handleButtonPopup = () => {
@@ -99,18 +105,18 @@ const ForgotPassword = ({navigation}) => {
             <TextDefault value={'Email '} />
             <RequirementSymbols />
           </View>
-          <TextField
+          <TextFieldEmail
             placeholder={'Email'}
             value={email}
             onChangeText={handleCheckValidEmail}
+            keyboardType={'email-address'}
+            validValue={checkValidEmail}
+            textNegatifCaseBlank={'Anda harus mengisi bagian ini'}
+            textNegatifCase3={'Format email salah'}
+            isNegatifCase1={email==='client@gmail.com'}
+            textNegatifCase1={'Email tidak terdaftar'}
           />
-          {checkValidEmail ? (
-            <Text style={styles.TextWrong}>Format email salah</Text>
-          ) : null}
-          {email != 'client@gmail.com' ? null : (
-            <NegatifCase text={'Email tidak terdaftar'} value={''} />
-          )}
-          <NegatifCase value={email} text={'Anda harus mengisi bagian ini'} />
+  
         </View>
       </ScrollView>
       <View style={styles.ContainerKirim}>

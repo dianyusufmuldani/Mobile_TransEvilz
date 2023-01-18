@@ -6,7 +6,7 @@ import IconArrowDown from '../../../../assets/homepage/arrow-down.svg';
 const CardKurs = ({kursUang}) => {
   return (
     <View>
-      {kursUang == true ? (
+      {kursUang === true ? (
         <View style={styles.Container}>
           <Text style={styles.TextCurrency}>EUR/USD</Text>
           <View style={styles.ContainerKurs}>

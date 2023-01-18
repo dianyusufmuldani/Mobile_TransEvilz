@@ -7,6 +7,7 @@ import {
   Text,
   Image,
   ScrollView,
+  Linking,
 } from 'react-native';
 import {SelectList} from 'react-native-dropdown-select-list';
 import {useSelector, useDispatch} from 'react-redux';
@@ -33,13 +34,15 @@ import {
   setBankReceiver,
   setBankReceiverInternational,
   setNameReceiverInternational,
-  setSwiftCode
+  setSwiftCode,
 } from '../../service/redux/reducer/transferSlice';
 import ImagePopupError from '../../../assets/popup/popup_error.png';
 import Singapore from '../../../assets/transferCard/openmoji_flag-singapore.png';
 import UnitedStates from '../../../assets/transferCard/openmoji_flag-united-states.png';
 import Australia from '../../../assets/transferCard/openmoji_flag-australia.png';
 import Japan from '../../../assets/transferCard/openmoji_flag-japan.png';
+import TextButtonBlue from '../../components/atoms/textButtonBlue';
+import { formatCurrencyWithoutComma } from '../../helpers/formatter/currencyFormatter';
 
 const TransactionInternational = ({navigation}) => {
   const stateGlobal = useSelector(state => state.global);
@@ -52,27 +55,28 @@ const TransactionInternational = ({navigation}) => {
     {key: '2', value: 'JPMorgan Chase,'},
     {key: '3', value: 'Wells Fargo'},
     {key: '4', value: 'Citigroup'},
-    {key: '5', value: 'Goldman Sachs Group'}
+    {key: '5', value: 'Goldman Sachs Group'},
+    // {key: '0', value:''}
   ];
   const dataSGD = [
     {key: '1', value: 'DBS Singapore'},
     {key: '2', value: 'UOB Singapore'},
     {key: '3', value: 'Citibank Singapore'},
     {key: '4', value: 'Maybank Singapore'},
-    {key: '5', value: 'SBI Singapore'}
+    {key: '5', value: 'SBI Singapore'},
   ];
   const dataJPY = [
     {key: '1', value: 'Mizuho Bank'},
     {key: '2', value: 'Mizuho Corporate Bank'},
     {key: '3', value: 'Mizuho Trust & Banking Co'},
     {key: '4', value: 'Chiba Kogyo Bank'},
-    {key: '5', value: 'Trust & Custody Services Bank'}
+    {key: '5', value: 'Trust & Custody Services Bank'},
   ];
   const dataAUD = [
     {key: '1', value: 'Commonwealth Bank of Australia'},
     {key: '2', value: 'ANZ'},
     {key: '3', value: 'NAB Westpasck'},
-    {key: '4', value: 'Bank of Queensland'}
+    {key: '4', value: 'Bank of Queensland'},
   ];
   const handleSelanjutnya = () => {
     if (stateTransfer.accountNumberInternational == '00000000') {
@@ -82,10 +86,10 @@ const TransactionInternational = ({navigation}) => {
     }
   };
   const handleReset = () => {
-    // setSelected('');
+    setSelected('HELO');
     dispatch(setNameReceiverInternational(null));
     dispatch(setAccountNumberInternational(null));
-    dispatch(setSwiftCode(null))
+    dispatch(setSwiftCode(null));
   };
   useEffect(() => {
     console.log(selected);
@@ -101,14 +105,13 @@ const TransactionInternational = ({navigation}) => {
       stateTransfer.accountNumberInternational == ''
     ) {
       dispatch(setIsButtonTransactionLocal(false));
-    } 
+    }
     else if (
       stateTransfer.swiftCode == null ||
       stateTransfer.swiftCode == ''
     ) {
       dispatch(setIsButtonTransactionLocal(false));
-    }
-      else {
+    } else {
       dispatch(setBankReceiverInternational(selected));
       dispatch(setIsButtonTransactionLocal(true));
     }
@@ -136,97 +139,114 @@ const TransactionInternational = ({navigation}) => {
           <View style={styles.ContainerCountTransaction}>
             <View style={{flexDirection: 'row', alignItems: 'center'}}>
               <IconIndonesia />
-              <Text style={styles.TextFormatCurrencyCountry}>IDR ke {stateTransfer.countryDestination}</Text>
-              {stateTransfer.countryDestination=='USD'?
-                (<Image source={UnitedStates} style={{marginLeft:10}} />)
-                :(null)
-                }
-                {stateTransfer.countryDestination=='AUD'?
-                (<Image source={Australia} style={{marginLeft:10}} />)
-                :(null)
-                }
-                {stateTransfer.countryDestination=='JPY'?
-                (<Image source={Japan} style={{marginLeft:10}} />)
-                :(null)
-                }
-                {stateTransfer.countryDestination=='SGD'?
-                (<Image source={Singapore} style={{marginLeft:10}} />)
-                :(null)
-                }
+              <Text style={styles.TextFormatCurrencyCountry}>
+                IDR ke {stateTransfer.countryDestination}
+              </Text>
+              {stateTransfer.countryDestination == 'USD' ?
+                (<Image source={UnitedStates} style={{marginLeft: 10}} />) : (null)}
+              {stateTransfer.countryDestination == 'AUD' ? (
+                <Image source={Australia} style={{marginLeft: 10}} />
+              ) : null}
+              {stateTransfer.countryDestination == 'JPY' ? (
+                <Image source={Japan} style={{marginLeft: 10}} />
+              ) : null}
+              {stateTransfer.countryDestination == 'SGD' ? (
+                <Image source={Singapore} style={{marginLeft: 10}} />
+              ) : null}
             </View>
             <Text style={styles.TextTotal}>Total Transaksi</Text>
             <Text style={styles.TextIDR}>
-              {stateTransfer.totalTransactionInternational} IDR
+              {formatCurrencyWithoutComma(stateTransfer.totalTransactionInternational)}
             </Text>
           </View>
 
-          <View style={styles.FormInput}>
+          <View style={styles.FormInputBank}>
             <View style={{flexDirection: 'row'}}>
               <TextDefault value={'Pilih Bank '} />
               <RequirementSymbols />
             </View>
-            {stateTransfer.countryDestination=='USD'?
-            (<SelectList
-              setSelected={val => setSelected(val)}
-              data={dataUS}
-              save="value"
-              boxStyles={{
-                backgroundColor: '#F1F7FF',
-                borderWidth: 0,
-                width: '100%',
-              }}
-              placeholder="Pilih Bank"
-              inputStyles={{marginLeft: -15}}
-              search={false}
-              dropdownStyles={{backgroundColor: '#F1F7FF', borderWidth: 0}}
-            />):(null)}
-            {stateTransfer.countryDestination=='SGD'?
-            (<SelectList
-              setSelected={val => setSelected(val)}
-              data={dataSGD}
-              save="value"
-              boxStyles={{
-                backgroundColor: '#F1F7FF',
-                borderWidth: 0,
-                width: '100%',
-              }}
-              placeholder="Pilih Bank"
-              inputStyles={{marginLeft: -15}}
-              search={false}
-              dropdownStyles={{backgroundColor: '#F1F7FF', borderWidth: 0}}
-            />):(null)}
-            {stateTransfer.countryDestination=='JPY'?
-            (<SelectList
-              setSelected={val => setSelected(val)}
-              data={dataJPY}
-              save="value"
-              boxStyles={{
-                backgroundColor: '#F1F7FF',
-                borderWidth: 0,
-                width: '100%',
-              }}
-              placeholder="Pilih Bank"
-              inputStyles={{marginLeft: -15}}
-              search={false}
-              dropdownStyles={{backgroundColor: '#F1F7FF', borderWidth: 0}}
-            />):(null)}
-            {stateTransfer.countryDestination=='AUD'?
-            (<SelectList
-              setSelected={val => setSelected(val)}
-              data={dataAUD}
-              save="value"
-              boxStyles={{
-                backgroundColor: '#F1F7FF',
-                borderWidth: 0,
-                width: '100%',
-              }}
-              placeholder="Pilih Bank"
-              inputStyles={{marginLeft: -15}}
-              search={false}
-              dropdownStyles={{backgroundColor: '#F1F7FF', borderWidth: 0}}
-            />):(null)}
+            {stateTransfer.countryDestination == 'USD' ?
+              (<SelectList
+                setSelected={val => setSelected(val)}
+                data={dataUS}
+                save="value"
+                boxStyles={{
+                  backgroundColor: '#F1F7FF',
+                  borderWidth: 0,
+                  width: '100%',
+                }}
+                placeholder="Pilih Bank"
+                inputStyles={{marginLeft: -15}}
+                search={false}
+                dropdownStyles={{backgroundColor: '#F1F7FF', borderWidth: 0}}
+              />
+            ) : null}
+            {stateTransfer.countryDestination == 'SGD' ?
+              (<SelectList
+                setSelected={val => setSelected(val)}
+                data={dataSGD}
+                save="value"
+                boxStyles={{
+                  backgroundColor: '#F1F7FF',
+                  borderWidth: 0,
+                  width: '100%',
+                }}
+                placeholder="Pilih Bank"
+                inputStyles={{marginLeft: -15}}
+                search={false}
+                dropdownStyles={{backgroundColor: '#F1F7FF', borderWidth: 0}}
+              />
+            ) : null}
+            {stateTransfer.countryDestination == 'JPY' ?
+              (<SelectList
+                setSelected={val => setSelected(val)}
+                data={dataJPY}
+                save="value"
+                boxStyles={{
+                  backgroundColor: '#F1F7FF',
+                  borderWidth: 0,
+                  width: '100%',
+                }}
+                placeholder="Pilih Bank"
+                inputStyles={{marginLeft: -15}}
+                search={false}
+                dropdownStyles={{backgroundColor: '#F1F7FF', borderWidth: 0}}
+              />
+            ) : null}
+            {stateTransfer.countryDestination == 'AUD' ?
+              (<SelectList
+                setSelected={val => setSelected(val)}
+                data={dataAUD}
+                save="value"
+                boxStyles={{
+                  backgroundColor: '#F1F7FF',
+                  borderWidth: 0,
+                  width: '100%',
+                }}
+                placeholder="Pilih Bank"
+                inputStyles={{marginLeft: -15}}
+                search={false}
+                dropdownStyles={{backgroundColor: '#F1F7FF', borderWidth: 0}}
+              />
+            ) : null}
           </View>
-
+          <View style={styles.FormInput}>
+            <View style={{flexDirection: 'row'}}>
+              <TextDefault value={'Kode Swift '} />
+              <RequirementSymbols />
+            </View>
+            <TextField
+              placeholder={'Masukkan kode swift'}
+              value={stateTransfer.swiftCode}
+              onChangeText={value =>
+                dispatch(setSwiftCode(value.replace(/\D/g, '')))
+              }
+              keyboardType={'numeric'}
+              textNegatifCaseBlank={'Anda harus mengisi bagian ini'}
+            />
+           
+            <TextButtonBlue value={'Silakan cek kode swift disini'} onPress={() => Linking.openURL  ('https://www.transfez.com/swift-codes/')}/>
+          </View> 
           <View style={styles.FormInput}>
             <View style={{flexDirection: 'row'}}>
               <TextDefault value={'Nama Penerima '} />
@@ -235,12 +255,12 @@ const TransactionInternational = ({navigation}) => {
             <TextField
               placeholder={'Masukkan Nama Penerima'}
               value={stateTransfer.nameReceiverInternational}
-              onChangeText={value => dispatch(setNameReceiverInternational(value))}
+              onChangeText={value =>
+                dispatch(setNameReceiverInternational(value))
+              }
+              textNegatifCaseBlank={'Anda harus mengisi bagian ini'}
             />
-            <NegatifCase
-              value={stateTransfer.nameReceiverInternational}
-              text={'Anda harus mengisi bagian ini'}
-            />
+           
           </View>
 
           <View style={styles.FormInput}>
@@ -252,34 +272,17 @@ const TransactionInternational = ({navigation}) => {
               placeholder={'Masukkan No. Rekening'}
               value={stateTransfer.accountNumberInternational}
               onChangeText={value =>
-                dispatch(setAccountNumberInternational(value.replace(/\D/g, '')))
+                dispatch(
+                  setAccountNumberInternational(value.replace(/\D/g, '')),
+                )
               }
               keyboardType={'numeric'}
+              textNegatifCaseBlank={'Anda harus mengisi bagian ini'}
             />
-            <NegatifCase
-              value={stateTransfer.accountNumberInternational}
-              text={'Anda harus mengisi bagian ini'}
-            />
+            
           </View>
 
-          <View style={styles.FormInput}>
-            <View style={{flexDirection: 'row'}}>
-              <TextDefault value={'Kode Swift '} />
-              <RequirementSymbols />
-            </View>
-            <TextField
-              placeholder={'Masukkan No. Rekening'}
-              value={stateTransfer.swiftCode}
-              onChangeText={value =>
-                dispatch(setSwiftCode(value.replace(/\D/g, '')))
-              }
-              keyboardType={'numeric'}
-            />
-            <NegatifCase
-              value={stateTransfer.swiftCode}
-              text={'Anda harus mengisi bagian ini'}
-            />
-          </View>
+          
         </ScrollView>
       </View>
       <View style={styles.ContainerButton}>
@@ -349,7 +352,7 @@ const styles = StyleSheet.create({
     height: 115,
     borderRadius: 10,
     justifyContent: 'center',
-    marginTop:10
+    marginTop: 10,
     // top:-135,
   },
   TextTotal: {
@@ -362,8 +365,11 @@ const styles = StyleSheet.create({
     fontSize: 30,
     fontWeight: '700',
   },
+  FormInputBank: {
+    marginTop: 60,
+  },
   FormInput: {
-    marginTop: 30,
+    marginTop: 10,
   },
   ContainerButton: {
     flexDirection: 'row',

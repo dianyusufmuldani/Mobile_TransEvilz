@@ -6,7 +6,7 @@ const CustomRadioButton = ({onPress, isRadio, value}) => {
     <View style={styles.Container}>
       <Text style={styles.TextRadio}>{value}</Text>
       <TouchableOpacity
-        style={isRadio != true ? styles.RadioOff : styles.RadioOn}
+        style={isRadio !== true ? styles.RadioOff : styles.RadioOn}
         onPress={onPress}
       />
     </View>

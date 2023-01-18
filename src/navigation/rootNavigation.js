@@ -30,10 +30,17 @@ import TransactionInternational from '../pages/transactionInternational';
 import PIN from '../pages/pin';
 import TransactionMethodInternational from '../pages/transactionMethodInternational';
 import TransactionSuccessInternational from '../pages/transactionSuccessInternational';
+import {useSelector} from 'react-redux';
+import Loading from '../components/moleculs/loading';
+import ForgotPin from '../pages/forgotPin';
+import CreateNewPin from '../pages/createNewPin';
+import StatusTransaction from '../pages/statusTransaction';
 const Stack = createNativeStackNavigator();
 const RootNavigation = () => {
+  const stateGlobal = useSelector(state => state.global);
   return (
     <NavigationContainer>
+      <Loading visible={stateGlobal.isLoading} />
       <Stack.Navigator>
         <Stack.Screen
           name="onBoarding"
@@ -125,9 +132,24 @@ const RootNavigation = () => {
           component={TransactionMethodInternational}
           options={{headerShown: false}}
         />
-         <Stack.Screen
+        <Stack.Screen
           name="TransactionSuccessInternational"
           component={TransactionSuccessInternational}
+          options={{headerShown: false}}
+        />
+        <Stack.Screen
+          name="ForgotPin"
+          component={ForgotPin}
+          options={{headerShown: false}}
+        />
+        <Stack.Screen
+          name="CreateNewPin"
+          component={CreateNewPin}
+          options={{headerShown: false}}
+        />
+        <Stack.Screen
+          name="StatusTransaction"
+          component={StatusTransaction}
           options={{headerShown: false}}
         />
       </Stack.Navigator>
@@ -142,8 +164,8 @@ export const TabNav = () => {
     <Tab.Navigator
       screenOptions={{
         tabBarStyle: {
-          borderTopLeftRadius: 20,
-          borderTopRightRadius: 20,
+          // borderTopLeftRadius: 20,
+          // borderTopRightRadius: 20,
           height: 60,
           width: '100%',
           elevation: 20,

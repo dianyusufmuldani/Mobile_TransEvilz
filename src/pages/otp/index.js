@@ -8,8 +8,9 @@ import {
   TextInput,
   ScrollView,
 } from 'react-native';
-import CountDownTimer from 'react-native-countdown-timer-hooks';
+// import CountDownTimer from 'react-native-countdown-timer-hooks';
 import {useDispatch, useSelector} from 'react-redux';
+import CountDown from 'react-native-countdown-fixed'
 
 //Import Component
 import HeaderPages from '../../components/moleculs/headerPages';
@@ -19,6 +20,7 @@ import {Colours} from '../../helpers/colours';
 import NumberKeyboard from '../../components/moleculs/numberKeyboard';
 import PopUpError from '../../components/organism/popupError';
 import {
+  setIsLoading,
   setIsPopupIncorectOtp,
   setIsPopupRequestTimedOut,
 } from '../../service/redux/reducer/globalSlice';
@@ -27,72 +29,81 @@ import {
 import CancelKeyboardOtp from '../../../assets/otp/cancel_keyboard_otp.svg';
 import ImagePopupError from '../../../assets/popup/popup_error.png';
 import ImageTimerRuns from '../../../assets/popup/timer_runs.png';
-import { getOtp } from '../../service/redux/reducer/otpSlice';
+import {getOtp, setOtpSlice} from '../../service/redux/reducer/otpSlice';
 
 const OTP = ({navigation}) => {
-  const stateOtp=useSelector(state=>state.otp)
   const [otp, setOtp] = useState([]);
   const [allOtp, setAllOtp] = useState(null);
-  const [fixOtp, setFixOtp]=useState(null)
-  const refTimer = useRef();
-  const [timerEnd, setTimerEnd] = useState(false);
-
-  const timerCallbackFunc = timerFlag => {
-    setTimerEnd(timerFlag);
-    console.log('Timeout', timerEnd);
-    dispatch(setIsPopupRequestTimedOut(true));
-  };
+  const [iSRunning, setIsRunning]=useState(true)
+  const [resetCountDown, setResetCountDown]=useState(Math.random())
   const dispatch = useDispatch();
   const stateGlobal = useSelector(state => state.global);
+  const stateOtp = useSelector(state => state.otp);
 
   useEffect(() => {
     setAllOtp(otp.join(''));
-    setFixOtp(Number(allOtp))
-    console.log('ISI OTP BARU', otp);
+  }, [otp]);
 
-    if (otp.length >= 7) {
-      setOtp(otp.slice(0, -1));
-      console.log('hapus ini');
-    } else if (otp.length == 6) {
-      
+  useEffect(() => {
+    if (otp.length === 6) {
+      console.log('MASUK', allOtp);
+      dispatch(setIsLoading(true));
       const request = {
-        otp_code: fixOtp,
-  
+        otp_code: Number(allOtp),
       };
       dispatch(getOtp(request));
-      
-    } 
-  });
-
-  useEffect(()=>{
-    if(stateOtp.data!=null||stateOtp.data!=undefined){
-      if (stateOtp.data.status='success') {
-        
-        setTimerEnd(true);
-        dispatch(setIsPopupIncorectOtp(false));
-        navigation.navigate('FormRegistration');
-      }
-      else{
-        setTimerEnd(true)
-        dispatch(setIsPopupIncorectOtp(true))
-      }
+    } else if (otp.length >= 7) {
+      setOtp(otp.slice(0, -1));
+      console.log('hapus ini');
     }
-    
-  },[stateOtp])
+  }, [allOtp]);
+
+  useEffect(() => {
+    console.log('CEK', stateOtp);
+    if (stateOtp.data === null || stateOtp.data === '') {
+      console.log('IF pertama');
+    } else if (stateOtp.data !== null || stateOtp.data !== undefined) {
+      if (stateOtp.data === 200) {
+        dispatch(setIsLoading(false));
+        setIsRunning(false);
+        dispatch(setIsPopupIncorectOtp(false));
+        dispatch(setOtpSlice(null))
+        navigation.navigate('FormRegistration');
+        console.log('Sukses');
+      } else if (stateOtp.data === 400) {
+        dispatch(setIsLoading(false));
+        dispatch(setIsPopupIncorectOtp(true));
+        dispatch(setOtpSlice(null))
+        console.log('Gagal');
+      }
+    } else {
+      console.log('Awas aja gagal');
+    }
+  }, [stateOtp]);
+
   const handleDeleteOtp = item => {
     setOtp(otp.slice(0, -1));
   };
   const handleBack = () => {
     navigation.goBack();
-    setTimerEnd(true);
+    setIsRunning(false);
+   
   };
   const handleSendAgain = () => {
-    refTimer.current.resetTimer();
-    setTimerEnd(false);
+    setIsRunning(true)
+    setResetCountDown(Math.random())
   };
   const handleTryAgain = () => {
-    setOtp([])
+    setOtp([]);
+    setAllOtp(null);
+    dispatch(setOtpSlice(null));
     dispatch(setIsPopupIncorectOtp(false));
+  };
+  const handleTryAgainTimedOut = () => {
+    setOtp([]);
+    setAllOtp(null);
+    dispatch(setOtpSlice(null));
+    dispatch(setIsPopupRequestTimedOut(false))
   };
   return (
     <View style={styles.Container}>
@@ -105,7 +116,7 @@ const OTP = ({navigation}) => {
       />
       <PopUpError
         visible={stateGlobal.isPopupRequestTimedOut}
-        onPressButton={() => dispatch(setIsPopupRequestTimedOut(false))}
+        onPressButton={handleTryAgainTimedOut}
         ImagePopUp={ImageTimerRuns}
         value={'Oops! Waktu anda Habis'}
         textButton={'Coba Nanti'}
@@ -120,25 +131,22 @@ const OTP = ({navigation}) => {
           </Text>
         </View>
 
-        <CountDownTimer
-          ref={refTimer}
-          timestamp={60}
-          timerCallback={timerCallbackFunc}
-          containerStyle={{
-            height: 56,
-            width: '100%',
-            justifyContent: 'center',
-            alignItems: 'center',
-            borderRadius: 35,
-            backgroundColor: 'transparent',
-          }}
-          textStyle={{
-            fontSize: 12,
-            color: '#2ACA10',
-            fontWeight: '700',
-            letterSpacing: 0.25,
-            paddingHorizontal: 30,
-          }}
+        <CountDown
+        key={resetCountDown}
+        until={5}
+        onFinish={() => {
+          setIsRunning(false)
+          dispatch(setIsPopupRequestTimedOut(true))
+        }}
+        onPress={() => alert('hello')}
+        size={12}
+        digitTxtStyle={{color:'#2ACA10'}}
+        digitStyle={{backgroundColor:'transparent', marginHorizontal:-5}}
+        separatorStyle={{color:'#2ACA10'}}
+        timeLabels={{m: null, s: null}}
+        timeToShow={['M', 'S']}
+        running={iSRunning}
+        showSeparator
         />
 
         <View style={styles.ContainerContentOtp}>
@@ -152,7 +160,7 @@ const OTP = ({navigation}) => {
         </View>
         <View style={styles.KirimUlang}>
           <TextDescriptionOnBoarding value={'Belum dapat kode OTP? '} />
-          {timerEnd == true ? (
+          {iSRunning == false ? (
             <TextButton
               value={'KIRIM ULANG KODE OTP'}
               onPress={handleSendAgain}

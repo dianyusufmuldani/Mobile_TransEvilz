@@ -12,16 +12,24 @@ import SwitchingApp from '../../components/moleculs/switching';
 //Import Assets
 import ImageUser from '../../../assets/user/kakashi.jpg';
 import IconEdit from '../../../assets/user/edit.svg';
+import IconEditPhoto from '../../../assets/user/IconEditPhoto.svg';
 import IconLogout from '../../../assets/user/power.svg';
 import IconArrowRight from '../../../assets/user/arrowright.svg';
+import {useDispatch, useSelector} from 'react-redux';
+import HeaderPagesBlue from '../../components/moleculs/headerPagesBlue';
+import { setLogin, setUsers } from '../../service/redux/reducer/usersSlice';
 
 const User = ({navigation}) => {
+  const dispatch=useDispatch()
+  const stateUsers = useSelector(state => state.users);
   const handleLogout = () => {
+    dispatch(setLogin(null))
+    dispatch(setUsers(null))
     navigation.navigate('Login');
   };
   return (
     <View style={styles.Container}>
-      <HeaderPages
+      <HeaderPagesBlue
         value={'Akun Saya'}
         hideShowTitle={true}
         showBackButton={false}
@@ -29,14 +37,24 @@ const User = ({navigation}) => {
       <View style={styles.ContainerBody}>
         <View style={styles.CardUser}>
           <View style={styles.ContainerImage}>
-            <Image source={ImageUser} style={styles.StyleImage} />
+            <Image
+              source={{
+                uri: `https://robohash.org/${stateUsers.data.user.fullname}`,
+              }}
+              style={styles.StyleImage}
+            />
+            <TouchableOpacity style={{bottom: 20, right: -40}}>
+              <IconEditPhoto />
+            </TouchableOpacity>
           </View>
           <View style={styles.ContainerText}>
-            <Text style={styles.TextStyle}>Hatake Kakashi</Text>
+            <Text style={styles.TextStyle}>
+              {stateUsers.data.user.fullname}
+            </Text>
+            {/* <TouchableOpacity style={styles.ContainerIconEdit}>
+              <IconEdit />
+            </TouchableOpacity> */}
           </View>
-          <TouchableOpacity style={styles.ContainerIconEdit}>
-            <IconEdit />
-          </TouchableOpacity>
         </View>
         <View style={styles.CardFeature}>
           <TextDefault value={'Bahasa'} />
@@ -55,7 +73,7 @@ const User = ({navigation}) => {
         </TouchableOpacity>
         <TouchableOpacity style={styles.ContainerLogout} onPress={handleLogout}>
           <IconLogout />
-          <Text style={styles.TextLogout}>Logout</Text>
+          <Text style={styles.TextLogout}>Keluar</Text>
         </TouchableOpacity>
       </View>
     </View>
@@ -73,38 +91,39 @@ const styles = StyleSheet.create({
   },
   CardUser: {
     width: 342,
-    height: 94,
-    borderWidth: 3,
-    borderColor: 'rgba(52, 52, 52, 0.1)',
+    height: 139,
     borderRadius: 20,
-
+    backgroundColor: '#F1F7FF',
     paddingLeft: 13,
     paddingVertical: 17,
-    flexDirection: 'row',
     marginVertical: 10,
+    alignItems: 'center',
   },
   ContainerImage: {
     width: 60,
     height: 60,
-    marginRight: 16,
+    marginBottom: 15,
+    borderWidth:1,
+    borderRadius:60,
+    borderColor:'#FFFFFF'
   },
   StyleImage: {
     width: '100%',
     height: '100%',
 
-    borderRadius: 60,
+    // borderRadius: 60,
   },
   ContainerText: {
     justifyContent: 'center',
+    flexDirection: 'row',
+    alignItems: 'center',
   },
   TextStyle: {
     fontSize: 18,
     fontWeight: '700',
   },
   ContainerIconEdit: {
-    position: 'absolute',
-    right: 15,
-    top: 15,
+    marginLeft: 10,
   },
   CardFeature: {
     flexDirection: 'row',
@@ -114,10 +133,11 @@ const styles = StyleSheet.create({
 
     height: 60,
     alignItems: 'center',
-    borderRadius: 10,
+    // borderRadius: 10,
     paddingHorizontal: 10,
-    borderWidth: 0.1,
-    borderColor: 'grey',
+    borderTopWidth: 1,
+    borderBottomWidth: 1,
+    borderColor: '#EEF6FF',
   },
   ContainerLogout: {
     flexDirection: 'row',

@@ -1,15 +1,10 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
 
-
-// import cors from 'cors'
-
 const baseURL = 'https://red-gifted-squid.cyclic.app/api/v1/';
 const hitApi = axios.create({
   baseURL: baseURL,
-
 });
-
 
 hitApi.interceptors.request.use(request => {
   console.log('request', request);
@@ -34,14 +29,53 @@ export const hitNewPassword = requestParam => {
   return hitApi.put('new_password', requestParam);
 };
 
-export const hitPin = async(requestParam) => {
-  const token = await AsyncStorage.getItem('token')
-  console.log('isi token', token)
-  return hitApi.post('pin', requestParam,{headers:{Authorization: `Bearer ${token}`}});
+export const hitPin = async requestParam => {
+  const token = await AsyncStorage.getItem('token');
+  console.log('isi token', token);
+  return hitApi.post('pin', requestParam, {
+    headers: {Authorization: `Bearer ${token}`},
+  });
 };
 
-export const hitCreatePin = async(requestParam) => {
-  const token = await AsyncStorage.getItem('token')
-  console.log('isi token', token)
-  return hitApi.put('new_pin', requestParam,{headers:{Authorization: `Bearer ${token}`}});
+export const hitCreatePin = async requestParam => {
+  const token = await AsyncStorage.getItem('token');
+  console.log('isi token', token);
+  return hitApi.put('new_pin', requestParam, {
+    headers: {Authorization: `Bearer ${token}`},
+  });
+};
+
+export const hitReceiverLocal = async requestParam => {
+  return hitApi.get(
+    `receipent?bank_code=${requestParam.bank_code}&no_rekening=${requestParam.no_rekening}`,
+    requestParam,
+  );
+};
+
+export const hitBank = async requestParam => {
+  return hitApi.get('bank', requestParam);
+};
+
+export const hitTransaction = async requestParam => {
+  const token = await AsyncStorage.getItem('token');
+  console.log('isi token', token);
+  return hitApi.post('transactions', requestParam, {
+    headers: {Authorization: `Bearer ${token}`},
+  });
+};
+
+export const hitHistory = async requestParam => {
+  const token = await AsyncStorage.getItem('token');
+  console.log('isi token', token);
+  return hitApi.post('myTransaction', requestParam, {
+    headers: {Authorization: `Bearer ${token}`},
+  });
+};
+
+export const hitTransactionByID = async requestParam => {
+  const token = await AsyncStorage.getItem('token');
+  return hitApi.post(
+    `transactions?transaction_id=${requestParam.transaction_id}`,
+    requestParam,  {headers: {Authorization: `Bearer ${token}`}}
+  );
 };

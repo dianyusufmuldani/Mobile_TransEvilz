@@ -18,14 +18,16 @@ const TextField = ({
   isNegatifCase2,
   textNegatifCase1,
   textNegatifCase2,
-  textNegatifCaseBlank
+  textNegatifCaseBlank,
 }) => {
   return (
     <>
       <View
-        style={value === '' ||
-        isNegatifCase1===true ||
-        isNegatifCase2===true ? styles.ContainerError : styles.Container}>
+        style={
+          value === '' || isNegatifCase1 === true || isNegatifCase2 === true
+            ? styles.ContainerError
+            : styles.Container
+        }>
         <TextInput
           placeholder={placeholder}
           value={value}
@@ -41,14 +43,13 @@ const TextField = ({
         />
       </View>
       <NegatifCase text={textNegatifCaseBlank} value={value} />
-   
-    {isNegatifCase1 ?
-     <NegatifCase text={textNegatifCase1} value={''} />:null
-    }
-    {isNegatifCase2 ?
-     <NegatifCase text={textNegatifCase2} value={''} />:null
-    }
 
+      {isNegatifCase1 ? (
+        <NegatifCase text={textNegatifCase1} value={''} />
+      ) : null}
+      {isNegatifCase2 ? (
+        <NegatifCase text={textNegatifCase2} value={''} />
+      ) : null}
     </>
   );
 };

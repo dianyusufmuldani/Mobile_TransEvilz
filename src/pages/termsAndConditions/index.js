@@ -168,14 +168,14 @@ export default TermsAndConditions;
 const styles = StyleSheet.create({
   Container: {
     flex: 1,
-    backgroundColor:'#FFFFFF'
+    backgroundColor: '#FFFFFF',
   },
   ContainerBody: {
     backgroundColor: '#F1F7FF',
     width: '90%',
     alignSelf: 'center',
-    paddingTop:10,
-    marginTop:15
+    paddingTop: 10,
+    marginTop: 15,
   },
   TextTitle: {
     fontWeight: '700',

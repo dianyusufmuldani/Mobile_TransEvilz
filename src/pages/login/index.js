@@ -22,7 +22,11 @@ import TextFieldPassword from '../../components/moleculs/textFieldPassword';
 import {Colours} from '../../helpers/colours';
 import TextFieldEmail from '../../components/moleculs/textFieldEmail';
 import PopUpError from '../../components/organism/popupError';
-import {getLogin, getUsers, setLogin} from '../../service/redux/reducer/usersSlice';
+import {
+  getLogin,
+  getUsers,
+  setLogin,
+} from '../../service/redux/reducer/usersSlice';
 import {
   setIsLoading,
   setIsPopupError3xTest,
@@ -44,8 +48,8 @@ const Login = ({navigation}) => {
   const [checkValidEmail, setCheckValidEmail] = useState(false);
   const [checkValidPassword, setCheckValidPassword] = useState(false);
   const [isPopup3x, setIsPopup3x] = useState(false);
-  const [isToastedNotRegistered, setIsToastedNotRegistered]=useState(false)
-  const [counterLogin, setCounterLogin]=useState(0)
+  const [isToastedNotRegistered, setIsToastedNotRegistered] = useState(false);
+  const [counterLogin, setCounterLogin] = useState(0);
   const stateUsers = useSelector(state => state.users);
   const stateGlobal = useSelector(state => state.global);
   const dispatch = useDispatch();
@@ -55,10 +59,10 @@ const Login = ({navigation}) => {
     setEmail(text);
     if (re.test(text) || regex.test(text)) {
       setCheckValidEmail(false);
-      dispatch(setLogin(null))
+      dispatch(setLogin(null));
     } else {
       setCheckValidEmail(true);
-      dispatch(setLogin(null))
+      dispatch(setLogin(null));
     }
   };
   const handleCheckValidPassword = text => {
@@ -88,92 +92,90 @@ const Login = ({navigation}) => {
       console.log('isiCheck Email OKE', checkValidEmail);
     } else if (email === 'client@gmail.com') {
       setIsButton(false);
-    } 
-      else if(counterLogin===3){
-        setIsButton(false)
-      }
-      else if (checkValidEmail === false && checkValidPassword === false) {
+    } else if (counterLogin === 3) {
+      setIsButton(false);
+    } else if (checkValidEmail === false && checkValidPassword === false) {
       setIsButton(true);
     } else {
       setIsButton(false);
     }
     BackHandler.addEventListener('hardwareBackPress', backAction);
-    // return () =>
-    //   BackHandler.removeEventListener('hardwareBackPress', backAction);
   }, [email, password]);
   const handleRegistrasi = () => {
     navigation.navigate('Registration');
   };
   const handleLogin = () => {
-    
     dispatch(setIsLoading(true));
     const request = {
-      email: email,
+      email: email.toLowerCase(),
       password: password,
     };
     dispatch(getLogin(request));
-
-    
   };
 
-  useEffect(()=>{
-    console.log('isi coba', stateUsers)
-    console.log('counter', counterLogin);
-  })
   useEffect(() => {
-    
+    console.log('isi coba', stateUsers);
+    console.log('counter', counterLogin);
+  });
+  useEffect(() => {
     console.log('stateUsers from pages Login', stateUsers.data);
 
-    if (stateUsers.login != null || stateUsers.login != undefined||stateUsers.data!=null||stateUsers.data!=undefined) {
+    if (
+      stateUsers.login != null ||
+      stateUsers.login != undefined ||
+      stateUsers.data != null ||
+      stateUsers.data != undefined
+    ) {
       dispatch(setIsLoading(false));
       if (stateUsers.login === 200) {
-        if(stateUsers.data!==null){
-           if (stateUsers.data.user.userPin==false){
+        if (stateUsers.data !== null) {
+          if (stateUsers.data.user.userPin == false) {
             console.log('isi state users s', stateUsers.data.user.accessToken);
             navigation.navigate('CreatePIN');
-        }
-        else {
-          navigation.navigate('HomepageNav');
+          } else {
+            navigation.navigate('HomepageNav');
           }
-      } }
-      else if (stateUsers.login === 400) {
-        dispatch(setLogin(null))
-        setCounterLogin(counterLogin+1)
         }
+      } else if (stateUsers.login === 400) {
+        dispatch(setLogin(null));
+        setCounterLogin(counterLogin + 1);
       }
+    }
   }, [stateUsers]);
-  useEffect(()=>{
-    if(counterLogin===0){
-    }
-    else if(counterLogin<3){
-      console.log('Login gagal nambah')
-      setIsToastedNotRegistered(true)
-    }
-    else{
-      dispatch(setIsPopupError3xTest(true))
-      console.log('Terblokir')
-      setIsButton(false)
+  useEffect(() => {
+    if (counterLogin === 0) {
+    } else if (counterLogin < 3) {
+      console.log('Login gagal nambah');
+      setIsToastedNotRegistered(true);
+    } else {
+      dispatch(setIsPopupError3xTest(true));
+      console.log('Terblokir');
+      setIsButton(false);
       setTimeout(() => {
-        setCounterLogin(0)
-        setIsButton(true)
-        }, 60000);
+        setCounterLogin(0);
+        setIsButton(true);
+      }, 60000);
     }
-  },[counterLogin])
+  }, [counterLogin]);
 
-
-  // const getToken = async () => {
-  //   if (response && response.data.accessToken && stateUsers.data.user.accessToken) {
-  //   const token = await AsyncStorage.setItem('token', stateUsers.data.user.accessToken);
-  //   console.log('get token on notif ', token);
-  //   }
-  // };
   const handleForgotPassword = () => {
     navigation.navigate('ForgotPassword');
   };
   return (
-    <View  style={styles.Container}>
+    <View style={styles.Container}>
       <ScrollView>
-        <ToastedFailed visible={isToastedNotRegistered} onPressModal={()=>{setIsToastedNotRegistered(false), dispatch(setLogin(null))}} onPressButton={()=>{setIsToastedNotRegistered(false), dispatch(setLogin(null))}} width={'70%'} height={39} textToasted={'Email anda tidak terdaftar'}/>
+        <ToastedFailed
+          visible={isToastedNotRegistered}
+          onPressModal={() => {
+            setIsToastedNotRegistered(false), dispatch(setLogin(null));
+          }}
+          onPressButton={() => {
+            setIsToastedNotRegistered(false), dispatch(setLogin(null));
+          }}
+          width={'70%'}
+          height={39}
+          textToasted={'Email anda tidak terdaftar'}
+        />
         <PopUpError
           visible={stateGlobal.isPopupError3xTest}
           onPressButton={() => dispatch(setIsPopupError3xTest(false))}
@@ -222,7 +224,7 @@ const Login = ({navigation}) => {
               validValue={checkValidEmail}
               textNegatifCase3={'Format email salah'}
               textNegatifCaseBlank={'Anda harus mengisi bagian ini'}
-              isNegatifCase1={email==='admin@gmail.com'}
+              isNegatifCase1={email === 'admin@gmail.com'}
               textNegatifCase1={'Email tidak terdaftar'}
             />
           </View>
@@ -248,7 +250,9 @@ const Login = ({navigation}) => {
                   blankValue={password}
                   validValue={checkValidPassword}
                   textNegatifCaseBlank={'Anda harus mengisi bagian ini'}
-                  textNegatifCase3={'Kata sandi harus berisi huruf besar, angka dan simbol (@ * # &)'}
+                  textNegatifCase3={
+                    'Kata sandi harus berisi huruf besar, angka dan simbol (@ * # &)'
+                  }
                 />
               </View>
             </View>
@@ -265,7 +269,7 @@ const Login = ({navigation}) => {
       <View style={styles.ButtonLogin}>
         <BlueButton value={'Masuk'} onPress={handleLogin} isButton={isButton} />
       </View>
-      </View>
+    </View>
   );
 };
 

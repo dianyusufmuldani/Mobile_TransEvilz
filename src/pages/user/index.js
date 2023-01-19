@@ -1,5 +1,5 @@
 //Import Library
-import React from 'react';
+import React, {useState} from 'react';
 import {View, StyleSheet, Text, Image, TouchableOpacity} from 'react-native';
 
 //Import Component
@@ -17,14 +17,20 @@ import IconLogout from '../../../assets/user/power.svg';
 import IconArrowRight from '../../../assets/user/arrowright.svg';
 import {useDispatch, useSelector} from 'react-redux';
 import HeaderPagesBlue from '../../components/moleculs/headerPagesBlue';
-import { setLogin, setUsers } from '../../service/redux/reducer/usersSlice';
+import {setLogin, setUsers} from '../../service/redux/reducer/usersSlice';
+import PopUpExit from '../../components/organism/popupExit';
+import ImageError from '../../../assets/popup/popup_error.png';
 
 const User = ({navigation}) => {
-  const dispatch=useDispatch()
+  const dispatch = useDispatch();
   const stateUsers = useSelector(state => state.users);
+  const [isPopupExit, setIsPopupExit] = useState(false);
   const handleLogout = () => {
-    dispatch(setLogin(null))
-    dispatch(setUsers(null))
+    setIsPopupExit(true);
+  };
+  const handleLogoutSuccess = () => {
+    dispatch(setLogin(null));
+    dispatch(setUsers(null));
     navigation.navigate('Login');
   };
   return (
@@ -33,6 +39,15 @@ const User = ({navigation}) => {
         value={'Akun Saya'}
         hideShowTitle={true}
         showBackButton={false}
+      />
+      <PopUpExit
+        visible={isPopupExit}
+        onPressBlue={handleLogoutSuccess}
+        onPressWhite={() => setIsPopupExit(false)}
+        ImagePopUp={ImageError}
+        textButtonBlue={'Ya'}
+        textButtonWhite={'Tidak'}
+        value={'Apakah anda yakin ingin keluar ?'}
       />
       <View style={styles.ContainerBody}>
         <View style={styles.CardUser}>
@@ -103,15 +118,13 @@ const styles = StyleSheet.create({
     width: 60,
     height: 60,
     marginBottom: 15,
-    borderWidth:1,
-    borderRadius:60,
-    borderColor:'#FFFFFF'
+    borderWidth: 1,
+    borderRadius: 60,
+    borderColor: '#FFFFFF',
   },
   StyleImage: {
     width: '100%',
     height: '100%',
-
-    // borderRadius: 60,
   },
   ContainerText: {
     justifyContent: 'center',
@@ -133,7 +146,6 @@ const styles = StyleSheet.create({
 
     height: 60,
     alignItems: 'center',
-    // borderRadius: 10,
     paddingHorizontal: 10,
     borderTopWidth: 1,
     borderBottomWidth: 1,

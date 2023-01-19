@@ -1,13 +1,6 @@
 //Import Library
 import React, {useState, useEffect} from 'react';
-import {
-  View,
-  StyleSheet,
-  Image,
-  Text,
-  // BackHandler,
-  ScrollView,
-} from 'react-native';
+import {View, StyleSheet, Image, Text, ScrollView} from 'react-native';
 
 //Import Component
 import HeaderPages from '../../components/moleculs/headerPages';
@@ -23,12 +16,12 @@ import ImageGirlPassword from '../../../assets/forgotPassword/girl_tries_passwor
 import ImageReceiveMessage from '../../../assets/popup/received_message_icon.png';
 import NegatifCase from '../../components/atoms/negatifCaseTextInput';
 import TextFieldEmail from '../../components/moleculs/textFieldEmail';
-import { useDispatch, useSelector } from 'react-redux';
-import { setNewPassword } from '../../service/redux/reducer/usersSlice';
+import {useDispatch, useSelector} from 'react-redux';
+import {setNewPassword} from '../../service/redux/reducer/usersSlice';
 
 const ForgotPassword = ({navigation}) => {
-  const dispatch=useDispatch()
-  const stateUsers=useSelector(state=>state.users)
+  const dispatch = useDispatch();
+  const stateUsers = useSelector(state => state.users);
   const [email, setEmail] = useState(null);
   const [isButton, setIsButton] = useState(false);
   const [checkValidEmail, setCheckValidEmail] = useState(false);
@@ -43,13 +36,8 @@ const ForgotPassword = ({navigation}) => {
       setCheckValidEmail(true);
     }
   };
-  // const backAction = () => {
-  //   BackHandler.removeEventListener();
-  //   return true;
-  // };
-  useEffect(() => {
-    // console.log('cek state', useState);
 
+  useEffect(() => {
     if (email === null || email === '') {
       setIsButton(false);
       setCheckValidEmail(false);
@@ -62,13 +50,9 @@ const ForgotPassword = ({navigation}) => {
       setIsButton(false);
       setCheckValidEmail(true);
     }
-
-    // BackHandler.addEventListener('hardwareBackPress', backAction);
-    // return () =>
-    //   BackHandler.removeEventListener('hardwareBackPress', backAction);
   });
   const handleKirim = () => {
-    dispatch(setNewPassword({email:email}))
+    dispatch(setNewPassword({email: email}));
     setIsPopup(true);
   };
   const handleButtonPopup = () => {
@@ -113,10 +97,9 @@ const ForgotPassword = ({navigation}) => {
             validValue={checkValidEmail}
             textNegatifCaseBlank={'Anda harus mengisi bagian ini'}
             textNegatifCase3={'Format email salah'}
-            isNegatifCase1={email==='client@gmail.com'}
+            isNegatifCase1={email === 'client@gmail.com'}
             textNegatifCase1={'Email tidak terdaftar'}
           />
-  
         </View>
       </ScrollView>
       <View style={styles.ContainerKirim}>
@@ -152,7 +135,6 @@ const styles = StyleSheet.create({
   },
   ContainerKirim: {
     width: '90%',
-    // position: 'absolute',
     bottom: 0,
   },
   TextWrong: {

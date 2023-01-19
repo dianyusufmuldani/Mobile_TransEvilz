@@ -1,5 +1,5 @@
 import {createSlice} from '@reduxjs/toolkit';
-
+import {hitBank, hitHistory, hitReceiverLocal, hitTransaction, hitTransactionByID} from '../../api';
 
 const initialState = {
   data: null,
@@ -19,6 +19,10 @@ const initialState = {
   accountNumberInternational: null,
   kursInternational: 15677,
   swiftCode: null,
+  transactionLocal: null,
+  transactionInternational: null,
+  history: null,
+  idTransactionLocal:null
 };
 export const TransferSlice = createSlice({
   name: 'transfer',
@@ -70,19 +74,81 @@ export const TransferSlice = createSlice({
       console.log('Masuk Transfer');
       state.data = action.payload;
     },
+    setTransactionLocal: (state, action) => {
+      state.transactionLocal = action.payload;
+    },
+    setTransactionInternational: (state, action) => {
+      state.transactionInternational = action.payload;
+    },
+    setHistory: (state, action) => {
+      state.history = action.payload;
+    },
+    setIdTransactionLocal:(state, action) => {
+      state.idTransactionLocal = action.payload;
+    },
   },
 });
 
-// export const getTransfer = request => async dispatch => {
-//   try {
-//     const response = await hitTransfer(request);
-//     dispatch(setTransfer(response.data));
-//   } catch (err) {
-//     throw new Error(err);
-//   }
-// };
+export const getReceiverLocal = request => async dispatch => {
+  try {
+    const response = await hitReceiverLocal(request);
+    dispatch(setNameReceiver(response.data.name));
+    console.log('ini sukses', response);
+  } catch (err) {
+    dispatch(setNameReceiver(err.response.status));
+    console.log('ini gagal', err.response);
+  }
+};
+
+export const getBank = request => async dispatch => {
+  try {
+    const response = await hitBank(request);
+    dispatch(setBankReceiver(response.data));
+    console.log('ini sukses', response);
+  } catch (err) {
+    dispatch(setBankReceiver(err.response.status));
+    console.log('ini gagal', err.response);
+  }
+};
+
+export const getCreateTransactions = request => async dispatch => {
+  try {
+    const response = await hitTransaction(request);
+    dispatch(setTransactionLocal(response.data));
+    console.log('ini sukses', response);
+  } catch (err) {
+    dispatch(setTransactionLocal(err.response.status));
+    console.log('ini gagal', err.response);
+  }
+};
+
+export const getHistory = request => async dispatch => {
+  try {
+    const response = await hitHistory(request);
+    dispatch(setHistory(response.data));
+    console.log('ini sukses', response);
+  } catch (err) {
+    dispatch(setHistory(err.response.status));
+    console.log('ini gagal', err.response);
+  }
+};
+
+export const getTransasctionByID = request => async dispatch => {
+  try {
+    const response = await hitTransactionByID(request);
+    dispatch(setIdTransactionLocal(response.data));
+    console.log('ini sukses', response);
+  } catch (err) {
+    dispatch(setIdTransactionLocal(err.response.status));
+    console.log('ini gagal', err.response);
+  }
+};
 
 export const {
+  setIdTransactionLocal,
+  setHistory,
+  setTransactionInternational,
+  setTransactionLocal,
   setTransfer,
   setNominalTransferLocal,
   setBankReceiver,

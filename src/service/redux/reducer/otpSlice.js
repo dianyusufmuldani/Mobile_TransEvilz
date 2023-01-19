@@ -4,7 +4,6 @@ import axios from 'axios';
 
 const initialState = {
   data: '',
-  // otp: null,
 };
 export const OtpSlice = createSlice({
   name: 'otp',
@@ -22,7 +21,6 @@ export const getOtp = request => async dispatch => {
     const response = await hitOtp(request);
     dispatch(setOtpSlice(response.status));
   } catch (err) {
-    // throw new Error(err);
     dispatch(setOtpSlice(err.response.status));
   }
 };

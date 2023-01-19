@@ -21,7 +21,6 @@ import RadioForm, {
   RadioButtonLabel,
 } from 'react-native-simple-radio-button';
 
-
 //Import Component
 import RequirementSymbols from '../../components/atoms/requirementSymbols';
 import TextDefault from '../../components/atoms/textDefault';
@@ -32,9 +31,11 @@ import BlueButton from '../../components/moleculs/blueButton';
 import PopUp from '../../components/organism/popup';
 import {Colours} from '../../helpers/colours';
 import TextFieldEmail from '../../components/moleculs/textFieldEmail';
-import {setRegisterStatus, setUsers} from '../../service/redux/reducer/usersSlice';
+import {
+  setRegisterStatus,
+  setUsers,
+} from '../../service/redux/reducer/usersSlice';
 import {getUsers} from '../../service/redux/reducer/usersSlice';
-// import RadioButton from '../../components/moleculs/radioButton';
 import NegatifCase from '../../components/atoms/negatifCaseTextInput';
 import {
   setIsPopupSuccessFormRegistration,
@@ -49,16 +50,14 @@ import TextDescriptionOnBoarding from '../../components/atoms/textDescriptionOnB
 var ListAgreeTerms = [{value: 'Setuju'}];
 
 var listGender = [
-  {label: 'Laki-laki', value: 'Laki-laki'},
-  {label: 'Perempuan', value: 'Perempuan'},
+  {label: 'male', value: 'Laki-laki'},
+  {label: 'female', value: 'Perempuan'},
 ];
 
 const FormRegistration = ({navigation}) => {
-  // const [isPopup, setisPopupSuccessFormRegistration] = useState(false);
-  // const [nationality, setNationality] = useState(null);
   const [typeDocument, setTypeDocument] = useState(null);
   const [noDocument, setNoDocument] = useState(null);
-  const [gender, setGender] = useState(null);
+  const [gender, setGender] = useState('male');
   const [firstName, setFirstName] = useState(null);
   const [lastName, setLastName] = useState(null);
   const [birthplace, setBirthplace] = useState(null);
@@ -75,23 +74,21 @@ const FormRegistration = ({navigation}) => {
   const stateUsers = useSelector(state => state.users);
   const stateGlobal = useSelector(state => state.global);
 
-  // momentDate = moment(date).format('l');
-  
   const [checkValidEmail, setCheckValidEmail] = useState(false);
   const [checkValidPassword, setCheckValidPassword] = useState(false);
-  const [checkRegistered, setCheckRegistered]=useState(false)
+  const [checkRegistered, setCheckRegistered] = useState(false);
   const handleCheckValidEmail = text => {
     let re = /\S+@\S+\.\S+/;
     let regex = /^[\+]?[(]?[0-9]{3}[)]?[-\s\.]?[0-9]{3}[-\s\.]?[0-9]{4,6}$/im;
     setEmail(text);
     if (re.test(text) || regex.test(text)) {
       setCheckValidEmail(false);
-      setCheckRegistered(false)
-      dispatch(setRegisterStatus(null))
+      setCheckRegistered(false);
+      dispatch(setRegisterStatus(null));
     } else {
       setCheckValidEmail(true);
-      setCheckRegistered(false)
-      dispatch(setRegisterStatus(null))
+      setCheckRegistered(false);
+      dispatch(setRegisterStatus(null));
     }
   };
   const handleCheckValidPassword = text => {
@@ -106,11 +103,11 @@ const FormRegistration = ({navigation}) => {
     }
   };
   const scrollRef = useRef();
-  useEffect(()=>{
-    if(birtday!==null){
-    setBirthday(moment(date).format('DD/MM/YYYY'))
+  useEffect(() => {
+    if (birtday !== null) {
+      setBirthday(moment(date).format('DD/MM/YYYY'));
     }
-  }, [birtday])
+  }, [birtday]);
 
   useEffect(() => {
     console.log('isi Age', stateUsers.registerStatus);
@@ -137,7 +134,7 @@ const FormRegistration = ({navigation}) => {
     const currentDate = selectedDate || date;
     setShowDate(false);
     setDate(currentDate);
-    setBirthday(date)
+    setBirthday(date);
     let tempDate = new Date(currentDate);
     let fDate =
       tempDate.getDate() +
@@ -151,15 +148,10 @@ const FormRegistration = ({navigation}) => {
   };
 
   useEffect(() => {
- 
-    console.log('isi state', stateUsers);
+    console.log('isi state', gender);
     if (email === '' || email === null) {
       dispatch(setIsButtonFormRegistration(false));
-    }
-    //  else if (nationality == '' || nationality == undefined) {
-    //   dispatch(setIsButtonFormRegistration(false));
-    // }
-    else if (typeDocument === '' || typeDocument === null) {
+    } else if (typeDocument === '' || typeDocument === null) {
       dispatch(setIsButtonFormRegistration(false));
     } else if (noDocument === '' || noDocument === null) {
       dispatch(setIsButtonFormRegistration(false));
@@ -172,8 +164,6 @@ const FormRegistration = ({navigation}) => {
     } else if (Number(moment().diff(date, 'years', false)) <= 17) {
       dispatch(setIsButtonFormRegistration(false));
     } else if (address === '' || address === null) {
-      dispatch(setIsButtonFormRegistration(false));
-    } else if (gender === '' || gender === null) {
       dispatch(setIsButtonFormRegistration(false));
     } else if (password === '' || password === null) {
       dispatch(setIsButtonFormRegistration(false));
@@ -193,9 +183,6 @@ const FormRegistration = ({navigation}) => {
     }
   });
 
-  // function onPressNationality(radioButtonsArray) {
-  //   setNationality(radioButtonsArray);
-  // }
   function onPressGender(radioButtonsArray) {
     setGender(radioButtonsArray);
   }
@@ -210,7 +197,7 @@ const FormRegistration = ({navigation}) => {
   ];
   const handleLanjut = () => {
     const request = {
-      email: email,
+      email: email.toLowerCase(),
       doc_type: typeDocument,
       doc_number: Number(noDocument),
       firstname: firstName,
@@ -218,39 +205,35 @@ const FormRegistration = ({navigation}) => {
       birth_place: birthplace,
       birth_date: date,
       address: address,
-      sex: gender.value,
+      sex: gender,
       phone_number: stateUsers.noHp,
       password: password,
-      // confirmPassword: confirmPassword,
-      // agreeTerms: agreeTerms,
     };
     dispatch(getUsers(request));
-    
   };
-  useEffect(()=>{
-    if(stateUsers.registerStatus!==null){
-      if(stateUsers.registerStatus===201){
-       dispatch(setIsPopupSuccessFormRegistration(true));
-       console.log('sukses buat')
-     }
-       else if(stateUsers.registerStatus===400){
-      console.log('gagal buat')
-      setCheckRegistered(true)
-      scrollRef.current?.scrollTo({
-        y: 0,
-        animated: true,
-      });
-      dispatch(setRegisterStatus(null))
+  useEffect(() => {
+    if (stateUsers.registerStatus !== null) {
+      if (stateUsers.registerStatus === 201) {
+        dispatch(setIsPopupSuccessFormRegistration(true));
+        console.log('sukses buat');
+      } else if (stateUsers.registerStatus === 400) {
+        console.log('gagal buat');
+        setCheckRegistered(true);
+        scrollRef.current?.scrollTo({
+          y: 0,
+          animated: true,
+        });
+        dispatch(setRegisterStatus(null));
+      }
     }
-  }
-  },[stateUsers.registerStatus])
+  }, [stateUsers.registerStatus]);
   const handleCancelPopUp = () => {
     dispatch(setIsPopupSuccessFormRegistration(false));
   };
   const handleAktivasiSekarang = () => {
     dispatch(setIsPopupSuccessFormRegistration(false));
     dispatch(setIsButtonFormRegistration(false));
-    dispatch(setRegisterStatus(null))
+    dispatch(setRegisterStatus(null));
     navigation.navigate('Login');
   };
   const [photo, setPhoto] = useState(null);
@@ -308,7 +291,6 @@ const FormRegistration = ({navigation}) => {
             isNegatifCase1={checkRegistered}
             textNegatifCase1={'Email sudah terdaftar'}
           />
-
         </View>
 
         <View style={styles.FormStyle}>
@@ -347,7 +329,6 @@ const FormRegistration = ({navigation}) => {
                   maxLength={16}
                   textNegatifCaseBlank={'Anda harus mengisi bagian ini'}
                 />
-
               ) : null}
               {typeDocument == 'KTP' ? (
                 <TextField
@@ -384,8 +365,6 @@ const FormRegistration = ({navigation}) => {
               style={styles.ContainerTextInputFalseNoDocument}
             />
           )}
-
-  
         </View>
 
         <View style={styles.FormStyle}>
@@ -396,7 +375,9 @@ const FormRegistration = ({navigation}) => {
           <TextField
             placeholder={'Nama depan'}
             value={firstName}
-            onChangeText={value => setFirstName(value.replace(/[^a-z ]/gmi, ""))}
+            onChangeText={value =>
+              setFirstName(value.replace(/[^a-z ]/gim, ''))
+            }
             maxLength={15}
             textNegatifCaseBlank={'Anda harus mengisi bagian ini'}
           />
@@ -409,7 +390,7 @@ const FormRegistration = ({navigation}) => {
           <TextField
             placeholder={'Nama Belakang'}
             value={lastName}
-            onChangeText={value => setLastName(value.replace(/[^a-z ]/gmi, ""))}
+            onChangeText={value => setLastName(value.replace(/[^a-z ]/gim, ''))}
             maxLength={15}
             textNegatifCaseBlank={'Anda harus mengisi bagian ini'}
           />
@@ -426,8 +407,6 @@ const FormRegistration = ({navigation}) => {
             maxLength={15}
             textNegatifCaseBlank={'Anda harus mengisi bagian ini'}
           />
-
-  
         </View>
         <View style={styles.FormStyle}>
           <View style={{flexDirection: 'row'}}>
@@ -439,7 +418,8 @@ const FormRegistration = ({navigation}) => {
             style={{width: '100%'}}>
             <View
               style={
-                Number(moment().diff(date, 'years', false)) <= 17&&birtday!==null
+                Number(moment().diff(date, 'years', false)) <= 17 &&
+                birtday !== null
                   ? styles.ContainerTextInputDateError
                   : styles.ContainerTextInputDate
               }>
@@ -464,7 +444,8 @@ const FormRegistration = ({navigation}) => {
             </View>
           </TouchableOpacity>
 
-          {Number(moment().diff(date, 'years', false)) <= 17 && birtday!==null ? (
+          {Number(moment().diff(date, 'years', false)) <= 17 &&
+          birtday !== null ? (
             <NegatifCase
               text={'Umur tidak boleh kurang dari 17 tahun'}
               value={''}
@@ -498,12 +479,12 @@ const FormRegistration = ({navigation}) => {
             <TextDefault value={'Jenis Kelamin '} />
             <RequirementSymbols />
           </View>
- 
+
           <RadioForm
             radio_props={listGender}
             initial={0}
             onPress={value => {
-              setGender({value: value});
+              setGender(value);
             }}
             formHorizontal={true}
             labelStyle={{marginRight: 20}}
@@ -512,9 +493,8 @@ const FormRegistration = ({navigation}) => {
             buttonColor={'#73788A'}
             selectedButtonColor={'#73788A'}
             animation={false}
-            style={{marginTop:10}}
-
-        />
+            style={{marginTop: 10}}
+          />
         </View>
         <View style={styles.FormStyle}>
           <View style={{flexDirection: 'row'}}>
@@ -528,7 +508,9 @@ const FormRegistration = ({navigation}) => {
             maxLength={16}
             validValue={checkValidPassword}
             textNegatifCaseBlank={'Anda harus mengisi bagian ini'}
-            textNegatifCase3={'Kata sandi harus berisi huruf besar, angka dan simbol (@ * # &)'}
+            textNegatifCase3={
+              'Kata sandi harus berisi huruf besar, angka dan simbol (@ * # &)'
+            }
           />
         </View>
         <View style={styles.FormStyle}>
@@ -542,13 +524,15 @@ const FormRegistration = ({navigation}) => {
             onChangeText={value => setConfirmPassword(value)}
             maxLength={16}
             textNegatifCaseBlank={'Anda harus mengisi bagian ini'}
-            isNegatifCase1={password!==confirmPassword&&confirmPassword!==''&&confirmPassword!==null}
+            isNegatifCase1={
+              password !== confirmPassword &&
+              confirmPassword !== '' &&
+              confirmPassword !== null
+            }
             textNegatifCase1={'Kata sandi tidak sama'}
-          
           />
         </View>
         <View style={styles.ViewAgreeTerms}>
-     
           <RadioForm
             radio_props={ListAgreeTerms}
             initial={2}
@@ -561,8 +545,7 @@ const FormRegistration = ({navigation}) => {
             buttonColor={'#73788A'}
             selectedButtonColor={'#73788A'}
             animation={false}
-
-        />
+          />
           <Text style={styles.TextAgreeTerms}>Saya setuju dengan </Text>
           <TouchableOpacity
             onPress={() => navigation.navigate('TermsAndConditions')}>

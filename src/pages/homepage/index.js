@@ -18,11 +18,14 @@ import ImageGrafik from '../../../assets/homepage/image_analytics.png';
 import IconAustralia from '../../../assets/registration/openmoji_flag-australia.svg';
 import {useDispatch, useSelector} from 'react-redux';
 import {
+  getHistory,
   getTransfer,
   setCountryDestination,
 } from '../../service/redux/reducer/transferSlice';
 import {getLogin} from '../../service/redux/reducer/usersSlice';
 import ImageUser from '../../../assets/user/kakashi.jpg';
+import CardLastTransactionHomePages from '../../components/organism/cardLastTransactionHomepage';
+import {formatCurrencyWithoutComma} from '../../helpers/formatter/currencyFormatter';
 
 const Homepage = ({navigation}) => {
   const dispatch = useDispatch();
@@ -33,8 +36,6 @@ const Homepage = ({navigation}) => {
     navigation.navigate('TransferCard');
   };
   const handleButtonTransactionInternational = () => {
-
-
     dispatch(setCountryDestination('USD'));
     navigation.navigate('TransferCardInternational');
   };
@@ -43,23 +44,16 @@ const Homepage = ({navigation}) => {
     return true;
   };
 
-  // useEffect(()=>{
-  //   const request = {
-  //     email,
-  //     password
-  //   };
-  // dispatch(getLogin(request))
-  // },[])
+  useEffect(() => {
+    dispatch(getHistory());
+    console.log('isi Histori', stateTransfer);
+  }, [stateUsers.login, stateTransfer.transactionLocal]);
 
   useEffect(() => {
-    // const request={}
-    // dispatch(getTransfer(request))
     console.log('isi State Transfer', stateUsers.data.accessToken);
   }, []);
   useEffect(() => {
     BackHandler.addEventListener('hardwareBackPress', backAction);
-    // return () =>
-    //   BackHandler.removeEventListener('hardwareBackPress', backAction);
   });
   return (
     <View style={styles.Container}>
@@ -80,57 +74,42 @@ const Homepage = ({navigation}) => {
                   Selamat Datang di TransEvilz
                 </Text>
               </View>
-              <Image source=
-              {{
-                uri: `https://robohash.org/${stateUsers.data.user.fullname}`
-              }}
-              style={{width: 40, height: 40, borderRadius: 40, bottom: -10}}
-              />
+              <View
+                style={{
+                  borderWidth: 0,
+                  borderRadius: 40,
+                  bottom: -10,
+                  borderColor: '#FFFFFF',
+                }}>
+                <Image
+                  source={{
+                    uri: `https://robohash.org/${stateUsers.data.user.fullname}`,
+                  }}
+                  style={{width: 40, height: 40, borderRadius: 40, bottom: 2}}
+                />
+              </View>
             </View>
 
             <Text style={styles.TextMethod}>Transaksi Terakhir :</Text>
-            <ScrollView horizontal showsHorizontalScrollIndicator={false}>
-              <View style={styles.ContainerCardTransaction}>
-                <View style={styles.WrapperCardTransaction}>
-                  <IconAustralia />
-                  <Text style={styles.CurrencyToCurrency}>IDR ke AUD</Text>
-                </View>
-                <Text style={styles.TransactionBank}>BCC - 123412341234</Text>
-                <Text style={styles.CountCurrency}>Rp 1,000,000.00</Text>
-              </View>
-              <View style={styles.ContainerCardTransaction}>
-                <View style={styles.WrapperCardTransaction}>
-                  <IconAustralia />
-                  <Text style={styles.CurrencyToCurrency}>IDR ke AUD</Text>
-                </View>
-                <Text style={styles.TransactionBank}>BCC - 123412341234</Text>
-                <Text style={styles.CountCurrency}>Rp 1,000,000.00</Text>
-              </View>
-              <View style={styles.ContainerCardTransaction}>
-                <View style={styles.WrapperCardTransaction}>
-                  <IconAustralia />
-                  <Text style={styles.CurrencyToCurrency}>IDR ke AUD</Text>
-                </View>
-                <Text style={styles.TransactionBank}>BCC - 123412341234</Text>
-                <Text style={styles.CountCurrency}>Rp 1,000,000.00</Text>
-              </View>
-              <View style={styles.ContainerCardTransaction}>
-                <View style={styles.WrapperCardTransaction}>
-                  <IconAustralia />
-                  <Text style={styles.CurrencyToCurrency}>IDR ke AUD</Text>
-                </View>
-                <Text style={styles.TransactionBank}>BCC - 123412341234</Text>
-                <Text style={styles.CountCurrency}>Rp 1,000,000.00</Text>
-              </View>
-              <View style={styles.ContainerCardTransaction}>
-                <View style={styles.WrapperCardTransaction}>
-                  <IconAustralia />
-                  <Text style={styles.CurrencyToCurrency}>IDR ke AUD</Text>
-                </View>
-                <Text style={styles.TransactionBank}>BCC - 123412341234</Text>
-                <Text style={styles.CountCurrency}>Rp 1,000,000.00</Text>
-              </View>
-            </ScrollView>
+            {stateTransfer.history !== null ? (
+              <ScrollView horizontal showsHorizontalScrollIndicator={false}>
+                {stateTransfer.history
+                  .slice()
+                  .reverse()
+                  .slice(0, 5)
+                  .map((item, index) => {
+                    return (
+                      <CardLastTransactionHomePages
+                        key={index}
+                        countryToCountry={item.type_currency}
+                        bank={item.bank}
+                        accountNumber={item.recipient_norek}
+                        totalPayment={formatCurrencyWithoutComma(item.total)}
+                      />
+                    );
+                  })}
+              </ScrollView>
+            ) : null}
           </View>
           <View style={styles.ContainerViewButton}>
             <TouchableOpacity
@@ -169,7 +148,7 @@ const styles = StyleSheet.create({
   CardHeader: {
     width: '100%',
     backgroundColor: '#2075F3',
-    height: 273,
+    height: 293,
     borderRadius: 30,
   },
   ContainerHeader: {
@@ -200,7 +179,6 @@ const styles = StyleSheet.create({
   ContainerBody: {
     width: '90%',
     alignSelf: 'center',
-    // marginTop: 48,
     top: -545,
   },
   TextKurs: {

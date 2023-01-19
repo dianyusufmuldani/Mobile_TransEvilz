@@ -34,13 +34,16 @@ import Japan from '../../../assets/transferCard/openmoji_flag-japan.png';
 import IconArrowDown from '../../../assets/transferCard/icon_arrow_down.svg';
 import NegatifCase from '../../components/atoms/negatifCaseTextInput';
 import HeaderPagesBlue from '../../components/moleculs/headerPagesBlue';
-import { formatCurrencyWithoutComma } from '../../helpers/formatter/currencyFormatter';
+import {
+  formatCurrencyWithoutComma,
+  formatCurrencyWithoutCommaAndIDR,
+} from '../../helpers/formatter/currencyFormatter';
 
 const TransferCardInternational = ({navigation}) => {
   const dispatch = useDispatch();
   const stateGlobal = useSelector(state => state.global);
-  const stateTransfer = useSelector(state=>state.transfer);
-  const stateUsers = useSelector(state=>state.users);
+  const stateTransfer = useSelector(state => state.transfer);
+  const stateUsers = useSelector(state => state.users);
   const [hideSelectList, setHideSelectList] = useState(false);
   useState('0');
   const handleAustralia = () => {
@@ -90,7 +93,7 @@ const TransferCardInternational = ({navigation}) => {
       stateTransfer.nominalIndonesia != null ||
       stateTransfer.nominalIndonesia != ''
     ) {
-      if (stateTransfer.nominalIndonesia == 0){
+      if (stateTransfer.nominalIndonesia == 0) {
         dispatch(setNominalDestination('0'));
         dispatch(setTotalTransactionInternational(0));
         dispatch(setIsButtonTransferInternational(false));
@@ -112,7 +115,7 @@ const TransferCardInternational = ({navigation}) => {
         console.log('dIsini');
       }
     }
-  });
+  }, [stateTransfer]);
   const handleSelanjutnya = () => {
     navigation.navigate('TransactionInternational');
   };
@@ -130,7 +133,9 @@ const TransferCardInternational = ({navigation}) => {
           </View>
           <TextInput
             style={
-              stateTransfer.nominalIndonesia === ''||stateTransfer.nominalIndonesia<100000&&stateTransfer.nominalIndonesia!==null
+              stateTransfer.nominalIndonesia === '' ||
+              (stateTransfer.nominalIndonesia < 100000 &&
+                stateTransfer.nominalIndonesia !== null)
                 ? styles.ContainerTextInputFlagError
                 : styles.ContainerTextInputFlag
             }
@@ -139,7 +144,13 @@ const TransferCardInternational = ({navigation}) => {
               dispatch(setNominalIndonesia(value.replace(/\D/g, '')))
             }
             keyboardType={'numeric'}
-            value={Number(stateTransfer.nominalIndonesia)}
+            value={
+              stateTransfer.nominalIndonesia === null
+                ? 0
+                : formatCurrencyWithoutCommaAndIDR(
+                    stateTransfer.nominalIndonesia,
+                  )
+            }
           />
         </View>
 
@@ -148,7 +159,8 @@ const TransferCardInternational = ({navigation}) => {
           text={'Anda harus mengisi bagian ini'}
         />
         {stateTransfer.nominalIndonesia <= 99999 &&
-        stateTransfer.nominalIndonesia !== ''&&stateTransfer.nominalIndonesia!==null ? (
+        stateTransfer.nominalIndonesia !== '' &&
+        stateTransfer.nominalIndonesia !== null ? (
           <NegatifCase
             value={''}
             text={'Minimal nominal transaksi Rp 100.000'}
@@ -161,23 +173,21 @@ const TransferCardInternational = ({navigation}) => {
               <TouchableOpacity
                 style={styles.Country}
                 onPress={() => setHideSelectList(!hideSelectList)}>
-                {stateTransfer.countryDestination == 'USD' ?
+                {stateTransfer.countryDestination == 'USD' ? (
                   <Image
                     source={UnitedStates}
                     style={{width: 30, height: 30}}
-                    /> : (null)}
-                {stateTransfer.countryDestination == 'AUD' ?
+                  />
+                ) : null}
+                {stateTransfer.countryDestination == 'AUD' ? (
                   <Image source={Australia} style={{width: 30, height: 30}} />
-                : (null)
-                }
-                {stateTransfer.countryDestination == 'JPY' ?
+                ) : null}
+                {stateTransfer.countryDestination == 'JPY' ? (
                   <Image source={Japan} style={{width: 30, height: 30}} />
-                : (null)
-                }
-                {stateTransfer.countryDestination == 'SGD' ?
+                ) : null}
+                {stateTransfer.countryDestination == 'SGD' ? (
                   <Image source={Singapore} style={{width: 30, height: 30}} />
-                : (null)
-                }
+                ) : null}
                 <View style={{marginLeft: 10}}>
                   <IconArrowDown />
                 </View>
@@ -238,12 +248,7 @@ const TransferCardInternational = ({navigation}) => {
         <View style={styles.TextNilaiKurs}>
           <TextDescriptionOnBoarding value={'Nilai Kurs Saat ini'} />
           <TextDescriptionOnBoarding
-          value={formatCurrencyWithoutComma(stateTransfer.kursInternational)}
-            // value={
-            //   Number(stateTransfer.kursInternational)
-            //     .toFixed(2)
-            //     .replace(/\d(?=(\d{3})+\.)/g, '$&,') + ' IDR'
-            // }
+            value={formatCurrencyWithoutComma(stateTransfer.kursInternational)}
           />
         </View>
         <View style={styles.TextNilaiKurs}>
@@ -261,7 +266,11 @@ const TransferCardInternational = ({navigation}) => {
           </Text>
           <Text style={styles.TextTitleFooter}>Total Transaksi</Text>
           <Text style={styles.TextCurrencyFooter}>
-            {(stateTransfer.totalTransactionInternational)}
+            {stateTransfer.nominalIndonesia === null
+              ? 0 + ' IDR'
+              : formatCurrencyWithoutComma(
+                  stateTransfer.totalTransactionInternational,
+                )}
           </Text>
 
           <View style={styles.ContainerSelanjutnya}>
@@ -374,7 +383,6 @@ const styles = StyleSheet.create({
     width: '80%',
     borderTopRightRadius: 10,
     borderBottomRightRadius: 10,
-    // borderColor:'#F1F7FF'
     backgroundColor: '#F1F7FF',
   },
   ContainerSelectList: {

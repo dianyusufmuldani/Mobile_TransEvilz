@@ -18,43 +18,44 @@ const TextFieldEmail = ({
   textNegatifCase1,
   textNegatifCase2,
   textNegatifCase3,
-  textNegatifCaseBlank
+  textNegatifCaseBlank,
 }) => {
-  return (<>
-    <View
-      style={
-        value === '' ||
-        validValue === true ||
-        isNegatifCase1===true ||
-        isNegatifCase2===true 
-          ? styles.ContainerTextInputError
-          : styles.Container
-      }>
-      <TextInput
-        placeholder={placeholder}
-        value={value}
-        onChangeText={onChangeText}
-        keyboardType={keyboardType}
-        autoCapitalize={autoCapitalize}
-        multiline={multiline}
-        onContentSizeChange={onContentSizeChange}
-        style={style}
-        numberOfLines={numberOfLines}
-      />
-    </View>
-    
-    <NegatifCase text={textNegatifCaseBlank} value={value} />
-   
-    {isNegatifCase1 ?
-     <NegatifCase text={textNegatifCase1} value={''} />:null
-    }
-    {isNegatifCase2 ?
-     <NegatifCase text={textNegatifCase2} value={''} />:null
-    }
-    {validValue===true ?
-     <NegatifCase text={textNegatifCase3} value={''} />:null
-    }
-     </>
+  return (
+    <>
+      <View
+        style={
+          value === '' ||
+          validValue === true ||
+          isNegatifCase1 === true ||
+          isNegatifCase2 === true
+            ? styles.ContainerTextInputError
+            : styles.Container
+        }>
+        <TextInput
+          placeholder={placeholder}
+          value={value}
+          onChangeText={onChangeText}
+          keyboardType={keyboardType}
+          autoCapitalize={autoCapitalize}
+          multiline={multiline}
+          onContentSizeChange={onContentSizeChange}
+          style={style}
+          numberOfLines={numberOfLines}
+        />
+      </View>
+
+      <NegatifCase text={textNegatifCaseBlank} value={value} />
+
+      {isNegatifCase1 ? (
+        <NegatifCase text={textNegatifCase1} value={''} />
+      ) : null}
+      {isNegatifCase2 ? (
+        <NegatifCase text={textNegatifCase2} value={''} />
+      ) : null}
+      {validValue === true ? (
+        <NegatifCase text={textNegatifCase3} value={''} />
+      ) : null}
+    </>
   );
 };
 

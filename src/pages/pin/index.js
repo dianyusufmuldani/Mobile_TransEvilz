@@ -20,41 +20,61 @@ import {setIsPopupPinInvalid} from '../../service/redux/reducer/globalSlice';
 import CancelKeyboardPin from '../../../assets/otp/cancel_keyboard_otp.svg';
 import ImagePopupError from '../../../assets/popup/popup_error.png';
 import TextButtonBlue from '../../components/atoms/textButtonBlue';
+import {
+  getCreateTransactions,
+  setTransactionLocal,
+} from '../../service/redux/reducer/transferSlice';
 
 const PIN = ({navigation}) => {
   const stateTransfer = useSelector(state => state.transfer);
   const [pin, setPin] = useState([]);
-  const [allPin, setAllPin] = useState(null);
+  const [allPin, setAllPin] = useState('');
 
   const dispatch = useDispatch();
   const stateGlobal = useSelector(state => state.global);
-
   useEffect(() => {
+    console.log('isi Transfer', allPin);
     setAllPin(pin.join(''));
-    const pinRegister = '111111';
-    if (pin.length >= 7) {
-      setPin(pin.slice(0, -1));
-      console.log('hapus ini');
-    } else if (pin.length === 6) {
-      console.log('isi Regis', pinRegister);
+
+    if (pin === null || pin === undefined) {
+    } else if (pin.length >= 7) {
+    } else if (allPin.length === 6) {
       console.log('isi All OTP', allPin);
       console.log('isi All OTP', pin);
-      if (allPin !== pinRegister) {
+
+      const request = {
+        pin: Number(allPin),
+        bank_code: stateTransfer.bankReceiver,
+        no_rekening: stateTransfer.accountNumber,
+        nominal: stateTransfer.totalTransactionLocal,
+      };
+      dispatch(getCreateTransactions(request));
+
+      dispatch(setIsPopupPinInvalid(false));
+    }
+  }, [pin, allPin]);
+
+  useEffect(() => {
+    if (stateTransfer.transactionLocal !== null) {
+      if (stateTransfer.transactionLocal === 404) {
         setPin([]);
         dispatch(setIsPopupPinInvalid(true));
-      }
-    } else if (allPin === pinRegister) {
-      dispatch(setIsPopupPinInvalid(false));
-      if (
-        stateTransfer.countryDestination === null ||
-        stateTransfer.countryDestination === ''
+        dispatch(setTransactionLocal(null));
+      } else if (
+        stateTransfer.transactionLocal.data.transaction_id !== null ||
+        stateTransfer.transactionLocal.data.transaction_id !== undefined
       ) {
-        navigation.navigate('TransactionSuccess');
-      } else {
-        navigation.navigate('TransactionSuccessInternational');
+        if (
+          stateTransfer.countryDestination === null ||
+          stateTransfer.countryDestination === ''
+        ) {
+          navigation.navigate('TransactionSuccess');
+        } else {
+          navigation.navigate('TransactionSuccessInternational');
+        }
       }
     }
-  });
+  }, [stateTransfer.transactionLocal]);
   const handleDeletePin = item => {
     setPin(pin.slice(0, -1));
   };

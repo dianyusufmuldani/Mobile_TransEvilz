@@ -5,8 +5,8 @@ const initialState = {
   data: null,
   login: null,
   noHp: null,
-  registerStatus:null,
-  newPassword:null
+  registerStatus: null,
+  newPassword: null,
 };
 export const UsersSlice = createSlice({
   name: 'users',
@@ -34,26 +34,26 @@ export const getUsers = request => async dispatch => {
   try {
     const response = await hitRegister(request);
     dispatch(setRegisterStatus(response.status));
-    console.log(response)
+    console.log(response);
   } catch (err) {
-    dispatch(setRegisterStatus(err.response.status))
+    dispatch(setRegisterStatus(err.response.status));
   }
 };
 
 export const getLogin = request => async dispatch => {
   try {
     const response = await hitLogin(request);
-    
+
     dispatch(setLogin(response.status));
-    dispatch(setUsers(response.data))
+    dispatch(setUsers(response.data));
     if (response.data.accessToken) {
-    AsyncStorage.setItem('token', response.data.accessToken);
+      AsyncStorage.setItem('token', response.data.accessToken);
     }
-    console.log(response.data)
+    console.log(response.data);
   } catch (err) {
     console.log(err.response);
-    dispatch(setLogin(err.response.status))
-    console.log('isi Error',err.response.status)
+    dispatch(setLogin(err.response.status));
+    console.log('isi Error', err.response.status);
   }
 };
 
@@ -61,11 +61,17 @@ export const getNewPassword = request => async dispatch => {
   try {
     const response = await hitNewPassword(request);
     dispatch(setNewPassword(response.status));
-    console.log(response)
+    console.log(response);
   } catch (err) {
-    dispatch(setNewPassword(err.response.status))
+    dispatch(setNewPassword(err.response.status));
   }
 };
 
-export const {setUsers, setLogin, setNoHpRedux, setRegisterStatus, setNewPassword} = UsersSlice.actions;
+export const {
+  setUsers,
+  setLogin,
+  setNoHpRedux,
+  setRegisterStatus,
+  setNewPassword,
+} = UsersSlice.actions;
 export default UsersSlice.reducer;

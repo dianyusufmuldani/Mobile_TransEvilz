@@ -32,7 +32,7 @@ const Registration = ({navigation}) => {
   const [noHp, setNoHp] = useState(null);
   const [codeRegion, setCodeRegion] = useState('+62');
   const [showCountry, setShowCountry] = useState(false);
-  const [isToastedRegistered, setIsToastedRegistered]=useState(false)
+  const [isToastedRegistered, setIsToastedRegistered] = useState(false);
   const dispatch = useDispatch();
 
   const stateGlobal = useSelector(state => state.global);
@@ -41,24 +41,20 @@ const Registration = ({navigation}) => {
     BackHandler.removeEventListener();
     return true;
   };
-  console.log('isi noHp', noHp)
+  console.log('isi noHp', noHp);
   const fullNoHp = codeRegion + noHp;
   useEffect(() => {
-    // if (country == '' || country == undefined) {
-    //   dispatch(setIsButtonRegistration(false));
-    // }
     if (noHp === '' || noHp === null) {
       dispatch(setIsButtonRegistration(false));
-    } else if(noHp.length<=10){
+    } else if (noHp.length <= 10) {
       dispatch(setIsButtonRegistration(false));
-    }
-    else{
-      dispatch(setIsButtonRegistration(true)); 
+    } else {
+      dispatch(setIsButtonRegistration(true));
     }
     BackHandler.addEventListener('hardwareBackPress', backAction);
     return () =>
       BackHandler.removeEventListener('hardwareBackPress', backAction);
-  },[noHp]);
+  }, [noHp]);
 
   useEffect(() => {
     if (country === 'Indonesia') {
@@ -80,10 +76,9 @@ const Registration = ({navigation}) => {
   }, [country]);
   const handleKirim = () => {
     Keyboard.dismiss();
-    
-      if (noHp.length <= 10) {
-  
-    }  else {
+
+    if (noHp.length <= 10) {
+    } else {
       dispatch(setIsButtonRegistration(true));
       dispatch(setNoHpRedux(Number(fullNoHp.replace(/[+]/g, ''))));
       navigation.navigate('OTP');
@@ -91,11 +86,17 @@ const Registration = ({navigation}) => {
   };
 
   return (
-
-    <View  style={styles.Container}>
-        <HeaderPages onPress={() => navigation.goBack()} />
+    <View style={styles.Container}>
+      <HeaderPages onPress={() => navigation.goBack()} />
       <ScrollView>
-        <ToastedFailed visible={isToastedRegistered} height={39} width={'70%'} textToasted={'No. Hp anda sudah terdaftar'} onPressModal={()=>setIsToastedRegistered(false)} onPressButton={()=>setIsToastedRegistered(false)} />
+        <ToastedFailed
+          visible={isToastedRegistered}
+          height={39}
+          width={'70%'}
+          textToasted={'No. Hp anda sudah terdaftar'}
+          onPressModal={() => setIsToastedRegistered(false)}
+          onPressButton={() => setIsToastedRegistered(false)}
+        />
         <View style={styles.ContainerBody}>
           <View style={styles.Title}>
             <Text style={styles.TextStyle}>Selamat Datang di TransEvilz</Text>
@@ -126,18 +127,13 @@ const Registration = ({navigation}) => {
                   toString(setNoHp(text.replace(/\D/g, '')));
                 }}
                 style={styles.ContainerNumber}
-                // editable={country == '' ? false : true}
                 maxLength={20}
               />
             </View>
             <NegatifCase text={'Anda harus mengisi bagian ini'} value={noHp} />
-            {noHp!==null&&(noHp!==''&&noHp.length<=10)?
-            <NegatifCase
-              text={'Format No.HP tidak sesuai'}
-              value={''}
-            />:null
-            }
-         
+            {noHp !== null && noHp !== '' && noHp.length <= 10 ? (
+              <NegatifCase text={'Format No.HP tidak sesuai'} value={''} />
+            ) : null}
 
             <View style={{marginTop: 20}} />
           </View>
@@ -148,11 +144,9 @@ const Registration = ({navigation}) => {
           value={'Kirim'}
           onPress={handleKirim}
           isButton={stateGlobal.isButtonRegistration}
-          // positionOn={'absolute'}
-          // positionOff={'absolute'}
         />
       </View>
-      </View>
+    </View>
   );
 };
 
@@ -230,7 +224,6 @@ const styles = StyleSheet.create({
     paddingRight: 10,
   },
   IconUpDownDropdown: {
-    // position: 'absolute',
     right: 20,
     bottom: 25,
   },

@@ -19,7 +19,7 @@ import Singapore from '../../../assets/transferCard/openmoji_flag-singapore.png'
 import UnitedStates from '../../../assets/transferCard/openmoji_flag-united-states.png';
 import Australia from '../../../assets/transferCard/openmoji_flag-australia.png';
 import Japan from '../../../assets/transferCard/openmoji_flag-japan.png';
-import { formatCurrencyWithoutComma } from '../../helpers/formatter/currencyFormatter';
+import {formatCurrencyWithoutComma} from '../../helpers/formatter/currencyFormatter';
 
 const TransactionMethodInternational = ({navigation}) => {
   const dispatch = useDispatch();
@@ -59,9 +59,9 @@ const TransactionMethodInternational = ({navigation}) => {
             <Text style={styles.TextFormatCurrencyCountry}>
               IDR ke {stateTransfer.countryDestination}
             </Text>
-            {stateTransfer.countryDestination == 'USD' ?
-                (<Image source={UnitedStates} style={{marginLeft:10}} />)
-             : (null)}
+            {stateTransfer.countryDestination == 'USD' ? (
+              <Image source={UnitedStates} style={{marginLeft: 10}} />
+            ) : null}
             {stateTransfer.countryDestination == 'AUD' ? (
               <Image source={Australia} style={{marginLeft: 10}} />
             ) : null}
@@ -74,7 +74,9 @@ const TransactionMethodInternational = ({navigation}) => {
           </View>
           <Text style={styles.TextTotal}>Total Transaksi</Text>
           <Text style={styles.TextIDR}>
-            {formatCurrencyWithoutComma(stateTransfer.totalTransactionInternational)}
+            {formatCurrencyWithoutComma(
+              stateTransfer.totalTransactionInternational,
+            )}
           </Text>
         </View>
         <TextDefault value={'Metode Pembayaran'} />
@@ -135,7 +137,6 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     marginBottom: 50,
     marginTop: 10,
-    // top:-135,
   },
   TextFormatCurrencyCountry: {
     color: '#3A3A3A',

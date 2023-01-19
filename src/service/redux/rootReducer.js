@@ -8,5 +8,5 @@ export const rootReducer = {
   global: globalSlice,
   otp: otpSlice,
   transfer: transferSlice,
-  pin:pinSlice
+  pin: pinSlice,
 };

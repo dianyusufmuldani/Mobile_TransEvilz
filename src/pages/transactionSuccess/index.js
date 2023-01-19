@@ -1,10 +1,9 @@
 //Import Library
 import React, {useRef, useState} from 'react';
 import {View, StyleSheet, Text, Image, TouchableOpacity} from 'react-native';
-// import CountDownTimer from 'react-native-countdown-timer-hooks';
 import {useDispatch, useSelector} from 'react-redux';
 import Clipboard from '@react-native-community/clipboard';
-import CountDown from 'react-native-countdown-fixed'
+import CountDown from 'react-native-countdown-fixed';
 
 //Import Component
 import TextDefault from '../../components/atoms/textDefault';
@@ -19,9 +18,10 @@ import {
   setCountryDestination,
   setNameReceiver,
   setNominalTransferLocal,
+  setTransactionLocal,
 } from '../../service/redux/reducer/transferSlice';
 import IconCopy from '../../../assets/transactionSuccess/copy.svg';
-import { formatCurrencyWithoutComma } from '../../helpers/formatter/currencyFormatter';
+import {formatCurrencyWithoutComma} from '../../helpers/formatter/currencyFormatter';
 import ToastedSuccess from '../../components/moleculs/toastSuccess';
 
 const TransactionSuccess = ({navigation}) => {
@@ -40,6 +40,7 @@ const TransactionSuccess = ({navigation}) => {
     dispatch(setNominalTransferLocal(null));
     dispatch(setNameReceiver(null));
     dispatch(setAccountNumber(null));
+    dispatch(setTransactionLocal(null));
     navigation.navigate('Homepage');
   };
 
@@ -59,37 +60,28 @@ const TransactionSuccess = ({navigation}) => {
           Selesaikan Pembayaran sebelum{' '}
         </Text>
         <CountDown
-        until={84610}
-        onFinish={() => console.log('END')}
-        onPress={() => alert('hello')}
-        size={18}
-        digitTxtStyle={{color:'#2ACA10'}}
-        digitStyle={{backgroundColor:'transparent', marginHorizontal:15, left:-20}}
-        separatorStyle={{color:'#2ACA10'}}
-        timeLabels={{h: 'Jam', m: 'Menit', s: 'Detik'}}
-        timeToShow={['H','M', 'S']}
-        timeLabelStyle={{ color:'#2ACA10', fontSize:16, right:-15, top:-36, fontWeight:'700'}}
-        />
-        {/* <CountDownTimer
-          ref={refTimer}
-          timestamp={86399}
-          timerCallback={timerCallbackFunc}
-          containerStyle={{
-            height: 56,
-            width: '100%',
-            justifyContent: 'center',
-            alignItems: 'center',
-            borderRadius: 35,
+          until={84610}
+          onFinish={() => console.log('END')}
+          onPress={() => alert('hello')}
+          size={18}
+          digitTxtStyle={{color: '#2ACA10'}}
+          digitStyle={{
             backgroundColor: 'transparent',
+            marginHorizontal: 15,
+            left: -20,
           }}
-          textStyle={{
-            fontSize: 18,
+          separatorStyle={{color: '#2ACA10'}}
+          timeLabels={{h: 'Jam', m: 'Menit', s: 'Detik'}}
+          timeToShow={['H', 'M', 'S']}
+          timeLabelStyle={{
             color: '#2ACA10',
+            fontSize: 16,
+            right: -15,
+            top: -36,
             fontWeight: '700',
-            letterSpacing: 5.25,
-            paddingHorizontal: 30,
           }}
-        /> */}
+        />
+
         <View style={styles.ContainerPayment}>
           <View style={styles.ContainerTextDescription}>
             <TextDescriptionOnBoarding value={'Nama Penerima'} />

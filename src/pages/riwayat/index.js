@@ -11,6 +11,7 @@ import {
 } from 'react-native';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import moment from 'moment';
+import 'moment/locale/id';
 
 //Import Component
 import HeaderPages from '../../components/moleculs/headerPages';
@@ -30,26 +31,34 @@ import Singapore from '../../../assets/transferCard/openmoji_flag-singapore.png'
 import UnitedStates from '../../../assets/transferCard/openmoji_flag-united-states.png';
 import Australia from '../../../assets/transferCard/openmoji_flag-australia.png';
 import Japan from '../../../assets/transferCard/openmoji_flag-japan.png';
+import CardRiwayat from '../../components/organism/cardRiwayat';
+import {getHistory, getTransasctionByID} from '../../service/redux/reducer/transferSlice';
+import {formatCurrencyWithoutComma} from '../../helpers/formatter/currencyFormatter';
 
 const Riwayat = ({navigation}) => {
   const dispatch = useDispatch();
-  const stateGlobal = useSelector(state=>state.global);
-  const stateUsers = useSelector(state=>state.users);
+  const stateGlobal = useSelector(state => state.global);
+  const stateUsers = useSelector(state => state.users);
+  const stateTransfer = useSelector(state => state.transfer);
   const [date, setDate] = useState(new Date());
   const [showDate, setShowDate] = useState(false);
   const [date2, setDate2] = useState(new Date());
+
   const [showDate2, setShowDate2] = useState(false);
-  const [startDate, setStartDate]=useState(null)
-  const [endDate, setEndDate]=useState(null)
+  const [startDate, setStartDate] = useState(null);
+  const [endDate, setEndDate] = useState(null);
+  const [isSearching, setIsSearching] = useState([]);
+  const [historyMap, setHistoryMap] = useState(stateTransfer.history);
 
   useEffect(() => {
-    console.log('isi pengurangan', date2-date);
-  });
+    dispatch(getHistory());
+  }, [stateUsers.login, stateTransfer.transactionLocal]);
+
   const onChange = (event, selectedDate) => {
     const currentDate = selectedDate || date;
     setShowDate(false);
     setDate(currentDate);
-    setStartDate(date)
+    setStartDate(date);
     let tempDate = new Date(currentDate);
     let fDate =
       tempDate.getDate() +
@@ -62,12 +71,11 @@ const Riwayat = ({navigation}) => {
     setShowDate(true);
   };
 
-
   const onChange2 = (event, selectedDate2) => {
     const currentDate2 = selectedDate2 || date2;
     setShowDate2(false);
     setDate2(currentDate2);
-    setEndDate(date)
+    setEndDate(date);
     let tempDate = new Date(currentDate2);
     let fDate =
       tempDate.getDate() +
@@ -79,24 +87,48 @@ const Riwayat = ({navigation}) => {
   const showMode2 = currentMode => {
     setShowDate2(true);
   };
-  const handleSearch = ()=>{
-    if (date2 - date < 0){
+  //
+
+  const searchHistory = [];
+  const handleSearch = () => {
+    setIsSearching([]);
+
+    if (date2 - date < 0) {
       dispatch(setIsPopupErrorDate(true));
     } else {
-      console.log('Lainnya');
+      setHistoryMap(isSearching);
+      for (let i = 0; i < stateTransfer.history.length; i++) {
+        if (stateTransfer.history[i].total >= 40000) {
+          searchHistory.push(stateTransfer.history[i]);
+        }
+      }
+      setIsSearching(searchHistory);
+      console.log('cek disini ', isSearching);
     }
   };
-  useEffect(()=>{
-    if(startDate!==null){
-    setStartDate(moment(date).format('DD/MM/YYYY'))
-    }
-  },[startDate])
 
-  useEffect(()=>{
-    if(endDate!==null){
-    setEndDate(moment(date2).format('DD/MM/YYYY'))
+  useEffect(() => {
+    console.log('isi state histori', stateTransfer.his)
+    if (startDate !== null) {
+      setStartDate(moment(date).format('DD/MM/YYYY'));
     }
-  },[endDate])
+  }, [startDate]);
+
+  useEffect(() => {
+    if (endDate !== null) {
+      setEndDate(moment(date2).format('DD/MM/YYYY'));
+    }
+  }, [endDate]);
+
+  const handleTransactionById=()=>{
+    for (let i = 0; i < stateTransfer.history.length; i++) {
+      if (stateTransfer.history[i] === item) {
+        const request={transaction_id:stateTransfer.history.transaction_id}
+        dispatch(getTransasctionByID(request))
+        navigation.navigate('StatusTransaction')
+      }
+    }
+  }
   return (
     <View style={styles.Container}>
       <HeaderPagesBlue
@@ -140,7 +172,7 @@ const Riwayat = ({navigation}) => {
         </View>
         <View style={{width: '40%'}}>
           <Text style={styles.TextTitleDate}>Akhir:</Text>
-          <TouchableOpacity onPress={() => showMode2('date')} >
+          <TouchableOpacity onPress={() => showMode2('date')}>
             <View style={styles.ContainerTextInputDate}>
               <TextInput
                 value={endDate}
@@ -168,111 +200,47 @@ const Riwayat = ({navigation}) => {
         <Text style={styles.TextSearch}>Cari</Text>
         <IconSearch />
       </TouchableOpacity>
+      {stateTransfer.history !== null ? 
+        <ScrollView showsVerticalScrollIndicator={false} style={{height: 500}}>
+          {historyMap.map((item, index) => {
+            return (
+              <CardRiwayat
+                onPress={()=>handleTransactionById(item)}
+                key={index}
+                bank={item.bank}
+                name={item.recipient_name}
+                accountNumber={item.recipient_norek}
+                countryToCountry={item.type_currency}
+                totalTransfer={formatCurrencyWithoutComma(item.total)}
+                status={item.status}
+                dateTransfer={moment(item.transaction_date).format('LL')}
+              />
+            );
+          })}
+        </ScrollView>
+       : null} 
+
+      {/* {isSearching!==0?
       <ScrollView showsVerticalScrollIndicator={false} style={{height: 500}}>
-        <TouchableOpacity style={styles.CardUser} onPress={()=>navigation.navigate('StatusTransaction')}>
-          <View style={{flexDirection: 'row'}}>
-            <View style={styles.ContainerImage}>
-              <Image
-                source={{
-                  uri: `https://robohash.org/${stateUsers.data.user.fullname}`,
-                }}
-                style={styles.StyleImage}
-              />
-            </View>
-            <View style={styles.ContainerText}>
-              <View style={{flexDirection:'row', alignItems:'center'}}>
-              <Image source={Australia} style={{width:20, height:20, marginRight:10}}/>
-              <Text style={styles.TextCountryToCountry}>IDR ke AUD</Text>
-              </View>
-              <Text style={styles.TextStyle}>
-                {stateUsers.data.user.fullname}
-              </Text>
-              <View style={{flexDirection:'row'}}>
-              <Text style={styles.MethodPayment}>BCC</Text>
-              <Text style={styles.MethodPayment}> - </Text>
-              <Text style={styles.MethodPayment}>112321312</Text>
-              </View>
-              <Text style={styles.DatePayment}> 22 Desember 2022</Text>
-            </View>
-          </View>
-          <View>
-            <View style={styles.ContainerStatusPayment}>
-              <Text style={styles.StatusPayment}>Berhasil</Text>
-            </View>
-            <Text style={styles.CountPayment}>1,000,000.00 IDR</Text>
-          </View>
-        </TouchableOpacity>
 
-        <TouchableOpacity style={styles.CardUser}>
-          <View style={{flexDirection: 'row'}}>
-            <View style={styles.ContainerImage}>
-              <Image
-                source={{
-                  uri: `https://robohash.org/${stateUsers.data.user.fullname}`,
-                }}
-                style={styles.StyleImage}
-              />
-            </View>
-            <View style={styles.ContainerText}>
-              <View style={{flexDirection:'row', alignItems:'center'}}>
-              <Image source={UnitedStates} style={{width:20, height:20, marginRight:10}}/>
-              <Text style={styles.TextCountryToCountry}>IDR ke AUD</Text>
-              </View>
-              <Text style={styles.TextStyle}>
-                {stateUsers.data.user.fullname}
-              </Text>
-              <View style={{flexDirection:'row'}}>
-              <Text style={styles.MethodPayment}>BCC</Text>
-              <Text style={styles.MethodPayment}> - </Text>
-              <Text style={styles.MethodPayment}>112321312</Text>
-              </View>
-              <Text style={styles.DatePayment}> 22 Desember 2022</Text>
-            </View>
-          </View>
-          <View>
-            <View style={styles.ContainerStatusPaymentFailed}>
-              <Text style={styles.StatusPayment}>Berhasil</Text>
-            </View>
-            <Text style={styles.CountPayment}>1,000,000.00 IDR</Text>
-          </View>
-        </TouchableOpacity>
-        
+      {isSearching.map((item, index) => {
+          return (
+            <CardRiwayat
+            key={index}
+            bank={item.bank}
+            name={item.recipient_name}
+            accountNumber={item.recipient_norek}
+            countryToCountry={item.type_currency}
+            totalTransfer={formatCurrencyWithoutComma(item.total)}
+            status={item.status}
+            dateTransfer={(moment(item.transaction_date).format('LL'))}
+            />
 
-        <TouchableOpacity style={styles.CardUser}>
-          <View style={{flexDirection: 'row'}}>
-            <View style={styles.ContainerImage}>
-              <Image
-                source={{
-                  uri: `https://robohash.org/${stateUsers.data.user.fullname}`,
-                }}
-                style={styles.StyleImage}
-              />
-            </View>
-            <View style={styles.ContainerText}>
-              <View style={{flexDirection:'row', alignItems:'center'}}>
-              <Image source={Indonesia} style={{width:20, height:20, marginRight:10}}/>
-              <Text style={styles.TextCountryToCountry}>IDR ke AUD</Text>
-              </View>
-              <Text style={styles.TextStyle}>
-                {stateUsers.data.user.fullname}
-              </Text>
-              <View style={{flexDirection:'row'}}>
-              <Text style={styles.MethodPayment}>BCC</Text>
-              <Text style={styles.MethodPayment}> - </Text>
-              <Text style={styles.MethodPayment}>112321312</Text>
-              </View>
-              <Text style={styles.DatePayment}> 22 Desember 2022</Text>
-            </View>
-          </View>
-          <View>
-            <View style={styles.ContainerStatusPaymentProccess}>
-              <Text style={styles.StatusPayment}>Dalam Proses</Text>
-            </View>
-            <Text style={styles.CountPayment}>1,000,000.00 IDR</Text>
-          </View>
-        </TouchableOpacity>
-        
-      </ScrollView>
+          );
+        })}
+
+      </ScrollView>:null
+      } */}
     </View>
   );
 };
@@ -385,6 +353,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     flexDirection: 'row',
     marginTop: 40,
+    marginBottom: 10,
   },
   TextSearch: {
     fontSize: 14,
@@ -392,12 +361,12 @@ const styles = StyleSheet.create({
     color: '#FFFFFF',
     marginRight: 10,
   },
-  TextCountryToCountry:{
-    fontSize:8,
-    fontWeight:'700'
+  TextCountryToCountry: {
+    fontSize: 8,
+    fontWeight: '700',
   },
-  ContainerStatusPaymentProccess:{
-    backgroundColor:'#FFAD0E',
+  ContainerStatusPaymentProccess: {
+    backgroundColor: '#FFAD0E',
     width: 51,
     height: 12,
     borderRadius: 30,
@@ -405,5 +374,5 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignSelf: 'flex-end',
     marginRight: 20,
-  }
+  },
 });

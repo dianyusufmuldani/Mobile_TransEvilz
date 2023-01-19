@@ -1,10 +1,9 @@
 //Import Library
 import React, {useRef, useState} from 'react';
 import {View, StyleSheet, Text, Image, TouchableOpacity} from 'react-native';
-// import CountDownTimer from 'react-native-countdown-timer-hooks';
 import {useDispatch, useSelector} from 'react-redux';
 import Clipboard from '@react-native-community/clipboard';
-import CountDown from 'react-native-countdown-fixed'
+import CountDown from 'react-native-countdown-fixed';
 
 //Import Component
 import TextDefault from '../../components/atoms/textDefault';
@@ -23,7 +22,7 @@ import {
   setSwiftCode,
 } from '../../service/redux/reducer/transferSlice';
 import IconCopy from '../../../assets/transactionSuccess/copy.svg';
-import { formatCurrencyWithoutComma } from '../../helpers/formatter/currencyFormatter';
+import {formatCurrencyWithoutComma} from '../../helpers/formatter/currencyFormatter';
 
 const TransactionSuccessInternational = ({navigation}) => {
   const dispatch = useDispatch();
@@ -63,18 +62,27 @@ const TransactionSuccessInternational = ({navigation}) => {
           Selesaikan Pembayaran sebelum{' '}
         </Text>
         <CountDown
-        until={84610}
-        onFinish={() => console.log('END')}
-        onPress={() => alert('hello')}
-        size={18}
-        digitTxtStyle={{color:'#2ACA10'}}
-        digitStyle={{backgroundColor:'transparent', marginHorizontal:15, left:-20}}
-        separatorStyle={{color:'#2ACA10'}}
-        timeLabels={{h: 'Jam', m: 'Menit', s: 'Detik'}}
-        timeToShow={['H','M', 'S']}
-        timeLabelStyle={{ color:'#2ACA10', fontSize:16, right:-15, top:-36, fontWeight:'700'}}
+          until={84610}
+          onFinish={() => console.log('END')}
+          onPress={() => alert('hello')}
+          size={18}
+          digitTxtStyle={{color: '#2ACA10'}}
+          digitStyle={{
+            backgroundColor: 'transparent',
+            marginHorizontal: 15,
+            left: -20,
+          }}
+          separatorStyle={{color: '#2ACA10'}}
+          timeLabels={{h: 'Jam', m: 'Menit', s: 'Detik'}}
+          timeToShow={['H', 'M', 'S']}
+          timeLabelStyle={{
+            color: '#2ACA10',
+            fontSize: 16,
+            right: -15,
+            top: -36,
+            fontWeight: '700',
+          }}
         />
-        
         <View style={styles.ContainerPayment}>
           <View style={styles.ContainerTextDescription}>
             <TextDescriptionOnBoarding value={'Nama Penerima'} />
@@ -107,7 +115,9 @@ const TransactionSuccessInternational = ({navigation}) => {
             <TextDescriptionOnBoarding value={'Total'} />
           </View>
           <Text style={styles.TextCount}>
-            {formatCurrencyWithoutComma(stateTransfer.totalTransactionInternational)}
+            {formatCurrencyWithoutComma(
+              stateTransfer.totalTransactionInternational,
+            )}
           </Text>
         </View>
       </View>

@@ -8,9 +8,8 @@ import {
   TextInput,
   ScrollView,
 } from 'react-native';
-// import CountDownTimer from 'react-native-countdown-timer-hooks';
 import {useDispatch, useSelector} from 'react-redux';
-import CountDown from 'react-native-countdown-fixed'
+import CountDown from 'react-native-countdown-fixed';
 
 //Import Component
 import HeaderPages from '../../components/moleculs/headerPages';
@@ -34,8 +33,8 @@ import {getOtp, setOtpSlice} from '../../service/redux/reducer/otpSlice';
 const OTP = ({navigation}) => {
   const [otp, setOtp] = useState([]);
   const [allOtp, setAllOtp] = useState(null);
-  const [iSRunning, setIsRunning]=useState(true)
-  const [resetCountDown, setResetCountDown]=useState(Math.random())
+  const [iSRunning, setIsRunning] = useState(true);
+  const [resetCountDown, setResetCountDown] = useState(Math.random());
   const dispatch = useDispatch();
   const stateGlobal = useSelector(state => state.global);
   const stateOtp = useSelector(state => state.otp);
@@ -67,13 +66,13 @@ const OTP = ({navigation}) => {
         dispatch(setIsLoading(false));
         setIsRunning(false);
         dispatch(setIsPopupIncorectOtp(false));
-        dispatch(setOtpSlice(null))
+        dispatch(setOtpSlice(null));
         navigation.navigate('FormRegistration');
         console.log('Sukses');
       } else if (stateOtp.data === 400) {
         dispatch(setIsLoading(false));
         dispatch(setIsPopupIncorectOtp(true));
-        dispatch(setOtpSlice(null))
+        dispatch(setOtpSlice(null));
         console.log('Gagal');
       }
     } else {
@@ -87,11 +86,10 @@ const OTP = ({navigation}) => {
   const handleBack = () => {
     navigation.goBack();
     setIsRunning(false);
-   
   };
   const handleSendAgain = () => {
-    setIsRunning(true)
-    setResetCountDown(Math.random())
+    setIsRunning(true);
+    setResetCountDown(Math.random());
   };
   const handleTryAgain = () => {
     setOtp([]);
@@ -103,7 +101,7 @@ const OTP = ({navigation}) => {
     setOtp([]);
     setAllOtp(null);
     dispatch(setOtpSlice(null));
-    dispatch(setIsPopupRequestTimedOut(false))
+    dispatch(setIsPopupRequestTimedOut(false));
   };
   return (
     <View style={styles.Container}>
@@ -132,21 +130,21 @@ const OTP = ({navigation}) => {
         </View>
 
         <CountDown
-        key={resetCountDown}
-        until={5}
-        onFinish={() => {
-          setIsRunning(false)
-          dispatch(setIsPopupRequestTimedOut(true))
-        }}
-        onPress={() => alert('hello')}
-        size={12}
-        digitTxtStyle={{color:'#2ACA10'}}
-        digitStyle={{backgroundColor:'transparent', marginHorizontal:-5}}
-        separatorStyle={{color:'#2ACA10'}}
-        timeLabels={{m: null, s: null}}
-        timeToShow={['M', 'S']}
-        running={iSRunning}
-        showSeparator
+          key={resetCountDown}
+          until={60}
+          onFinish={() => {
+            setIsRunning(false);
+            dispatch(setIsPopupRequestTimedOut(true));
+          }}
+          onPress={() => alert('hello')}
+          size={12}
+          digitTxtStyle={{color: '#2ACA10'}}
+          digitStyle={{backgroundColor: 'transparent', marginHorizontal: -5}}
+          separatorStyle={{color: '#2ACA10'}}
+          timeLabels={{m: null, s: null}}
+          timeToShow={['M', 'S']}
+          running={iSRunning}
+          showSeparator
         />
 
         <View style={styles.ContainerContentOtp}>

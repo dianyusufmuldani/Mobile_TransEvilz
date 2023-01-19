@@ -94,10 +94,9 @@ const ForgotPin = ({navigation}) => {
             validValue={checkValidEmail}
             textNegatifCaseBlank={'Anda harus mengisi bagian ini'}
             textNegatifCase3={'Format email salah'}
-            isNegatifCase1={email==='client@gmail.com'}
+            isNegatifCase1={email === 'client@gmail.com'}
             textNegatifCase1={'Email tidak terdaftar'}
           />
-
         </View>
       </ScrollView>
       <View style={styles.ContainerKirim}>
@@ -133,7 +132,6 @@ const styles = StyleSheet.create({
   },
   ContainerKirim: {
     width: '90%',
-    // position: 'absolute',
     bottom: 0,
   },
   TextWrong: {

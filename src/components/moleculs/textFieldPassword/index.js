@@ -14,7 +14,7 @@ const TextFieldPassword = ({
   textNegatifCase1,
   textNegatifCase2,
   textNegatifCase3,
-  textNegatifCaseBlank
+  textNegatifCaseBlank,
 }) => {
   const [isShowPassword, setIsShowPassword] = useState(true);
   const handleShowPassword = () => {
@@ -22,45 +22,45 @@ const TextFieldPassword = ({
   };
   return (
     <>
-    <View
-      style={
-        value === '' ||
-        validValue === true ||
-        isNegatifCase1===true ||
-        isNegatifCase2===true 
-          ? styles.ContainerError
-          : styles.Container
-      }>
-      <TextInput
-        placeholder={placeholder}
-        secureTextEntry={isShowPassword}
-        value={value}
-        onChangeText={onChangeText}
-        keyboardType={keyboardType}
-        maxLength={maxLength}
-      />
-      <TouchableOpacity
-        onPress={handleShowPassword}
-        style={styles.IconHidePassword}>
-        {isShowPassword === true ? (
-          <FontAwesome name="eye-slash" size={20} color={'blue'} />
-        ) : (
-          <FontAwesome name="eye" size={20} color={'blue'} />
-        )}
-        {/* <IconHidePassword /> */}
-      </TouchableOpacity>
-    </View>
-    <NegatifCase text={textNegatifCaseBlank} value={value} />
-   
-    {isNegatifCase1 ?
-     <NegatifCase text={textNegatifCase1} value={''} />:null
-    }
-    {isNegatifCase2 ?
-     <NegatifCase text={textNegatifCase2} value={''} />:null
-    }
-    {validValue===true ?
-     <NegatifCase text={textNegatifCase3} value={''} />:null
-    }
+      <View
+        style={
+          value === '' ||
+          validValue === true ||
+          isNegatifCase1 === true ||
+          isNegatifCase2 === true
+            ? styles.ContainerError
+            : styles.Container
+        }>
+        <TextInput
+          placeholder={placeholder}
+          secureTextEntry={isShowPassword}
+          value={value}
+          onChangeText={onChangeText}
+          keyboardType={keyboardType}
+          maxLength={maxLength}
+        />
+        <TouchableOpacity
+          onPress={handleShowPassword}
+          style={styles.IconHidePassword}>
+          {isShowPassword === true ? (
+            <FontAwesome name="eye-slash" size={20} color={'blue'} />
+          ) : (
+            <FontAwesome name="eye" size={20} color={'blue'} />
+          )}
+          {/* <IconHidePassword /> */}
+        </TouchableOpacity>
+      </View>
+      <NegatifCase text={textNegatifCaseBlank} value={value} />
+
+      {isNegatifCase1 ? (
+        <NegatifCase text={textNegatifCase1} value={''} />
+      ) : null}
+      {isNegatifCase2 ? (
+        <NegatifCase text={textNegatifCase2} value={''} />
+      ) : null}
+      {validValue === true ? (
+        <NegatifCase text={textNegatifCase3} value={''} />
+      ) : null}
     </>
   );
 };

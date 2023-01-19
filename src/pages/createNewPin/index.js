@@ -24,22 +24,22 @@ import ImageSuccess from '../../../assets/popup/Completed_successfully.png';
 import NegatifCase from '../../components/atoms/negatifCaseTextInput';
 import IconInfo from '../../../assets/createPIN/info.svg';
 import ToastedSuccess from '../../components/moleculs/toastSuccess';
-import { useDispatch, useSelector } from 'react-redux';
-import { getNewPin } from '../../service/redux/reducer/pinSlice';
+import {useDispatch, useSelector} from 'react-redux';
+import {getNewPin} from '../../service/redux/reducer/pinSlice';
 
 const CreateNewPin = ({navigation}) => {
-  const dispatch=useDispatch()
-  const stateUsers=useSelector(state=>state.users)
+  const dispatch = useDispatch();
+  const stateUsers = useSelector(state => state.users);
   const [pin, setPin] = useState(null);
   const [confirmPin, setConfirmPin] = useState(null);
   const [isButton, setIsButton] = useState(false);
   const [isPopup, setIsPopup] = useState(false);
-  const [isToastedSuccesPin, setIsToastedSuccessPin]=useState(false)
+  const [isToastedSuccesPin, setIsToastedSuccessPin] = useState(false);
 
   const [checkMatchPin, setCheckMatchPin] = useState(false);
 
   useEffect(() => {
-    console.log('pages create pin state users', stateUsers)
+    console.log('pages create pin state users', stateUsers);
     if (pin === null || pin === '') {
       setIsButton(false);
       console.log('isi IF');
@@ -50,7 +50,7 @@ const CreateNewPin = ({navigation}) => {
       setCheckMatchPin(true);
       setIsButton(false);
     } else if (pin === confirmPin) {
-      setCheckMatchPin(false)
+      setCheckMatchPin(false);
       setIsButton(true);
     }
     BackHandler.addEventListener('hardwareBackPress', backAction);
@@ -65,12 +65,11 @@ const CreateNewPin = ({navigation}) => {
     setIsPopup(false);
   };
   const handleButtonFooter = () => {
-    // setIsPopup(true);
-    const request={
-      pin:pin
-    }
-    dispatch(getNewPin(request))
-    setIsToastedSuccessPin(true)
+    const request = {
+      pin: pin,
+    };
+    dispatch(getNewPin(request));
+    setIsToastedSuccessPin(true);
   };
   const backAction = () => {
     BackHandler.exitApp();
@@ -86,7 +85,14 @@ const CreateNewPin = ({navigation}) => {
         ImagePopUp={ImageSuccess}
         textButton={'Masuk Sekarang'}
       />
-      <ToastedSuccess visible={isToastedSuccesPin} onPressButton={()=>setIsToastedSuccessPin(false)} onPressModal={()=>setIsToastedSuccessPin(false)} textToasted={'Pin Evilz Berhasil disimpan'} height={40} width={'70%'}/>
+      <ToastedSuccess
+        visible={isToastedSuccesPin}
+        onPressButton={() => setIsToastedSuccessPin(false)}
+        onPressModal={() => setIsToastedSuccessPin(false)}
+        textToasted={'Pin Evilz Berhasil disimpan'}
+        height={40}
+        width={'70%'}
+      />
       <HeaderPages
         hideShowTitle={true}
         value={'Buat Pin Evilz Baru'}
@@ -120,7 +126,6 @@ const CreateNewPin = ({navigation}) => {
             keyboardType={'numeric'}
             textNegatifCaseBlank={'Anda harus mengisi bagian ini'}
           />
-
         </View>
 
         <View style={styles.FormStyle}>
@@ -138,7 +143,6 @@ const CreateNewPin = ({navigation}) => {
             textNegatifCaseBlank={'Anda harus mengisi bagian ini'}
             textNegatifCase3={'Konfirmasi pin tidak sama'}
           />
-         
         </View>
       </ScrollView>
       <View style={styles.ContainerKirim}>

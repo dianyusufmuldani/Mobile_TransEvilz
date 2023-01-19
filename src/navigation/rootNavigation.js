@@ -164,13 +164,10 @@ export const TabNav = () => {
     <Tab.Navigator
       screenOptions={{
         tabBarStyle: {
-          // borderTopLeftRadius: 20,
-          // borderTopRightRadius: 20,
           height: 60,
           width: '100%',
           elevation: 20,
           backgroundColor: '#FFFFFF',
-          // position: 'absolute',
         },
 
         headerShown: false,

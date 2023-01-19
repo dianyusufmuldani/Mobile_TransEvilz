@@ -17,21 +17,20 @@ import {setIsPopupCreatePinSuccess} from '../../service/redux/reducer/globalSlic
 //Import Assets
 import IconInfo from '../../../assets/createPIN/info.svg';
 import ImageSuccess from '../../../assets/popup/Completed_successfully.png';
-import { getPin } from '../../service/redux/reducer/pinSlice';
+import {getPin} from '../../service/redux/reducer/pinSlice';
 import ToastedSuccess from '../../components/moleculs/toastSuccess';
-// import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const CreatePIN = ({navigation}) => {
   const [pin, setPin] = useState(null);
   const [isButton, setIsButton] = useState(false);
   const [confirmPin, setConfirmPin] = useState(null);
-  const [isToastedSuccesPin, setIsToastedSuccessPin]=useState(false)
+  const [isToastedSuccesPin, setIsToastedSuccessPin] = useState(false);
   const stateGlobal = useSelector(state => state.global);
-  const stateUsers=useSelector(state=>state.users)
-  const statePin=useSelector(state=>state.pin)
+  const stateUsers = useSelector(state => state.users);
+  const statePin = useSelector(state => state.pin);
   const dispatch = useDispatch();
   useEffect(() => {
-    console.log('isi state Users di pages PIN', stateUsers)
+    console.log('isi state Users di pages PIN', stateUsers);
     if (pin === null || pin === undefined) {
       setIsButton(false);
     } else if (confirmPin === null || confirmPin === undefined) {
@@ -49,26 +48,22 @@ const CreatePIN = ({navigation}) => {
     }
   });
   const handleKirim = () => {
-    const request={pin:Number(pin)}
-    dispatch(getPin(request))
-    
+    const request = {pin: Number(pin)};
+    dispatch(getPin(request));
   };
 
-  useEffect(()=>{
-    if(statePin.pinRedux!==null){
-      if(statePin.pinRedux===201){
-          console.log('success pin')
-          setIsToastedSuccessPin(true)
-      }
-      else if(statePin.pinRedux===401){
-        console.log('failed pin 401')
-      }
-      else{
-        console.log('failed pin any')
+  useEffect(() => {
+    if (statePin.pinRedux !== null) {
+      if (statePin.pinRedux === 201) {
+        console.log('success pin');
+        setIsToastedSuccessPin(true);
+      } else if (statePin.pinRedux === 401) {
+        console.log('failed pin 401');
+      } else {
+        console.log('failed pin any');
       }
     }
-
-  },[statePin])
+  }, [statePin]);
   const handleCancelPopUp = () => {
     dispatch(setIsPopupCreatePinSuccess(false));
   };
@@ -77,17 +72,16 @@ const CreatePIN = ({navigation}) => {
     navigation.navigate('Login');
   };
 
-  // useEffect(()=>{
-  //   if(stateUsers.data!==null){
-  //   if(stateUsers.data.user.userPin!==false){
-  //     setIsToastedSuccessPin(true)
-  //     // dispatch(setIsPopupCreatePinSuccess(true));
-  //   }
-  // }
-  // },[stateUsers.data])
   return (
     <View style={styles.Container}>
-      <ToastedSuccess visible={isToastedSuccesPin} onPressButton={()=>setIsToastedSuccessPin(false)} onPressModal={()=>setIsToastedSuccessPin(false)} textToasted={'Pin Evilz Berhasil disimpan'} height={40} width={'70%'}/>
+      <ToastedSuccess
+        visible={isToastedSuccesPin}
+        onPressButton={() => setIsToastedSuccessPin(false)}
+        onPressModal={() => setIsToastedSuccessPin(false)}
+        textToasted={'Pin Evilz Berhasil disimpan'}
+        height={40}
+        width={'70%'}
+      />
       <PopUp
         visible={stateGlobal.isPopupCreatePinSuccess}
         onPressCancel={handleCancelPopUp}
@@ -126,7 +120,6 @@ const CreatePIN = ({navigation}) => {
             keyboardType={'numeric'}
             textNegatifCaseBlank={'Anda harus mengisi bagian ini'}
           />
-        
         </View>
         <View style={styles.FormTextInput}>
           <View style={{flexDirection: 'row'}}>
@@ -140,7 +133,9 @@ const CreatePIN = ({navigation}) => {
             keyboardType={'numeric'}
             value={confirmPin}
             textNegatifCaseBlank={'Anda harus mengisi bagian ini'}
-            isNegatifCase1={pin!==confirmPin&&confirmPin!==''&&confirmPin!==null}
+            isNegatifCase1={
+              pin !== confirmPin && confirmPin !== '' && confirmPin !== null
+            }
             textNegatifCase1={'Pin tidak sama'}
           />
         </View>

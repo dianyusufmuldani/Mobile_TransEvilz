@@ -18,7 +18,10 @@ import {setIsButtonTransferLocal} from '../../service/redux/reducer/globalSlice'
 //Import Assets
 import IconIndonesia from '../../../assets/transferCard/openmoji_flag-indonesia.svg';
 import HeaderPagesBlue from '../../components/moleculs/headerPagesBlue';
-import { formatCurrencyWithoutComma } from '../../helpers/formatter/currencyFormatter';
+import {
+  formatCurrencyWithoutComma,
+  formatCurrencyWithoutCommaAndIDR,
+} from '../../helpers/formatter/currencyFormatter';
 
 const TransferCard = ({navigation}) => {
   const stateTransfer = useSelector(state => state.transfer);
@@ -56,7 +59,7 @@ const TransferCard = ({navigation}) => {
     } else {
       dispatch(setIsButtonTransferLocal(false));
     }
-  }, [stateTransfer]);
+  }, [stateTransfer.nominalLocal]);
 
   return (
     <View style={styles.Container}>
@@ -73,24 +76,32 @@ const TransferCard = ({navigation}) => {
           </View>
           <TextInput
             style={
-              stateTransfer.nominalLocal === ''||stateTransfer.nominalLocal<10000&&stateTransfer.nominalLocal!==null
+              stateTransfer.nominalLocal === '' ||
+              (stateTransfer.nominalLocal < 10000 &&
+                stateTransfer.nominalLocal !== null)
                 ? styles.ContainerTextInputFlagError
                 : styles.ContainerTextInputFlag
             }
             placeholder={'IDR'}
-            value={stateTransfer.nominalLocal}
+            value={
+              stateTransfer.nominalLocal === null
+                ? 0
+                : formatCurrencyWithoutCommaAndIDR(stateTransfer.nominalLocal)
+            }
             onChangeText={value =>
               dispatch(setNominalTransferLocal(value.replace(/\D/g, '')))
             }
             keyboardType={'number-pad'}
           />
         </View>
-        {stateTransfer.nominalLocal < 10000 && stateTransfer.nominalLocal != ''&&stateTransfer.nominalLocal!==null ?
+        {stateTransfer.nominalLocal < 10000 &&
+        stateTransfer.nominalLocal != '' &&
+        stateTransfer.nominalLocal !== null ? (
           <NegatifCase
             value={''}
             text={'Minimal nominal transaksi Rp 10.000'}
           />
-         : null}
+        ) : null}
         <NegatifCase
           value={stateTransfer.nominalLocal}
           text={'Anda harus mengisi bagian ini'}

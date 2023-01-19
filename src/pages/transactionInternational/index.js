@@ -42,7 +42,7 @@ import UnitedStates from '../../../assets/transferCard/openmoji_flag-united-stat
 import Australia from '../../../assets/transferCard/openmoji_flag-australia.png';
 import Japan from '../../../assets/transferCard/openmoji_flag-japan.png';
 import TextButtonBlue from '../../components/atoms/textButtonBlue';
-import { formatCurrencyWithoutComma } from '../../helpers/formatter/currencyFormatter';
+import {formatCurrencyWithoutComma} from '../../helpers/formatter/currencyFormatter';
 
 const TransactionInternational = ({navigation}) => {
   const stateGlobal = useSelector(state => state.global);
@@ -56,7 +56,6 @@ const TransactionInternational = ({navigation}) => {
     {key: '3', value: 'Wells Fargo'},
     {key: '4', value: 'Citigroup'},
     {key: '5', value: 'Goldman Sachs Group'},
-    // {key: '0', value:''}
   ];
   const dataSGD = [
     {key: '1', value: 'DBS Singapore'},
@@ -105,8 +104,7 @@ const TransactionInternational = ({navigation}) => {
       stateTransfer.accountNumberInternational == ''
     ) {
       dispatch(setIsButtonTransactionLocal(false));
-    }
-    else if (
+    } else if (
       stateTransfer.swiftCode == null ||
       stateTransfer.swiftCode == ''
     ) {
@@ -142,8 +140,9 @@ const TransactionInternational = ({navigation}) => {
               <Text style={styles.TextFormatCurrencyCountry}>
                 IDR ke {stateTransfer.countryDestination}
               </Text>
-              {stateTransfer.countryDestination == 'USD' ?
-                (<Image source={UnitedStates} style={{marginLeft: 10}} />) : (null)}
+              {stateTransfer.countryDestination == 'USD' ? (
+                <Image source={UnitedStates} style={{marginLeft: 10}} />
+              ) : null}
               {stateTransfer.countryDestination == 'AUD' ? (
                 <Image source={Australia} style={{marginLeft: 10}} />
               ) : null}
@@ -156,7 +155,9 @@ const TransactionInternational = ({navigation}) => {
             </View>
             <Text style={styles.TextTotal}>Total Transaksi</Text>
             <Text style={styles.TextIDR}>
-              {formatCurrencyWithoutComma(stateTransfer.totalTransactionInternational)}
+              {formatCurrencyWithoutComma(
+                stateTransfer.totalTransactionInternational,
+              )}
             </Text>
           </View>
 
@@ -165,8 +166,8 @@ const TransactionInternational = ({navigation}) => {
               <TextDefault value={'Pilih Bank '} />
               <RequirementSymbols />
             </View>
-            {stateTransfer.countryDestination == 'USD' ?
-              (<SelectList
+            {stateTransfer.countryDestination == 'USD' ? (
+              <SelectList
                 setSelected={val => setSelected(val)}
                 data={dataUS}
                 save="value"
@@ -181,8 +182,8 @@ const TransactionInternational = ({navigation}) => {
                 dropdownStyles={{backgroundColor: '#F1F7FF', borderWidth: 0}}
               />
             ) : null}
-            {stateTransfer.countryDestination == 'SGD' ?
-              (<SelectList
+            {stateTransfer.countryDestination == 'SGD' ? (
+              <SelectList
                 setSelected={val => setSelected(val)}
                 data={dataSGD}
                 save="value"
@@ -197,8 +198,8 @@ const TransactionInternational = ({navigation}) => {
                 dropdownStyles={{backgroundColor: '#F1F7FF', borderWidth: 0}}
               />
             ) : null}
-            {stateTransfer.countryDestination == 'JPY' ?
-              (<SelectList
+            {stateTransfer.countryDestination == 'JPY' ? (
+              <SelectList
                 setSelected={val => setSelected(val)}
                 data={dataJPY}
                 save="value"
@@ -213,8 +214,8 @@ const TransactionInternational = ({navigation}) => {
                 dropdownStyles={{backgroundColor: '#F1F7FF', borderWidth: 0}}
               />
             ) : null}
-            {stateTransfer.countryDestination == 'AUD' ?
-              (<SelectList
+            {stateTransfer.countryDestination == 'AUD' ? (
+              <SelectList
                 setSelected={val => setSelected(val)}
                 data={dataAUD}
                 save="value"
@@ -244,9 +245,14 @@ const TransactionInternational = ({navigation}) => {
               keyboardType={'numeric'}
               textNegatifCaseBlank={'Anda harus mengisi bagian ini'}
             />
-           
-            <TextButtonBlue value={'Silakan cek kode swift disini'} onPress={() => Linking.openURL  ('https://www.transfez.com/swift-codes/')}/>
-          </View> 
+
+            <TextButtonBlue
+              value={'Silakan cek kode swift disini'}
+              onPress={() =>
+                Linking.openURL('https://www.transfez.com/swift-codes/')
+              }
+            />
+          </View>
           <View style={styles.FormInput}>
             <View style={{flexDirection: 'row'}}>
               <TextDefault value={'Nama Penerima '} />
@@ -260,7 +266,6 @@ const TransactionInternational = ({navigation}) => {
               }
               textNegatifCaseBlank={'Anda harus mengisi bagian ini'}
             />
-           
           </View>
 
           <View style={styles.FormInput}>
@@ -279,10 +284,7 @@ const TransactionInternational = ({navigation}) => {
               keyboardType={'numeric'}
               textNegatifCaseBlank={'Anda harus mengisi bagian ini'}
             />
-            
           </View>
-
-          
         </ScrollView>
       </View>
       <View style={styles.ContainerButton}>
@@ -353,7 +355,6 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     justifyContent: 'center',
     marginTop: 10,
-    // top:-135,
   },
   TextTotal: {
     color: '#7A7A7A',
@@ -374,7 +375,6 @@ const styles = StyleSheet.create({
   ContainerButton: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    // position: 'absolute',
     bottom: 0,
     alignSelf: 'center',
     backgroundColor: '#FFFFFF',

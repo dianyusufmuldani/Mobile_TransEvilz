@@ -124,7 +124,6 @@ const styles = StyleSheet.create({
     width: '80%',
     borderTopRightRadius: 10,
     borderBottomRightRadius: 10,
-    // borderColor:'#F1F7FF'
     backgroundColor: '#F1F7FF',
   },
   ContainerSelectList: {

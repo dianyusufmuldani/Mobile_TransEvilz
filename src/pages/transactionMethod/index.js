@@ -15,7 +15,7 @@ import {Colours} from '../../helpers/colours';
 import ImageBgTransaction from '../../../assets/transaction/bgTransaction.png';
 import IconIndonesia from '../../../assets/registration/openmoji_flag-indonesia.svg';
 import HeaderPagesBlue from '../../components/moleculs/headerPagesBlue';
-import { formatCurrencyWithoutComma } from '../../helpers/formatter/currencyFormatter';
+import {formatCurrencyWithoutComma} from '../../helpers/formatter/currencyFormatter';
 
 const TransactionMethod = ({navigation}) => {
   const dispatch = useDispatch();
@@ -35,7 +35,7 @@ const TransactionMethod = ({navigation}) => {
     } else {
       dispatch(setIsButtonMethodLocal(true));
     }
-  });
+  }, [selected]);
 
   return (
     <View style={styles.Container}>
@@ -117,7 +117,6 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     marginBottom: 50,
     marginTop: 10,
-    // top:-135,
   },
   TextFormatCurrencyCountry: {
     color: '#3A3A3A',

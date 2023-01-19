@@ -29,12 +29,13 @@ import ImageBgTransaction from '../../../assets/transaction/bgTransaction.png';
 import IconIndonesia from '../../../assets/registration/openmoji_flag-indonesia.svg';
 import NegatifCase from '../../components/atoms/negatifCaseTextInput';
 import {
+  getReceiverLocal,
   setAccountNumber,
   setBankReceiver,
   setNameReceiver,
 } from '../../service/redux/reducer/transferSlice';
 import ImagePopupError from '../../../assets/popup/popup_error.png';
-import { formatCurrencyWithoutComma } from '../../helpers/formatter/currencyFormatter';
+import {formatCurrencyWithoutComma} from '../../helpers/formatter/currencyFormatter';
 
 const Transaction = ({navigation}) => {
   const stateGlobal = useSelector(state => state.global);
@@ -43,11 +44,11 @@ const Transaction = ({navigation}) => {
 
   const [selected, setSelected] = React.useState('');
   const data = [
-    {key: '1', value: 'Mandiri'},
-    {key: '2', value: 'BCA'},
-    {key: '3', value: 'CIMB Niaga'},
-    {key: '4', value: 'BRI'},
-    {key: '5', value: 'BNI'},
+    {key: '111', value: 'Mandiri'},
+    {key: '222', value: 'BCA'},
+    {key: '333', value: 'CIMB Niaga'},
+    {key: '444', value: 'BRI'},
+    {key: '555', value: 'BNI'},
   ];
   const handleSelanjutnya = () => {
     if (stateTransfer.accountNumber === '00000000') {
@@ -57,29 +58,42 @@ const Transaction = ({navigation}) => {
     }
   };
   const handleReset = () => {
-    // setSelected('');
-    dispatch(setNameReceiver(null));
     dispatch(setAccountNumber(null));
   };
   useEffect(() => {
+    console.log(stateTransfer);
     console.log(selected);
+    console.log(
+      'pages transaction, account number',
+      stateTransfer.accountNumber,
+    );
     if (selected === null || selected === '') {
-      dispatch(setIsButtonTransactionLocal(false));
-    } else if (
-      stateTransfer.nameReceiver === null ||
-      stateTransfer.nameReceiver === ''
-    ) {
+      dispatch(setBankReceiver(selected));
       dispatch(setIsButtonTransactionLocal(false));
     } else if (
       stateTransfer.accountNumber === null ||
       stateTransfer.accountNumber === ''
     ) {
+      dispatch(setBankReceiver(selected));
+      dispatch(setIsButtonTransactionLocal(false));
+    } else if (stateTransfer.nameReceiver === 404) {
+      dispatch(setBankReceiver(selected));
       dispatch(setIsButtonTransactionLocal(false));
     } else {
       dispatch(setBankReceiver(selected));
       dispatch(setIsButtonTransactionLocal(true));
     }
-  });
+  }, [stateTransfer.accountNumber, stateTransfer.nameReceiver, selected]);
+
+  useEffect(() => {
+    if (stateTransfer.accountNumber !== null || stateTransfer.bankReceiver) {
+      const request = {
+        bank_code: stateTransfer.bankReceiver,
+        no_rekening: stateTransfer.accountNumber,
+      };
+      dispatch(getReceiverLocal(request));
+    }
+  }, [stateTransfer.accountNumber, stateTransfer.bankReceiver]);
   return (
     <>
       <View style={styles.Container}>
@@ -119,7 +133,7 @@ const Transaction = ({navigation}) => {
             <SelectList
               setSelected={val => setSelected(val)}
               data={data}
-              save="value"
+              save="id"
               boxStyles={{
                 backgroundColor: '#F1F7FF',
                 borderWidth: 0,
@@ -131,21 +145,6 @@ const Transaction = ({navigation}) => {
               dropdownStyles={{backgroundColor: '#F1F7FF', borderWidth: 0}}
             />
           </View>
-
-          <View style={styles.FormInput}>
-            <View style={{flexDirection: 'row'}}>
-              <TextDefault value={'Nama Penerima '} />
-              <RequirementSymbols />
-            </View>
-            <TextField
-              placeholder={'Masukkan Nama Penerima'}
-              value={stateTransfer.nameReceiver}
-              onChangeText={value => dispatch(setNameReceiver(value))}
-              textNegatifCaseBlank={'Anda harus mengisi bagian ini'}
-            />
-            
-          </View>
-
           <View style={styles.FormInput}>
             <View style={{flexDirection: 'row'}}>
               <TextDefault value={'No. Rekening'} />
@@ -159,8 +158,32 @@ const Transaction = ({navigation}) => {
               }
               keyboardType={'numeric'}
               textNegatifCaseBlank={'Anda harus mengisi bagian ini'}
+              isNegatifCase1={
+                stateTransfer.nameReceiver === 404 &&
+                stateTransfer.accountNumber !== '' &&
+                stateTransfer.accountNumber !== null
+              }
+              textNegatifCase1={
+                'No Rekening yang anda masukkan tidak ditemukan'
+              }
             />
-            
+          </View>
+          <View style={styles.FormInput}>
+            <View style={{flexDirection: 'row'}}>
+              <TextDefault value={'Nama Penerima '} />
+              <RequirementSymbols />
+            </View>
+            <TextField
+              placeholder={'Masukkan Nama Penerima'}
+              value={
+                stateTransfer.nameReceiver !== 404 ||
+                stateTransfer.nameReceiver !== null
+                  ? stateTransfer.nameReceiver
+                  : null
+              }
+              editable={false}
+              textNegatifCaseBlank={'Anda harus mengisi bagian ini'}
+            />
           </View>
         </ScrollView>
       </View>
@@ -232,7 +255,6 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     justifyContent: 'center',
     marginTop: 10,
-    // top:-135,
   },
   TextTotal: {
     color: '#7A7A7A',
@@ -253,7 +275,6 @@ const styles = StyleSheet.create({
   ContainerButton: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    // position: 'absolute',
     bottom: 0,
     alignSelf: 'center',
     backgroundColor: '#FFFFFF',

@@ -22,12 +22,15 @@ import PopUp from '../../components/organism/popup';
 import ImageGirlPassword from '../../../assets/forgotPassword/girl_tries_password.png';
 import ImageSuccess from '../../../assets/popup/Completed_successfully.png';
 import NegatifCase from '../../components/atoms/negatifCaseTextInput';
-import { useDispatch, useSelector } from 'react-redux';
-import { getNewPassword, setNewPassword } from '../../service/redux/reducer/usersSlice';
+import {useDispatch, useSelector} from 'react-redux';
+import {
+  getNewPassword,
+  setNewPassword,
+} from '../../service/redux/reducer/usersSlice';
 
 const CreateNewPassword = ({navigation}) => {
-  const dispatch=useDispatch()
-  const stateUsers=useSelector(state=>state.users)
+  const dispatch = useDispatch();
+  const stateUsers = useSelector(state => state.users);
   const [password, setPassword] = useState(null);
   const [confirmPassword, setConfirmPassword] = useState(null);
   const [isButton, setIsButton] = useState(false);
@@ -67,7 +70,7 @@ const CreateNewPassword = ({navigation}) => {
     BackHandler.addEventListener('hardwareBackPress', backAction);
     return () =>
       BackHandler.removeEventListener('hardwareBackPress', backAction);
-  });
+  }, [password, confirmPassword]);
   const handleButtonPopup = () => {
     setIsPopup(false);
     navigation.navigate('Login');
@@ -76,9 +79,18 @@ const CreateNewPassword = ({navigation}) => {
     setIsPopup(false);
   };
   const handleButtonFooter = () => {
-    dispatch(getNewPassword({email:stateUsers.newPassword.email,password:password}))
-    setIsPopup(true);
+    dispatch(
+      getNewPassword({
+        email: stateUsers.newPassword.email.toLowerCase(),
+        password: password,
+      }),
+    );
   };
+  useEffect(() => {
+    if (stateUsers.newPassword === 200) {
+      setIsPopup(true);
+    }
+  }, [stateUsers.newPassword]);
   const backAction = () => {
     BackHandler.exitApp();
     return true;
@@ -116,9 +128,10 @@ const CreateNewPassword = ({navigation}) => {
             maxLength={16}
             validValue={checkValidPassword}
             textNegatifCaseBlank={'Anda harus mengisi bagian ini'}
-            textNegatifCase3={'Kata sandi harus berisi huruf besar, angka dan simbol (@ * # &)'}
+            textNegatifCase3={
+              'Kata sandi harus berisi huruf besar, angka dan simbol (@ * # &)'
+            }
           />
-     
         </View>
 
         <View style={styles.FormStyle}>
@@ -133,10 +146,13 @@ const CreateNewPassword = ({navigation}) => {
             maxLength={16}
             validValue={checkMatchPassword}
             textNegatifCaseBlank={'Anda harus mengisi bagian ini'}
-            isNegatifCase1={password!==confirmPassword&&confirmPassword!==''&&confirmPassword!==null}
+            isNegatifCase1={
+              password !== confirmPassword &&
+              confirmPassword !== '' &&
+              confirmPassword !== null
+            }
             textNegatifCase1={'Kata sandi tidak sama'}
           />
-          
         </View>
       </ScrollView>
       <View style={styles.ContainerKirim}>

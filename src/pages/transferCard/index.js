@@ -89,7 +89,13 @@ const TransferCard = ({navigation}) => {
                 : formatCurrencyWithoutCommaAndIDR(stateTransfer.nominalLocal)
             }
             onChangeText={value =>
+              {if(value==='0'){
+
+              }
+              else{
               dispatch(setNominalTransferLocal(value.replace(/\D/g, '')))
+            }
+            }
             }
             keyboardType={'number-pad'}
           />

@@ -16,6 +16,7 @@ import ImageSuccess from '../../../assets/transactionSuccess/check_mark.png';
 import {
   setAccountNumber,
   setCountryDestination,
+  setIdTransactionLocal,
   setNameReceiver,
   setNominalTransferLocal,
   setTransactionLocal,
@@ -41,7 +42,7 @@ const TransactionSuccess = ({navigation}) => {
     dispatch(setNameReceiver(null));
     dispatch(setAccountNumber(null));
     dispatch(setTransactionLocal(null));
-    navigation.navigate('Homepage');
+    navigation.navigate('HomepageNav');
   };
 
   return (
@@ -86,21 +87,24 @@ const TransactionSuccess = ({navigation}) => {
           <View style={styles.ContainerTextDescription}>
             <TextDescriptionOnBoarding value={'Nama Penerima'} />
           </View>
-          <TextDefault value={stateTransfer.nameReceiver} />
+          <TextDefault value={stateTransfer.idTransactionLocal.recipient_name} />
           <View style={styles.ContainerTextDescription}>
             <TextDescriptionOnBoarding value={'Jenis Bank'} />
           </View>
-          <TextDefault value={stateTransfer.bankReceiver} />
-
+          <TextDefault value={stateTransfer.idTransactionLocal.bank} />
+          <View style={styles.ContainerTextDescription}>
+            <TextDescriptionOnBoarding value={'Tipe Transaksi'} />
+          </View>
+          <TextDefault value={stateTransfer.idTransactionLocal.type_currency} />
           <View style={styles.ContainerTextDescription}>
             <TextDescriptionOnBoarding value={'No. Rekening'} />
           </View>
-          <TextDefault value={stateTransfer.accountNumber} />
+          <TextDefault value={stateTransfer.idTransactionLocal.recipient_norek} />
           <View style={styles.ContainerTextDescription}>
             <TextDescriptionOnBoarding value={'Virtual Akun'} />
           </View>
           <View style={{flexDirection: 'row', alignSelf: 'center'}}>
-            <TextDefault value={'9999-5678-0033-1121-314'} />
+            <TextDefault value={stateTransfer.idTransactionLocal.virtual_account} />
             <TouchableOpacity
               onPress={() => Clipboard.setString('9999-5678-0033-1121-314')}>
               <IconCopy style={{marginLeft: 10}} />
@@ -111,7 +115,7 @@ const TransactionSuccess = ({navigation}) => {
             <TextDescriptionOnBoarding value={'Total'} />
           </View>
           <Text style={styles.TextCount}>
-            {formatCurrencyWithoutComma(stateTransfer.totalTransactionLocal)}
+            {formatCurrencyWithoutComma(stateTransfer.idTransactionLocal.total)}
           </Text>
         </View>
       </View>

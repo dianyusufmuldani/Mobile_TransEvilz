@@ -8,14 +8,26 @@ import ImageProccess from '../../../assets/statusTransaction/uim_process.png';
 import ImageFailed from '../../../assets/statusTransaction/cross_icon.png';
 import ImageSuccess from '../../../assets/statusTransaction/check_mark.png';
 import IconTransEvilz from '../../../assets/statusTransaction/logo_transevilz.svg';
+import { useSelector } from 'react-redux';
+import { useDispatch } from 'react-redux';
+import { setIdTransactionLocal } from '../../service/redux/reducer/transferSlice';
+import { formatCurrencyWithoutComma } from '../../helpers/formatter/currencyFormatter';
 
 const StatusTransaction = ({navigation}) => {
+  const dispatch=useDispatch()
+  const stateTransfer=useSelector(state=>state.transfer)
   return (
     <View style={{flex: 1}}>
       <View style={styles.ContainerBlueBackgrund}>
-        <HeaderPagesWhite onPress={() => navigation.goBack()} />
+        <HeaderPagesWhite 
+        onPress={() =>{ 
+          navigation.goBack()
+          dispatch(setIdTransactionLocal(null))}} />
+        {stateTransfer.idTransactionLocal.status==='In Progress'?
         <View style={styles.ContainerTitle}>
+          
           <Text style={styles.TextTitle}>Transaksi Anda Dalam Proses</Text>
+
           <Text style={styles.TextDescriptionTitle}>
             Selesaikan Pembayaran sebelum{' '}
           </Text>
@@ -41,53 +53,94 @@ const StatusTransaction = ({navigation}) => {
               fontWeight: '700',
             }}
           />
-        </View>
+          
+        </View>:null
+        }
+        {stateTransfer.idTransactionLocal.status==='Failed'?
+        <View style={styles.ContainerTitle}>
+          
+          <Text style={styles.TextTitle}>Transaksi Anda Gagal</Text>
+
+          <Text style={styles.TextDescriptionTitle}>
+          Proses Transaksi Anda tidak Berhasil
+          </Text>
+          <Text style={{fontSize:16, fontWeight:'700', color:'#FFFFFF', alignSelf:'center'}}>
+            Silakan Lakukan Transaksi Ulang
+          </Text>
+                   
+        </View>:null
+        }
+        {stateTransfer.idTransactionLocal.status==='Success'?
+        <View style={styles.ContainerTitle}>
+          
+          <Text style={styles.TextTitle}>Transaksi Anda Berhasil</Text>       
+        </View>:null
+        }
       </View>
       <View style={styles.Container}>
         <Image
           source={ImageBgStatus}
           style={{top: -90, position: 'absolute'}}
         />
+        {stateTransfer.idTransactionLocal.status==='In Progress'?
         <Image
           source={ImageProccess}
           style={{top: -140, position: 'absolute'}}
-        />
+        />:null
+        }
+        {stateTransfer.idTransactionLocal.status==='Failed'?
+        <Image
+          source={ImageFailed}
+          style={{top: -140, position: 'absolute'}}
+        />:null
+        }
+        {stateTransfer.idTransactionLocal.status==='Success'?
+        <Image
+          source={ImageSuccess}
+          style={{top: -140, position: 'absolute'}}
+        />:null
+        }
         <IconTransEvilz style={{top: -50, left: 40, position: 'absolute'}} />
         <View style={{width: '85%'}}>
           <View style={styles.ContainerSpaceBetween}>
             <Text style={styles.TextCard}>Tanggal</Text>
-            <Text style={styles.TextCardValue}>10 Januari 2023 09:00:00</Text>
+            <Text style={styles.TextCardValue}>{stateTransfer.idTransactionLocal.transaction_date}</Text>
           </View>
 
           <View style={styles.ContainerSpaceBetween}>
             <Text style={styles.TextCard}>Nama Penerima</Text>
-            <Text style={styles.TextCardValue}>Aurora Nugroho</Text>
+            <Text style={styles.TextCardValue}>{stateTransfer.idTransactionLocal.recipient_name}</Text>
           </View>
 
           <View style={styles.ContainerSpaceBetween}>
             <Text style={styles.TextCard}>Jenis Bank</Text>
-            <Text style={styles.TextCardValue}>BCC</Text>
+            <Text style={styles.TextCardValue}>{stateTransfer.idTransactionLocal.bank}</Text>
           </View>
 
           <View style={styles.ContainerSpaceBetween}>
             <Text style={styles.TextCard}>Tipe Transaksi</Text>
-            <Text style={styles.TextCardValue}>IDR ke IDR</Text>
+            <Text style={styles.TextCardValue}>{stateTransfer.idTransactionLocal.type_currency}</Text>
           </View>
 
           <View style={styles.ContainerSpaceBetween}>
             <Text style={styles.TextCard}>No Rekening</Text>
-            <Text style={styles.TextCardValue}>1234-5678-9101-1121-314</Text>
+            <Text style={styles.TextCardValue}>{stateTransfer.idTransactionLocal.recipient_norek}</Text>
           </View>
 
           <View style={styles.ContainerSpaceBetween}>
             <Text style={styles.TextCard}>Jenis Transaksi</Text>
-            <Text style={styles.TextCardValue}>Lokal</Text>
+            <Text style={styles.TextCardValue}>{stateTransfer.idTransactionLocal.type_transaction}</Text>
           </View>
-
+          {stateTransfer.idTransactionLocal.status==='In Progress'?
           <View style={styles.ContainerSpaceBetween}>
             <Text style={styles.TextCard}>Virtual Akun</Text>
-            <Text style={styles.TextCardValue}>9999-5678-0033-1121-314</Text>
+            <Text style={styles.TextCardValue}>{stateTransfer.idTransactionLocal.virtual_account}</Text>
+          </View>:
+          <View style={styles.ContainerSpaceBetween}>
+            <Text style={styles.TextCard}></Text>
+            <Text style={styles.TextCardValue}></Text>
           </View>
+          }
           <View
             style={{
               borderWidth: 1,
@@ -99,12 +152,12 @@ const StatusTransaction = ({navigation}) => {
 
           <View style={styles.ContainerSpaceBetween}>
             <Text style={styles.TextCard}>Nominal</Text>
-            <Text style={styles.TextCardValue}>995.000 IDR</Text>
+            <Text style={styles.TextCardValue}>{formatCurrencyWithoutComma(stateTransfer.idTransactionLocal.nominal)}</Text>
           </View>
 
           <View style={styles.ContainerSpaceBetween}>
             <Text style={styles.TextCard}>Biaya Admin</Text>
-            <Text style={styles.TextCardValue}>5.000 IDR</Text>
+            <Text style={styles.TextCardValue}>{formatCurrencyWithoutComma(stateTransfer.idTransactionLocal.admin_fee)}</Text>
           </View>
 
           <View
@@ -120,7 +173,15 @@ const StatusTransaction = ({navigation}) => {
 
           <View style={styles.ContainerSpaceBetween}>
             <Text style={styles.TextCardValue}>Total</Text>
-            <Text style={styles.TextCardTotal}>1.000.000 IDR</Text>
+            {stateTransfer.idTransactionLocal.status==='In Progress'?
+            <Text style={styles.TextCardTotal}>{formatCurrencyWithoutComma(stateTransfer.idTransactionLocal.total)}</Text>:null
+          }
+          {stateTransfer.idTransactionLocal.status==='Failed'?
+            <Text style={styles.TextCardTotalFailed}>{formatCurrencyWithoutComma(stateTransfer.idTransactionLocal.total)}</Text>:null
+          }
+          {stateTransfer.idTransactionLocal.status==='Success'?
+            <Text style={styles.TextCardTotalSuccess}>{formatCurrencyWithoutComma(stateTransfer.idTransactionLocal.total)}</Text>:null
+          }
           </View>
         </View>
       </View>
@@ -141,13 +202,15 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   ContainerTitle: {
-    width: '60%',
+    width: '70%',
   },
   TextTitle: {
     fontSize: 24,
     fontWeight: '700',
     color: '#FFFFFF',
     textAlign: 'center',
+    width:'80%',
+    alignSelf:'center'
   },
   TextDescriptionTitle: {
     fontSize: 10,

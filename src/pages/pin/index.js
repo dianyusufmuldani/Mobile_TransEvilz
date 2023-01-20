@@ -22,6 +22,7 @@ import ImagePopupError from '../../../assets/popup/popup_error.png';
 import TextButtonBlue from '../../components/atoms/textButtonBlue';
 import {
   getCreateTransactions,
+  getTransasctionByID,
   setTransactionLocal,
 } from '../../service/redux/reducer/transferSlice';
 
@@ -46,7 +47,7 @@ const PIN = ({navigation}) => {
         pin: Number(allPin),
         bank_code: stateTransfer.bankReceiver,
         no_rekening: stateTransfer.accountNumber,
-        nominal: stateTransfer.totalTransactionLocal,
+        nominal: stateTransfer.nominalLocal,
       };
       dispatch(getCreateTransactions(request));
 
@@ -64,17 +65,24 @@ const PIN = ({navigation}) => {
         stateTransfer.transactionLocal.data.transaction_id !== null ||
         stateTransfer.transactionLocal.data.transaction_id !== undefined
       ) {
+        const request={transaction_id:stateTransfer.transactionLocal.data.transaction_id}
+        dispatch(getTransasctionByID(request))
+        if(stateTransfer.idTransactionLocal===null){
+        }
+        else{
         if (
           stateTransfer.countryDestination === null ||
           stateTransfer.countryDestination === ''
         ) {
+          dispatch(setTransactionLocal(null))
           navigation.navigate('TransactionSuccess');
         } else {
           navigation.navigate('TransactionSuccessInternational');
         }
       }
+      }
     }
-  }, [stateTransfer.transactionLocal]);
+  }, [stateTransfer.transactionLocal, stateTransfer.idTransactionLocal]);
   const handleDeletePin = item => {
     setPin(pin.slice(0, -1));
   };

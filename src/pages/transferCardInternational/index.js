@@ -141,7 +141,15 @@ const TransferCardInternational = ({navigation}) => {
             }
             placeholder={'IDR'}
             onChangeText={value =>
-              dispatch(setNominalIndonesia(value.replace(/\D/g, '')))
+
+              {if(value==='0'){
+
+              }
+              else{
+                dispatch(setNominalIndonesia(value.replace(/\D/g, '')))
+            }
+            }
+             
             }
             keyboardType={'numeric'}
             value={

@@ -25,7 +25,7 @@ const TextFieldPassword = ({
       <View
         style={
           value === '' ||
-          validValue === true ||
+          (validValue === true) ||
           isNegatifCase1 === true ||
           isNegatifCase2 === true
             ? styles.ContainerError
@@ -58,7 +58,7 @@ const TextFieldPassword = ({
       {isNegatifCase2 ? (
         <NegatifCase text={textNegatifCase2} value={''} />
       ) : null}
-      {validValue === true ? (
+      {validValue === true&&value!=='' ? (
         <NegatifCase text={textNegatifCase3} value={''} />
       ) : null}
     </>

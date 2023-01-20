@@ -21,6 +21,7 @@ import {
   getHistory,
   getTransfer,
   setCountryDestination,
+  setIdTransactionLocal,
 } from '../../service/redux/reducer/transferSlice';
 import {getLogin} from '../../service/redux/reducer/usersSlice';
 import ImageUser from '../../../assets/user/kakashi.jpg';
@@ -45,10 +46,11 @@ const Homepage = ({navigation}) => {
   };
 
   useEffect(() => {
+    dispatch(setIdTransactionLocal(null))
     dispatch(getHistory());
     console.log('isi Histori', stateTransfer);
-  }, [stateUsers.login, stateTransfer.transactionLocal]);
-
+  // }, [stateUsers.login, stateTransfer.transactionLocal, stateTransfer.totalTransactionLocal]);
+     },[])
   useEffect(() => {
     console.log('isi State Transfer', stateUsers.data.accessToken);
   }, []);
@@ -94,8 +96,6 @@ const Homepage = ({navigation}) => {
             {stateTransfer.history !== null ? (
               <ScrollView horizontal showsHorizontalScrollIndicator={false}>
                 {stateTransfer.history
-                  .slice()
-                  .reverse()
                   .slice(0, 5)
                   .map((item, index) => {
                     return (

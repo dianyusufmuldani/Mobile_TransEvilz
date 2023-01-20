@@ -49,11 +49,12 @@ const Riwayat = ({navigation}) => {
   const [endDate, setEndDate] = useState(null);
   const [isSearching, setIsSearching] = useState([]);
   const [historyMap, setHistoryMap] = useState(stateTransfer.history);
+  const [showStatus, setShowStatus]=useState(false)
 
   useEffect(() => {
     dispatch(getHistory());
-  }, [stateUsers.login, stateTransfer.transactionLocal]);
-
+  // }, [stateUsers.login, stateTransfer.transactionLocal, stateTransfer.totalTransactionLocal]);
+    },[])
   const onChange = (event, selectedDate) => {
     const currentDate = selectedDate || date;
     setShowDate(false);
@@ -108,7 +109,7 @@ const Riwayat = ({navigation}) => {
   };
 
   useEffect(() => {
-    console.log('isi state histori', stateTransfer.his)
+    console.log('isi state histori', stateTransfer.history)
     if (startDate !== null) {
       setStartDate(moment(date).format('DD/MM/YYYY'));
     }
@@ -120,15 +121,32 @@ const Riwayat = ({navigation}) => {
     }
   }, [endDate]);
 
-  const handleTransactionById=()=>{
+  const handleTransactionById=item=>{
+    setShowStatus(true)
     for (let i = 0; i < stateTransfer.history.length; i++) {
-      if (stateTransfer.history[i] === item) {
-        const request={transaction_id:stateTransfer.history.transaction_id}
+      // console.log('isi i', stateTransfer.history[i])
+      if (stateTransfer.history[i].id === item.id) {
+        // console.log('OKE', stateTransfer.history[i])
+        const request={transaction_id:stateTransfer.history[i].id}
         dispatch(getTransasctionByID(request))
-        navigation.navigate('StatusTransaction')
+        
       }
     }
   }
+  useEffect(()=>{
+    if(stateTransfer.idTransactionLocal===null||stateTransfer.idTransactionLocal===undefined){
+    
+    }
+    else{
+      if(showStatus===false){
+      
+    }
+    else{
+      setShowStatus(false)
+      navigation.navigate('StatusTransaction')
+    }
+    }
+  },[stateTransfer.idTransactionLocal])
   return (
     <View style={styles.Container}>
       <HeaderPagesBlue
@@ -215,32 +233,12 @@ const Riwayat = ({navigation}) => {
                 status={item.status}
                 dateTransfer={moment(item.transaction_date).format('LL')}
               />
-            );
-          })}
+              );
+            })}
         </ScrollView>
        : null} 
 
-      {/* {isSearching!==0?
-      <ScrollView showsVerticalScrollIndicator={false} style={{height: 500}}>
-
-      {isSearching.map((item, index) => {
-          return (
-            <CardRiwayat
-            key={index}
-            bank={item.bank}
-            name={item.recipient_name}
-            accountNumber={item.recipient_norek}
-            countryToCountry={item.type_currency}
-            totalTransfer={formatCurrencyWithoutComma(item.total)}
-            status={item.status}
-            dateTransfer={(moment(item.transaction_date).format('LL'))}
-            />
-
-          );
-        })}
-
-      </ScrollView>:null
-      } */}
+    
     </View>
   );
 };

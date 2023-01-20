@@ -75,7 +75,7 @@ export const hitHistory = async requestParam => {
 export const hitTransactionByID = async requestParam => {
   const token = await AsyncStorage.getItem('token');
   return hitApi.post(
-    `transactions?transaction_id=${requestParam.transaction_id}`,
+    `transactions/${requestParam.transaction_id}`,
     requestParam,  {headers: {Authorization: `Bearer ${token}`}}
   );
 };

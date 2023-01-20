@@ -19,13 +19,13 @@ const CardRiwayat = ({
   status,
   totalTransfer,
 }) => {
-  const dispatch = useDispatch();
-  const stateTransfer = useSelector(state => state.transfer);
+  // const dispatch = useDispatch();
+  // const stateTransfer = useSelector(state => state.transfer);
   const [imageCountery, setImageCountery] = useState(null);
-  useEffect(() => {
-    dispatch(getHistory());
-    console.log('isi Histori', stateTransfer);
-  }, []);
+  // useEffect(() => {
+  //   dispatch(getHistory());
+  //   // console.log('isi Histori', stateTransfer);
+  // }, []);
   useEffect(() => {
     if (countryToCountry === 'IDR to IDR') {
       setImageCountery(Indonesia);
@@ -52,8 +52,10 @@ const CardRiwayat = ({
         </View>
         <View style={styles.ContainerText}>
           <View style={{flexDirection: 'row', alignItems: 'center'}}>
+            <Image 
             source={imageCountery}
             style={{width: 20, height: 20, marginRight: 10}}
+            />
             <Text style={styles.TextCountryToCountry}>{countryToCountry}</Text>
           </View>
           <Text style={styles.TextStyle}>{name}</Text>

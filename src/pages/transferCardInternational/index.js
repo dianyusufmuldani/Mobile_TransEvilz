@@ -38,8 +38,12 @@ import {
   formatCurrencyWithoutComma,
   formatCurrencyWithoutCommaAndIDR,
 } from '../../helpers/formatter/currencyFormatter';
+import { Dimensions } from 'react-native';
+import { useTranslation } from 'react-i18next';
+const {width, height} = Dimensions.get('window');
 
 const TransferCardInternational = ({navigation}) => {
+  const {t, i18n}=useTranslation()
   const dispatch = useDispatch();
   const stateGlobal = useSelector(state => state.global);
   const stateTransfer = useSelector(state => state.transfer);
@@ -123,7 +127,7 @@ const TransferCardInternational = ({navigation}) => {
     <View style={styles.Container}>
       <HeaderPagesBlue
         hideShowTitle={true}
-        value={'Masukkan Nominal'}
+        value={'Enter the nominal'}
         onPress={() => navigation.goBack()}
       />
       <View style={styles.ContainerBody}>
@@ -164,14 +168,14 @@ const TransferCardInternational = ({navigation}) => {
 
         <NegatifCase
           value={stateTransfer.nominalIndonesia}
-          text={'Anda harus mengisi bagian ini'}
+          text={'You must fill in this section'}
         />
         {stateTransfer.nominalIndonesia <= 99999 &&
         stateTransfer.nominalIndonesia !== '' &&
         stateTransfer.nominalIndonesia !== null ? (
           <NegatifCase
             value={''}
-            text={'Minimal nominal transaksi Rp 100.000'}
+            text={'Minimum transaction nominal IDR 100,000'}
           />
         ) : null}
 
@@ -254,13 +258,13 @@ const TransferCardInternational = ({navigation}) => {
           </View>
         </View>
         <View style={styles.TextNilaiKurs}>
-          <TextDescriptionOnBoarding value={'Nilai Kurs Saat ini'} />
+          <TextDescriptionOnBoarding value={'Current exchange rate'} />
           <TextDescriptionOnBoarding
             value={formatCurrencyWithoutComma(stateTransfer.kursInternational)}
           />
         </View>
         <View style={styles.TextNilaiKurs}>
-          <TextDescriptionOnBoarding value={'Biaya Admin'} />
+          <TextDescriptionOnBoarding value={'Admin fee'} />
           <TextDescriptionOnBoarding
             value={formatCurrencyWithoutComma(stateTransfer.adminInternational)}
           />
@@ -269,10 +273,9 @@ const TransferCardInternational = ({navigation}) => {
       <View style={styles.ContainerFooter}>
         <View style={styles.BodyFooter}>
           <Text style={styles.TextDescriptionFooter}>
-            Uang akan terkirim satu hari setelah proses berhasil jika dibayar
-            sebelum pukul 23:00
+            {t('The money will be sent one day after the process is successful if paid before 23:00')}
           </Text>
-          <Text style={styles.TextTitleFooter}>Total Transaksi</Text>
+          <Text style={styles.TextTitleFooter}>{t('Total transactions')}</Text>
           <Text style={styles.TextCurrencyFooter}>
             {stateTransfer.nominalIndonesia === null
               ? 0 + ' IDR'
@@ -283,7 +286,7 @@ const TransferCardInternational = ({navigation}) => {
 
           <View style={styles.ContainerSelanjutnya}>
             <BlueButton
-              value={'Selanjutnya'}
+              value={'Next'}
               isButton={stateGlobal.isButtonTransferInternational}
               onPress={handleSelanjutnya}
             />

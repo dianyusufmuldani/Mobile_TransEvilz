@@ -23,8 +23,12 @@ import ImageGirlPassword from '../../../assets/forgotPassword/girl_tries_passwor
 import ImageReceiveMessage from '../../../assets/popup/received_message_icon.png';
 import NegatifCase from '../../components/atoms/negatifCaseTextInput';
 import TextFieldEmail from '../../components/moleculs/textFieldEmail';
+import { Dimensions } from 'react-native';
+import { useTranslation } from 'react-i18next';
+const {width, height} = Dimensions.get('window');
 
 const ForgotPin = ({navigation}) => {
+  const {t, i18n}=useTranslation()
   const [email, setEmail] = useState(null);
   const [isButton, setIsButton] = useState(false);
   const [checkValidEmail, setCheckValidEmail] = useState(false);
@@ -71,36 +75,38 @@ const ForgotPin = ({navigation}) => {
     <View style={styles.Container}>
       <HeaderPages
         hideShowTitle={true}
-        value={'Lupa Pin Evilz ?'}
+        value={'Forgot the evilz pin?'}
         onPress={() => navigation.goBack()}
       />
-      <ScrollView style={styles.ContainerScrollView}>
+      <ScrollView style={styles.ContainerScrollView} showsVerticalScrollIndicator={false} >
         <View style={styles.ContainerImage}>
           <Image source={ImageGirlPassword} />
           <Text style={styles.TextStyle}>
-            Masukkan email anda untuk membuat pin evilz baru
+            {t('Enter your email to create a new evilz pin')}
           </Text>
         </View>
         <View style={styles.FormStyle}>
           <View style={{flexDirection: 'row'}}>
-            <TextDefault value={'Email '} />
+            <TextDefault value={'E-mail'} />
             <RequirementSymbols />
           </View>
           <TextFieldEmail
-            placeholder={'Email'}
+            placeholder={'E-mail'}
             value={email}
             onChangeText={handleCheckValidEmail}
             keyboardType={'email-address'}
             validValue={checkValidEmail}
-            textNegatifCaseBlank={'Anda harus mengisi bagian ini'}
-            textNegatifCase3={'Format email salah'}
+            textNegatifCaseBlank={'You must fill in this section'}
+            textNegatifCase3={'Incorrect email format'}
             isNegatifCase1={email === 'client@gmail.com'}
-            textNegatifCase1={'Email tidak terdaftar'}
+            textNegatifCase1={'Unregistered e-mail'}
           />
         </View>
+     
+        <View style={{height:100}}/>
       </ScrollView>
       <View style={styles.ContainerKirim}>
-        <BlueButton value={'Kirim'} onPress={handleKirim} isButton={isButton} />
+        <BlueButton value={'Send'} onPress={handleKirim} isButton={isButton} />
       </View>
     </View>
   );
@@ -137,4 +143,7 @@ const styles = StyleSheet.create({
   TextWrong: {
     color: 'red',
   },
+  ContainerScrollView:{
+  
+  }
 });

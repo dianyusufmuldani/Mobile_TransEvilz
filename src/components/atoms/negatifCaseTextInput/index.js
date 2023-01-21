@@ -1,9 +1,11 @@
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import {StyleSheet, Text} from 'react-native';
 
 const NegatifCase = ({text, value}) => {
+  const {t, i18n}=useTranslation()
   return (
-    <>{value === '' ? <Text style={styles.NegatifCase}>{text}</Text> : null}</>
+    <>{value === '' ? <Text style={styles.NegatifCase}>{t(text)}</Text> : null}</>
   );
 };
 

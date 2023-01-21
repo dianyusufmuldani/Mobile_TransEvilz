@@ -26,8 +26,12 @@ import IconInfo from '../../../assets/createPIN/info.svg';
 import ToastedSuccess from '../../components/moleculs/toastSuccess';
 import {useDispatch, useSelector} from 'react-redux';
 import {getNewPin} from '../../service/redux/reducer/pinSlice';
+import { Dimensions } from 'react-native';
+import { useTranslation } from 'react-i18next';
+const {width, height} = Dimensions.get('window');
 
 const CreateNewPin = ({navigation}) => {
+  const {t, i18n}=useTranslation()
   const dispatch = useDispatch();
   const stateUsers = useSelector(state => state.users);
   const [pin, setPin] = useState(null);
@@ -81,21 +85,21 @@ const CreateNewPin = ({navigation}) => {
         visible={isPopup}
         onPressCancel={handleCancelPopUp}
         onPressButton={handleButtonPopup}
-        value={'Pin Evilz anda berhasil diperbarui'}
+        value={'Your Evilz Pin has been updated successfully'}
         ImagePopUp={ImageSuccess}
-        textButton={'Masuk Sekarang'}
+        textButton={'Login Now'}
       />
       <ToastedSuccess
         visible={isToastedSuccesPin}
         onPressButton={() => setIsToastedSuccessPin(false)}
         onPressModal={() => setIsToastedSuccessPin(false)}
-        textToasted={'Pin Evilz Berhasil disimpan'}
+        textToasted={'Evilz Pin Saved successfully'}
         height={40}
         width={'70%'}
       />
       <HeaderPages
         hideShowTitle={true}
-        value={'Buat Pin Evilz Baru'}
+        value={'Create a New Evilz Pin'}
         onPress={() => navigation.goBack()}
         showBackButton={true}
       />
@@ -104,50 +108,49 @@ const CreateNewPin = ({navigation}) => {
           <IconInfo />
           <View style={styles.ViewTextInfo}>
             <Text style={styles.TextInfo}>
-              Pin Evilz ini digunakan untuk proses pembayaran/transfer pada
-              TransEvilz. Gunakan kombinasi 6 angka tanpa huruf dan simbol
+              {t('This Evilz pin is used for the payment/transfer process on TransEvilz. Use a combination of 6 numbers without letters and symbols')}
             </Text>
           </View>
         </View>
         <View style={styles.ContainerImage}>
           <Image source={ImageGirlPassword} />
-          <Text style={styles.TextStyle}>Buat pin evilz yang baru</Text>
+          <Text style={styles.TextStyle}>{t('Create a new evilz pin')}</Text>
         </View>
         <View style={styles.FormStyle}>
           <View style={{flexDirection: 'row'}}>
-            <TextDefault value={'Pin Evilz Baru '} />
+            <TextDefault value={'New Evilz Pins'} />
             <RequirementSymbols />
           </View>
           <TextFieldPassword
-            placeholder={'Pin evilz baru'}
+            placeholder={'New Evilz Pins'}
             value={pin}
             onChangeText={value => setPin(value.replace(/\D/g, ''))}
             maxLength={6}
             keyboardType={'numeric'}
-            textNegatifCaseBlank={'Anda harus mengisi bagian ini'}
+            textNegatifCaseBlank={'You must fill in this section'}
           />
         </View>
 
         <View style={styles.FormStyle}>
           <View style={{flexDirection: 'row'}}>
-            <TextDefault value={'Konfirmasi Pin Evilz Baru '} />
+            <TextDefault value={'New Evilz Pin Confirmation'} />
             <RequirementSymbols />
           </View>
           <TextFieldPassword
-            placeholder={'Konfirmasi pin evilz baru'}
+            placeholder={'New Evilz Pin Confirmation'}
             value={confirmPin}
             onChangeText={value => setConfirmPin(value.replace(/\D/g, ''))}
             maxLength={6}
             validValue={checkMatchPin}
             keyboardType={'numeric'}
-            textNegatifCaseBlank={'Anda harus mengisi bagian ini'}
-            textNegatifCase3={'Konfirmasi pin tidak sama'}
+            textNegatifCaseBlank={'You must fill in this section'}
+            textNegatifCase3={'Pin confirmation is not the same'}
           />
         </View>
       </ScrollView>
       <View style={styles.ContainerKirim}>
         <BlueButton
-          value={'Kirim'}
+          value={'Send'}
           isButton={isButton}
           onPress={handleButtonFooter}
         />

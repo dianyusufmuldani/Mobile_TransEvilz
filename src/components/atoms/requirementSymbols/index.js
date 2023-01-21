@@ -4,7 +4,7 @@ import {Text, View, StyleSheet} from 'react-native';
 const RequirementSymbols = () => {
   return (
     <View>
-      <Text style={styles.Container}>*</Text>
+      <Text style={styles.Container}> *</Text>
     </View>
   );
 };

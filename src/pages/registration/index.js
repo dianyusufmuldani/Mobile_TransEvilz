@@ -26,8 +26,12 @@ import {useDispatch, useSelector} from 'react-redux';
 import {setIsButtonRegistration} from '../../service/redux/reducer/globalSlice';
 import {setNoHpRedux} from '../../service/redux/reducer/usersSlice';
 import ToastedFailed from '../../components/moleculs/toastFailed';
+import { Dimensions } from 'react-native';
+import { useTranslation } from 'react-i18next';
+const {width, height} = Dimensions.get('window');
 
 const Registration = ({navigation}) => {
+  const {t, i18n}=useTranslation()
   const [country, setCountry] = React.useState('');
   const [noHp, setNoHp] = useState(null);
   const [codeRegion, setCodeRegion] = useState('+62');
@@ -87,31 +91,31 @@ const Registration = ({navigation}) => {
 
   return (
     <View style={styles.Container}>
-      <HeaderPages onPress={() => navigation.goBack()} />
+      <HeaderPages onPress={() =>{navigation.goBack()}} />
       <ScrollView>
         <ToastedFailed
           visible={isToastedRegistered}
           height={39}
           width={'70%'}
-          textToasted={'No. Hp anda sudah terdaftar'}
+          textToasted={'Your mobile number has been registered'}
           onPressModal={() => setIsToastedRegistered(false)}
           onPressButton={() => setIsToastedRegistered(false)}
         />
         <View style={styles.ContainerBody}>
           <View style={styles.Title}>
-            <Text style={styles.TextStyle}>Selamat Datang di TransEvilz</Text>
+            <Text style={styles.TextStyle}>{t('Welcome to Transevilz')}</Text>
           </View>
           <View style={styles.Description}>
             <TextDescriptionOnBoarding
               value={
-                'Jika anda ingin bergabung, lakukan pendaftaran terlebih dahulu'
+                'If you want to join, register first'
               }
             />
           </View>
           <Image source={ImageMan} />
           <View style={styles.FormNoHP}>
             <View style={{flexDirection: 'row'}}>
-              <TextDefault value={'No.Hp '} />
+              <TextDefault value={'Phone Number'} />
               <RequirementSymbols />
             </View>
             <View style={styles.ContainerNumberPhone}>
@@ -130,9 +134,9 @@ const Registration = ({navigation}) => {
                 maxLength={20}
               />
             </View>
-            <NegatifCase text={'Anda harus mengisi bagian ini'} value={noHp} />
+            <NegatifCase text={'You must fill in this section'} value={noHp} />
             {noHp !== null && noHp !== '' && noHp.length <= 10 ? (
-              <NegatifCase text={'Format No.HP tidak sesuai'} value={''} />
+              <NegatifCase text={'The format of the cellphone number is not correct'} value={''} />
             ) : null}
 
             <View style={{marginTop: 20}} />
@@ -141,7 +145,7 @@ const Registration = ({navigation}) => {
       </ScrollView>
       <View style={styles.BlueButton}>
         <BlueButton
-          value={'Kirim'}
+          value={'Send'}
           onPress={handleKirim}
           isButton={stateGlobal.isButtonRegistration}
         />

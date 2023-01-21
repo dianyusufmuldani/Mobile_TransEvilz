@@ -35,9 +35,11 @@ import Loading from '../components/moleculs/loading';
 import ForgotPin from '../pages/forgotPin';
 import CreateNewPin from '../pages/createNewPin';
 import StatusTransaction from '../pages/statusTransaction';
+import { useTranslation } from 'react-i18next';
 const Stack = createNativeStackNavigator();
 const RootNavigation = () => {
   const stateGlobal = useSelector(state => state.global);
+  const {t, i18n}=useTranslation()
   return (
     <NavigationContainer>
       <Loading visible={stateGlobal.isLoading} />
@@ -159,6 +161,7 @@ const RootNavigation = () => {
 export default RootNavigation;
 
 export const TabNav = () => {
+  const {t, i18n}=useTranslation()
   const Tab = createBottomTabNavigator();
   return (
     <Tab.Navigator
@@ -174,7 +177,7 @@ export const TabNav = () => {
         tabBarLabelStyle: {fontSize: 12, paddingBottom: 5},
       }}>
       <Tab.Screen
-        name="Homepage"
+        name='Homepage'
         component={Homepage}
         options={{
           tabBarIcon: ({focused}) => (
@@ -183,10 +186,11 @@ export const TabNav = () => {
               style={{tintColor: focused ? '#2F82FF' : '#BCC8E7'}}
             />
           ),
+          title:`${t('Home page')}`
         }}
       />
       <Tab.Screen
-        name="Layanan"
+        name='Layanan'
         component={Layanan}
         options={{
           tabBarIcon: ({focused}) => (
@@ -195,11 +199,12 @@ export const TabNav = () => {
               style={{tintColor: focused ? '#2F82FF' : '#BCC8E7'}}
             />
           ),
+          title:`${t('Service')}`
         }}
       />
 
       <Tab.Screen
-        name="Riwayat"
+        name='Riwayat'
         component={Riwayat}
         options={{
           tabBarIcon: ({focused}) => (
@@ -208,10 +213,11 @@ export const TabNav = () => {
               style={{tintColor: focused ? '#2F82FF' : '#BCC8E7'}}
             />
           ),
+          title:`${t('History')}`
         }}
       />
       <Tab.Screen
-        name="Akun"
+        name='User'
         component={User}
         options={{
           tabBarIcon: ({focused}) => (
@@ -220,6 +226,7 @@ export const TabNav = () => {
               style={{tintColor: focused ? '#2F82FF' : '#BCC8E7'}}
             />
           ),
+          title:`${t('Account')}`
         }}
       />
     </Tab.Navigator>

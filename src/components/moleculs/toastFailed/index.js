@@ -1,4 +1,5 @@
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import {Modal, StyleSheet, Text, TouchableOpacity} from 'react-native';
 const ToastedFailed = ({
   height,
@@ -8,6 +9,7 @@ const ToastedFailed = ({
   onPressModal,
   textToasted,
 }) => {
+  const {t, i18n}=useTranslation()
   return (
     <>
       <Modal visible={visible} animationType={'fade'} transparent={true}>
@@ -22,7 +24,7 @@ const ToastedFailed = ({
               alignItems: 'center',
               justifyContent: 'center',
             }}>
-            <Text style={styles.TextToasted}>{textToasted}</Text>
+            <Text style={styles.TextToasted}>{t(textToasted)}</Text>
           </TouchableOpacity>
         </TouchableOpacity>
       </Modal>

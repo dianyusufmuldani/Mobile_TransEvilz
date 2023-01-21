@@ -25,8 +25,12 @@ import {
   getTransasctionByID,
   setTransactionLocal,
 } from '../../service/redux/reducer/transferSlice';
+import { Dimensions } from 'react-native';
+import { useTranslation } from 'react-i18next';
+const {width, height} = Dimensions.get('window');
 
 const PIN = ({navigation}) => {
+  const {t, i18n}=useTranslation()
   const stateTransfer = useSelector(state => state.transfer);
   const [pin, setPin] = useState([]);
   const [allPin, setAllPin] = useState('');
@@ -61,10 +65,7 @@ const PIN = ({navigation}) => {
         setPin([]);
         dispatch(setIsPopupPinInvalid(true));
         dispatch(setTransactionLocal(null));
-      } else if (
-        stateTransfer.transactionLocal.data.transaction_id !== null ||
-        stateTransfer.transactionLocal.data.transaction_id !== undefined
-      ) {
+      } else if(stateTransfer.countryDestination===null||stateTransfer.countryDestination===''){
         const request={transaction_id:stateTransfer.transactionLocal.data.transaction_id}
         dispatch(getTransasctionByID(request))
         if(stateTransfer.idTransactionLocal===null){
@@ -77,12 +78,16 @@ const PIN = ({navigation}) => {
           dispatch(setTransactionLocal(null))
           navigation.navigate('TransactionSuccess');
         } else {
-          navigation.navigate('TransactionSuccessInternational');
+        
         }
       }
       }
+        
+        else if(stateTransfer.countryDestination!==null||stateTransfer.countryDestination!==''){
+        navigation.navigate('TransactionSuccessInternational');
+      } 
     }
-  }, [stateTransfer.transactionLocal, stateTransfer.idTransactionLocal]);
+  }, [stateTransfer.transactionLocal, stateTransfer.idTransactionLocal, stateTransfer.transactionInternational]);
   const handleDeletePin = item => {
     setPin(pin.slice(0, -1));
   };
@@ -99,27 +104,28 @@ const PIN = ({navigation}) => {
         visible={stateGlobal.isPopupPinInvalid}
         onPressButton={() => dispatch(setIsPopupPinInvalid(false))}
         ImagePopUp={ImagePopupError}
-        value={'Oops! Pin Evilz yang anda masukkan salah'}
-        textButton={'Coba Lagi'}
+        value={'Oops! The Evilz pin you entered is wrong'}
+        textButton={'Try again'}
       />
       <HeaderPages
         onPress={handleBack}
-        value={'Masukkan Pin Evilz'}
+        value={'Enter Evilz Pins'}
         hideShowTitle={true}
       />
       <ScrollView showsVerticalScrollIndicator={false}>
         <View style={styles.ContainerContentPin}>
           <TextInput
-            placeholder="Masukkan 6 digit Pin Evilz"
+            placeholder={t('Enter 6 digit pins')}
             value={allPin}
             style={styles.TextInputContentPin}
             editable={false}
             maxLength={6}
+            // secureTextEntry={true}
           />
         </View>
         <View style={styles.KirimUlang}>
           <TextButtonBlue
-            value={'Lupa Pin Evilz ?'}
+            value={'Forgot the evilz pin?'}
             onPress={handleForgotPin}
           />
         </View>

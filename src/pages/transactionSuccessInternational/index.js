@@ -14,17 +14,23 @@ import {Colours} from '../../helpers/colours';
 //Import Assets
 import ImageSuccess from '../../../assets/transactionSuccess/check_mark.png';
 import {
+  getHistory,
   setAccountNumberInternational,
   setCountryDestination,
   setNameReceiverInternational,
   setNominalDestination,
   setNominalIndonesia,
   setSwiftCode,
+  setTransactionLocal,
 } from '../../service/redux/reducer/transferSlice';
 import IconCopy from '../../../assets/transactionSuccess/copy.svg';
 import {formatCurrencyWithoutComma} from '../../helpers/formatter/currencyFormatter';
+import { Dimensions } from 'react-native';
+import { useTranslation } from 'react-i18next';
+const {width, height} = Dimensions.get('window');
 
 const TransactionSuccessInternational = ({navigation}) => {
+  const {t, i18n}=useTranslation()
   const dispatch = useDispatch();
   const stateTransfer = useSelector(state => state.transfer);
   const stateUsers = useSelector(state => state.users);
@@ -44,7 +50,9 @@ const TransactionSuccessInternational = ({navigation}) => {
     dispatch(setNameReceiverInternational(null));
     dispatch(setAccountNumberInternational(null));
     dispatch(setSwiftCode(null));
-    navigation.navigate('Homepage');
+    dispatch(setTransactionLocal(null));
+    dispatch(getHistory());
+    navigation.navigate('HomepageNav');
   };
 
   return (
@@ -55,11 +63,11 @@ const TransactionSuccessInternational = ({navigation}) => {
         </View>
         <View style={styles.ContainerTextTitle}>
           <Text style={styles.TextTitle}>
-            Selamat {stateUsers.data.user.fullname}, Proses anda berhasil{' '}
+            {t('Congratulations')} {stateUsers.data.user.fullname}, {t('your process is successful')}{' '}
           </Text>
         </View>
         <Text style={styles.TextDescription}>
-          Selesaikan Pembayaran sebelum{' '}
+          {t('Complete the payment before')}{' '}
         </Text>
         <CountDown
           until={84610}
@@ -69,40 +77,40 @@ const TransactionSuccessInternational = ({navigation}) => {
           digitTxtStyle={{color: '#2ACA10'}}
           digitStyle={{
             backgroundColor: 'transparent',
-            marginHorizontal: 15,
+            marginHorizontal: 25,
             left: -20,
           }}
           separatorStyle={{color: '#2ACA10'}}
-          timeLabels={{h: 'Jam', m: 'Menit', s: 'Detik'}}
+          timeLabels={{h: `${t('Hours')}`, m: `${t('Minutes')}`, s: `${t('Seconds')}`}}
           timeToShow={['H', 'M', 'S']}
           timeLabelStyle={{
             color: '#2ACA10',
             fontSize: 16,
-            right: -15,
+            right: -23,
             top: -36,
             fontWeight: '700',
           }}
         />
         <View style={styles.ContainerPayment}>
           <View style={styles.ContainerTextDescription}>
-            <TextDescriptionOnBoarding value={'Nama Penerima'} />
+            <TextDescriptionOnBoarding value={`Recipient's name`} />
           </View>
           <TextDefault value={stateTransfer.nameReceiverInternational} />
           <View style={styles.ContainerTextDescription}>
-            <TextDescriptionOnBoarding value={'Jenis Bank'} />
+            <TextDescriptionOnBoarding value={'Bank type'} />
           </View>
           <TextDefault value={stateTransfer.bankReceiverInternational} />
           <View style={styles.ContainerTextDescription}>
-            <TextDescriptionOnBoarding value={'Tipe Transaksi'} />
+            <TextDescriptionOnBoarding value={'Transaction Type'} />
           </View>
-          <TextDefault value={`IDR ke ${stateTransfer.countryDestination}`} />
+          <TextDefault value={`IDR ${t('to')} ${stateTransfer.countryDestination}`} />
 
           <View style={styles.ContainerTextDescription}>
-            <TextDescriptionOnBoarding value={'No. Rekening'} />
+            <TextDescriptionOnBoarding value={'Account number'} />
           </View>
           <TextDefault value={stateTransfer.accountNumberInternational} />
           <View style={styles.ContainerTextDescription}>
-            <TextDescriptionOnBoarding value={'Virtual Akun'} />
+            <TextDescriptionOnBoarding value={'Virtual Account'} />
           </View>
           <View style={{flexDirection: 'row', alignSelf: 'center'}}>
             <TextDefault value={'9999-5678-0033-1121-314'} />
@@ -123,7 +131,7 @@ const TransactionSuccessInternational = ({navigation}) => {
       </View>
       <View style={styles.ContainerButtonFooter}>
         <BlueButton
-          value={'Kembali Ke Beranda'}
+          value={'Return To Home'}
           isButton={true}
           onPress={handleButtonFooter}
         />

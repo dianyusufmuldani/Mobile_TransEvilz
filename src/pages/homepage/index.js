@@ -23,12 +23,17 @@ import {
   setCountryDestination,
   setIdTransactionLocal,
 } from '../../service/redux/reducer/transferSlice';
-import {getLogin} from '../../service/redux/reducer/usersSlice';
+import {getLogin, setLanguage} from '../../service/redux/reducer/usersSlice';
 import ImageUser from '../../../assets/user/kakashi.jpg';
 import CardLastTransactionHomePages from '../../components/organism/cardLastTransactionHomepage';
 import {formatCurrencyWithoutComma} from '../../helpers/formatter/currencyFormatter';
+import { Dimensions } from 'react-native';
+import { useTranslation } from 'react-i18next';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+const {width, height} = Dimensions.get('window');
 
 const Homepage = ({navigation}) => {
+  const {t, i18n}=useTranslation()
   const dispatch = useDispatch();
   const stateTransfer = useSelector(state => state.transfer);
   const stateUsers = useSelector(state => state.users);
@@ -44,14 +49,17 @@ const Homepage = ({navigation}) => {
     BackHandler.removeEventListener();
     return true;
   };
-
+  const getLanguage = async() => {
+    const languageStorage = await AsyncStorage.getItem('languageStorage');
+     dispatch(setLanguage(languageStorage))
+};
   useEffect(() => {
     dispatch(setIdTransactionLocal(null))
     dispatch(getHistory());
     console.log('isi Histori', stateTransfer);
-  // }, [stateUsers.login, stateTransfer.transactionLocal, stateTransfer.totalTransactionLocal]);
      },[])
   useEffect(() => {
+    getLanguage()
     console.log('isi State Transfer', stateUsers.data.accessToken);
   }, []);
   useEffect(() => {
@@ -70,10 +78,10 @@ const Homepage = ({navigation}) => {
               }}>
               <View>
                 <Text style={styles.TitleHomePage}>
-                  Hai, {stateUsers.data.user.fullname}
+                  {t("Hi")}, {stateUsers.data.user.fullname}
                 </Text>
                 <Text style={styles.TextGreeting}>
-                  Selamat Datang di TransEvilz
+                  {t('Welcome to Transevilz')}
                 </Text>
               </View>
               <View
@@ -83,16 +91,22 @@ const Homepage = ({navigation}) => {
                   bottom: -10,
                   borderColor: '#FFFFFF',
                 }}>
-                <Image
+                {stateUsers.photo===null||stateUsers.photo===undefined ? (
+              <Image
                   source={{
                     uri: `https://robohash.org/${stateUsers.data.user.fullname}`,
                   }}
                   style={{width: 40, height: 40, borderRadius: 40, bottom: 2}}
                 />
+            ):
+            (
+              <Image source={{uri: stateUsers.photo}} style={{width:40, height:40, borderRadius:40, bottom:2}}/>
+            )}
+                
               </View>
             </View>
 
-            <Text style={styles.TextMethod}>Transaksi Terakhir :</Text>
+            <Text style={styles.TextMethod}>{t('Last transaction :')}</Text>
             {stateTransfer.history !== null ? (
               <ScrollView horizontal showsHorizontalScrollIndicator={false}>
                 {stateTransfer.history
@@ -115,12 +129,12 @@ const Homepage = ({navigation}) => {
             <TouchableOpacity
               style={styles.ContainerImageMethod}
               onPress={handleBankAccountButton}>
-              <Text style={styles.TextBankAccount}>Transfer Local</Text>
+              <Text style={styles.TextBankAccount}>{t('Local Transfers')}</Text>
             </TouchableOpacity>
             <TouchableOpacity
               style={styles.ContainerImageMethod}
               onPress={handleButtonTransactionInternational}>
-              <Text style={styles.TextBankAccount}>Transfer Internasional</Text>
+              <Text style={styles.TextBankAccount}>{t('International Transfers')}</Text>
             </TouchableOpacity>
           </View>
         </View>
@@ -130,9 +144,9 @@ const Homepage = ({navigation}) => {
         </View>
         <View style={styles.ContainerBody}>
           <View style={styles.ContainerTitleBody}>
-            <Text style={styles.TextKurs}>Kurs Mata Uang</Text>
+            <Text style={styles.TextKurs}>{t('Currency exchange rate')}</Text>
           </View>
-          <Text style={styles.CurrencytoCurrencyBody}>USD to IDR</Text>
+          <Text style={styles.CurrencytoCurrencyBody}>{t('USD to IDR')}</Text>
         </View>
       </ScrollView>
     </View>

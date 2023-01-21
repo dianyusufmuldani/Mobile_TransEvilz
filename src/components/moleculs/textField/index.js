@@ -1,4 +1,5 @@
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import {TextInput, View, StyleSheet} from 'react-native';
 import NegatifCase from '../../atoms/negatifCaseTextInput';
 
@@ -20,6 +21,7 @@ const TextField = ({
   textNegatifCase2,
   textNegatifCaseBlank,
 }) => {
+  const {t, i18n}=useTranslation()
   return (
     <>
       <View
@@ -29,7 +31,7 @@ const TextField = ({
             : styles.Container
         }>
         <TextInput
-          placeholder={placeholder}
+          placeholder={t(placeholder)}
           value={value}
           onChangeText={onChangeText}
           keyboardType={keyboardType}
@@ -42,13 +44,13 @@ const TextField = ({
           maxLength={maxLength}
         />
       </View>
-      <NegatifCase text={textNegatifCaseBlank} value={value} />
+      <NegatifCase text={t(textNegatifCaseBlank)} value={value} />
 
       {isNegatifCase1 ? (
-        <NegatifCase text={textNegatifCase1} value={''} />
+        <NegatifCase text={t(textNegatifCase1)} value={''} />
       ) : null}
       {isNegatifCase2 ? (
-        <NegatifCase text={textNegatifCase2} value={''} />
+        <NegatifCase text={t(textNegatifCase2)} value={''} />
       ) : null}
     </>
   );

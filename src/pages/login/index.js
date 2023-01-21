@@ -25,6 +25,7 @@ import PopUpError from '../../components/organism/popupError';
 import {
   getLogin,
   getUsers,
+  setLanguage,
   setLogin,
 } from '../../service/redux/reducer/usersSlice';
 import {
@@ -40,8 +41,12 @@ import ImagePopupError3x from '../../../assets/popup/popup_error.png';
 import ToastFailed from '../../components/moleculs/toastFailed';
 import ToastedFailed from '../../components/moleculs/toastFailed';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { Dimensions } from 'react-native';
+import { useTranslation } from 'react-i18next';
+const {width, height} = Dimensions.get('window');
 
 const Login = ({navigation}) => {
+  const {t, i18n}=useTranslation()
   const [isButton, setIsButton] = useState(false);
   const [email, setEmail] = useState(null);
   const [password, setPassword] = useState(null);
@@ -76,11 +81,20 @@ const Login = ({navigation}) => {
       setCheckValidPassword(true);
     }
   };
-
+  useEffect(()=>{
+    getLanguage()
+    i18n.changeLanguage(stateUsers.language)
+    setEmail(null)
+    setPassword(null)
+  },[])
   const backAction = () => {
     BackHandler.exitApp();
     return true;
   };
+  const getLanguage = async() => {
+    const languageStorage = await AsyncStorage.getItem('languageStorage');
+     dispatch(setLanguage(languageStorage))
+};
 
   useEffect(() => {
     if (email === null || email === '') {
@@ -102,6 +116,8 @@ const Login = ({navigation}) => {
     BackHandler.addEventListener('hardwareBackPress', backAction);
   }, [email, password]);
   const handleRegistrasi = () => {
+    setEmail(null)
+    setPassword(null)
     navigation.navigate('Registration');
   };
   const handleLogin = () => {
@@ -129,6 +145,8 @@ const Login = ({navigation}) => {
       dispatch(setIsLoading(false));
       if (stateUsers.login === 200) {
         if (stateUsers.data !== null) {
+          setEmail(null)
+          setPassword(null)
           if (stateUsers.data.user.userPin == false) {
             console.log('isi state users s', stateUsers.data.user.accessToken);
             navigation.navigate('CreatePIN');
@@ -159,6 +177,8 @@ const Login = ({navigation}) => {
   }, [counterLogin]);
 
   const handleForgotPassword = () => {
+    setEmail(null)
+    setPassword(null)
     navigation.navigate('ForgotPassword');
   };
   return (
@@ -174,33 +194,33 @@ const Login = ({navigation}) => {
           }}
           width={'70%'}
           height={39}
-          textToasted={'Email anda tidak terdaftar'}
+          textToasted={'Your email is not registered'}
         />
         <PopUpError
           visible={stateGlobal.isPopupError3xTest}
           onPressButton={() => dispatch(setIsPopupError3xTest(false))}
           ImagePopUp={ImagePopupError3x}
           value={
-            'Kata sandi yang anda masukkan sudah 3 kali salah, Coba setelah 10 menit '
+            'The password that you entered has been wrong 3 times, try after 10 minutes'
           }
-          textButton={'Coba Nanti'}
+          textButton={'Try later'}
         />
         <PopUpError
           visible={stateGlobal.isPopupInternetNotStable}
           onPressButton={() => dispatch(setIsPopupInternetNotStable(false))}
           ImagePopUp={ImagePopupError3x}
-          value={'Oops! Koneksi internet anda tidak stabil, muat ulang halaman'}
-          textButton={'Coba Nanti'}
+          value={'Oops! Your internet connection is unstable, please reload the page'}
+          textButton={'Try later'}
         />
 
         <View style={styles.ContainerBody}>
           <View style={styles.ContainerHeader}>
-            <TextTitleOnBoarding value={'Hallo!'} />
+            <TextTitleOnBoarding value={'Hello!'} />
           </View>
           <View style={styles.ContainerText}>
-            <TextDescriptionOnBoarding value={'Sudah punya akun ? '} />
+            <TextDescriptionOnBoarding value={'Already have an account?'} />
             <TextButton
-              value={'Lakukan Registrasi'}
+              value={'Register'}
               onPress={handleRegistrasi}
             />
           </View>
@@ -210,28 +230,28 @@ const Login = ({navigation}) => {
 
           <View style={styles.FormLogin}>
             <View style={{flexDirection: 'row'}}>
-              <TextDefault value={'Email '} />
+              <TextDefault value={'E-mail'} />
               <RequirementSymbols />
             </View>
 
             <TextFieldEmail
-              placeholder={'Email'}
+              placeholder={'E-mail'}
               value={email}
               onChangeText={handleCheckValidEmail}
               autoCapitalize={'none'}
               keyboardType={'email-address'}
               valueNegatifCase={email}
               validValue={checkValidEmail}
-              textNegatifCase3={'Format email salah'}
-              textNegatifCaseBlank={'Anda harus mengisi bagian ini'}
+              textNegatifCase3={'Incorrect email format'}
+              textNegatifCaseBlank={'You must fill in this section'}
               isNegatifCase1={email === 'admin@gmail.com'}
-              textNegatifCase1={'Email tidak terdaftar'}
+              textNegatifCase1={'Unregistered e-mail'}
             />
           </View>
 
           <View style={styles.FormLogin}>
             <View style={{flexDirection: 'row'}}>
-              <TextDefault value={'Kata sandi '} />
+              <TextDefault value={'Password'} />
               <RequirementSymbols />
             </View>
             <View
@@ -243,15 +263,15 @@ const Login = ({navigation}) => {
                     : styles.ContainerTextInputError
                 }>
                 <TextFieldPassword
-                  placeholder={'Kata sandi'}
+                  placeholder={'Password'}
                   onChangeText={handleCheckValidPassword}
                   value={password}
                   maxLength={16}
                   blankValue={password}
                   validValue={checkValidPassword}
-                  textNegatifCaseBlank={'Anda harus mengisi bagian ini'}
+                  textNegatifCaseBlank={'You must fill in this section'}
                   textNegatifCase3={
-                    'Kata sandi harus berisi huruf besar, angka dan simbol (@ * # &)'
+                    'Password must contain uppercase letters, numbers and symbols (@ * # &)'
                   }
                 />
               </View>
@@ -259,7 +279,7 @@ const Login = ({navigation}) => {
 
             <View style={{alignSelf: 'flex-end'}}>
               <TextButtonBlue
-                value={'Lupa Kata sandi ?'}
+                value={'Forgot password?'}
                 onPress={handleForgotPassword}
               />
             </View>
@@ -267,7 +287,7 @@ const Login = ({navigation}) => {
         </View>
       </ScrollView>
       <View style={styles.ButtonLogin}>
-        <BlueButton value={'Masuk'} onPress={handleLogin} isButton={isButton} />
+        <BlueButton value={'Enter'} onPress={handleLogin} isButton={isButton} />
       </View>
     </View>
   );

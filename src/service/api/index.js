@@ -79,3 +79,9 @@ export const hitTransactionByID = async requestParam => {
     requestParam,  {headers: {Authorization: `Bearer ${token}`}}
   );
 };
+
+export const hitLanguage = async requestParam => {
+  const languageStorage = await AsyncStorage.getItem('languageStorage');
+  console.log('isi',languageStorage)
+ 
+};

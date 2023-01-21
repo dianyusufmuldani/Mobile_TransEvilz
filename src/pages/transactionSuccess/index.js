@@ -14,6 +14,7 @@ import {Colours} from '../../helpers/colours';
 //Import Assets
 import ImageSuccess from '../../../assets/transactionSuccess/check_mark.png';
 import {
+  getHistory,
   setAccountNumber,
   setCountryDestination,
   setIdTransactionLocal,
@@ -24,8 +25,12 @@ import {
 import IconCopy from '../../../assets/transactionSuccess/copy.svg';
 import {formatCurrencyWithoutComma} from '../../helpers/formatter/currencyFormatter';
 import ToastedSuccess from '../../components/moleculs/toastSuccess';
+import { Dimensions } from 'react-native';
+import { useTranslation } from 'react-i18next';
+const {width, height} = Dimensions.get('window');
 
 const TransactionSuccess = ({navigation}) => {
+  const {t, i18n}=useTranslation()
   const dispatch = useDispatch();
   const stateTransfer = useSelector(state => state.transfer);
   const stateUsers = useSelector(state => state.users);
@@ -42,6 +47,7 @@ const TransactionSuccess = ({navigation}) => {
     dispatch(setNameReceiver(null));
     dispatch(setAccountNumber(null));
     dispatch(setTransactionLocal(null));
+    dispatch(getHistory());
     navigation.navigate('HomepageNav');
   };
 
@@ -54,11 +60,11 @@ const TransactionSuccess = ({navigation}) => {
         </View>
         <View style={styles.ContainerTextTitle}>
           <Text style={styles.TextTitle}>
-            Selamat {stateUsers.data.user.fullname}, Proses anda berhasil{' '}
+            {t('Congratulations')} {stateUsers.data.user.fullname}, {t('your process is successful')}{' '}
           </Text>
         </View>
         <Text style={styles.TextDescription}>
-          Selesaikan Pembayaran sebelum{' '}
+          {t('Complete the payment before')}{' '}
         </Text>
         <CountDown
           until={84610}
@@ -68,16 +74,16 @@ const TransactionSuccess = ({navigation}) => {
           digitTxtStyle={{color: '#2ACA10'}}
           digitStyle={{
             backgroundColor: 'transparent',
-            marginHorizontal: 15,
+            marginHorizontal: 25,
             left: -20,
           }}
           separatorStyle={{color: '#2ACA10'}}
-          timeLabels={{h: 'Jam', m: 'Menit', s: 'Detik'}}
+          timeLabels={{h: `${t('Hours')}`, m: `${t('Minutes')}`, s: `${t('Seconds')}`}}
           timeToShow={['H', 'M', 'S']}
           timeLabelStyle={{
             color: '#2ACA10',
             fontSize: 16,
-            right: -15,
+            right: -23,
             top: -36,
             fontWeight: '700',
           }}
@@ -85,23 +91,23 @@ const TransactionSuccess = ({navigation}) => {
 
         <View style={styles.ContainerPayment}>
           <View style={styles.ContainerTextDescription}>
-            <TextDescriptionOnBoarding value={'Nama Penerima'} />
+            <TextDescriptionOnBoarding value={`Recipient's name`} />
           </View>
           <TextDefault value={stateTransfer.idTransactionLocal.recipient_name} />
           <View style={styles.ContainerTextDescription}>
-            <TextDescriptionOnBoarding value={'Jenis Bank'} />
+            <TextDescriptionOnBoarding value={'Bank type'} />
           </View>
           <TextDefault value={stateTransfer.idTransactionLocal.bank} />
           <View style={styles.ContainerTextDescription}>
-            <TextDescriptionOnBoarding value={'Tipe Transaksi'} />
+            <TextDescriptionOnBoarding value={'Transaction Type'} />
           </View>
           <TextDefault value={stateTransfer.idTransactionLocal.type_currency} />
           <View style={styles.ContainerTextDescription}>
-            <TextDescriptionOnBoarding value={'No. Rekening'} />
+            <TextDescriptionOnBoarding value={'No. Account'} />
           </View>
           <TextDefault value={stateTransfer.idTransactionLocal.recipient_norek} />
           <View style={styles.ContainerTextDescription}>
-            <TextDescriptionOnBoarding value={'Virtual Akun'} />
+            <TextDescriptionOnBoarding value={'Virtual Account'} />
           </View>
           <View style={{flexDirection: 'row', alignSelf: 'center'}}>
             <TextDefault value={stateTransfer.idTransactionLocal.virtual_account} />
@@ -121,7 +127,7 @@ const TransactionSuccess = ({navigation}) => {
       </View>
       <View style={styles.ContainerButtonFooter}>
         <BlueButton
-          value={'Kembali Ke Beranda'}
+          value={'Return To Home'}
           isButton={true}
           onPress={handleButtonFooter}
         />

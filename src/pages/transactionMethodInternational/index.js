@@ -20,8 +20,12 @@ import UnitedStates from '../../../assets/transferCard/openmoji_flag-united-stat
 import Australia from '../../../assets/transferCard/openmoji_flag-australia.png';
 import Japan from '../../../assets/transferCard/openmoji_flag-japan.png';
 import {formatCurrencyWithoutComma} from '../../helpers/formatter/currencyFormatter';
+import { Dimensions } from 'react-native';
+import { useTranslation } from 'react-i18next';
+const {width, height} = Dimensions.get('window');
 
 const TransactionMethodInternational = ({navigation}) => {
+  const {t, i18n}=useTranslation()
   const dispatch = useDispatch();
   const stateGlobal = useSelector(state => state.global);
   const stateTransfer = useSelector(state => state.transfer);
@@ -44,7 +48,7 @@ const TransactionMethodInternational = ({navigation}) => {
   return (
     <View style={styles.Container}>
       <HeaderPagesBlue
-        value={'Akun Bank'}
+        value={'Bank account'}
         hideShowTitle={true}
         onPress={() => navigation.goBack()}
       />
@@ -57,7 +61,7 @@ const TransactionMethodInternational = ({navigation}) => {
           <View style={{flexDirection: 'row', alignItems: 'center'}}>
             <IconIndonesia />
             <Text style={styles.TextFormatCurrencyCountry}>
-              IDR ke {stateTransfer.countryDestination}
+              IDR {t('to')} {stateTransfer.countryDestination}
             </Text>
             {stateTransfer.countryDestination == 'USD' ? (
               <Image source={UnitedStates} style={{marginLeft: 10}} />
@@ -72,14 +76,14 @@ const TransactionMethodInternational = ({navigation}) => {
               <Image source={Singapore} style={{marginLeft: 10}} />
             ) : null}
           </View>
-          <Text style={styles.TextTotal}>Total Transaksi</Text>
+          <Text style={styles.TextTotal}>{t('Total transactions')}</Text>
           <Text style={styles.TextIDR}>
             {formatCurrencyWithoutComma(
               stateTransfer.totalTransactionInternational,
             )}
           </Text>
         </View>
-        <TextDefault value={'Metode Pembayaran'} />
+        <TextDefault value={'Payment method'} />
 
         <View style={styles.ContainerRadioButton}>
           <SelectList
@@ -91,7 +95,7 @@ const TransactionMethodInternational = ({navigation}) => {
               borderWidth: 0,
               width: '100%',
             }}
-            placeholder="Pilih Bank"
+            placeholder={t('Choose a bank')}
             search={false}
             dropdownStyles={{backgroundColor: '#F1F7FF', borderWidth: 0}}
           />
@@ -99,7 +103,7 @@ const TransactionMethodInternational = ({navigation}) => {
       </View>
       <View style={styles.ContainerSelanjutnya}>
         <BlueButton
-          value={'Selanjutnya'}
+          value={'Next'}
           isButton={stateGlobal.isButtonMethodLocal}
           onPress={() => navigation.navigate('PIN')}
         />

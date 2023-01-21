@@ -1,6 +1,6 @@
 //Import Library
 import React, {useEffect, useState} from 'react';
-import {View, Image, StyleSheet, ScrollView} from 'react-native';
+import {View, Image, StyleSheet, ScrollView, RefreshControl} from 'react-native';
 import SplashScreen from 'react-native-splash-screen';
 
 //Import Component
@@ -13,12 +13,34 @@ import {Colours} from '../../helpers/colours';
 import Image1 from '../../../assets/onBoarding/image1.png';
 import Image2 from '../../../assets/onBoarding/image2.png';
 import Image3 from '../../../assets/onBoarding/image3.png';
+import { Dimensions } from 'react-native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { useDispatch, useSelector } from 'react-redux';
+import { useTranslation } from 'react-i18next';
+import { setLanguage } from '../../service/redux/reducer/usersSlice';
+const {width, height} = Dimensions.get('window');
 
 const OnBoarding = ({navigation}) => {
+  const dispatch=useDispatch()
+  const {t, i18n}=useTranslation()
+  const stateUsers=useSelector(state=>state.users)
   const [imgActive, setImgActive] = useState(0);
+  const [checkLanguage, setCheckLanguage]=useState(false)
   useEffect(() => {
+    setCheckLanguage(true)
+    getLanguage()      
     SplashScreen.hide();
+    console.log('splashcreen nih')
   }, []);
+  useEffect(()=>{
+    i18n.changeLanguage(stateUsers.language)  
+  },[stateUsers.language])
+  const getLanguage = async() => {
+    const languageStorage = await AsyncStorage.getItem('languageStorage');
+     dispatch(setLanguage(languageStorage))
+
+
+};
   const images = [];
   const onChange = nativeEvent => {
     if (nativeEvent) {
@@ -37,7 +59,7 @@ const OnBoarding = ({navigation}) => {
 
   return (
     <View style={styles.Container}>
-      <View>
+      <View style={{justifyContent:'center'}}>
         <ScrollView
           onScroll={({nativeEvent}) => onChange(nativeEvent)}
           showsHorizontalScrollIndicator={false}
@@ -57,7 +79,7 @@ const OnBoarding = ({navigation}) => {
             <Image source={Image1} style={styles.Image} />
             <View style={styles.ContainerTextTitleOnBoarding}>
               <TextTitleOnBoarding
-                value={'Teknologi terkini yang memberikan kemudahan bagi Anda'}
+                value={'The latest technology that provides convenience for you'}
               />
             </View>
             <View style={styles.ContainerTextDescriptionOnBoarding}>
@@ -74,7 +96,7 @@ const OnBoarding = ({navigation}) => {
             <View style={styles.ContainerTextTitleOnBoarding}>
               <TextTitleOnBoarding
                 value={
-                  'Anda dapat melakukan transfer antar Negara dengan Mudah'
+                  'You can easily do transfers between countries'
                 }
               />
             </View>
@@ -92,7 +114,7 @@ const OnBoarding = ({navigation}) => {
             <View style={styles.ContainerTextTitleOnBoarding}>
               <TextTitleOnBoarding
                 value={
-                  'Lalu, Tunggu Apalagi, Gabung sekarang dengan TransEvilz'
+                  'what are you waiting for join now with TransEvilz'
                 }
               />
             </View>
@@ -126,7 +148,7 @@ const OnBoarding = ({navigation}) => {
       </View>
 
       <View style={styles.ContainerButtonMulai}>
-        <BlueButton value={'Mulai'} onPress={handleMulai} isButton={true} />
+        <BlueButton value={'Start'} onPress={handleMulai} isButton={true} />
       </View>
     </View>
   );
@@ -144,7 +166,7 @@ const styles = StyleSheet.create({
     marginHorizontal: 45,
   },
   ScrollViewStyle: {
-    marginTop: 60,
+    marginTop: 100,
     marginBottom: 40,
     height: 450,
   },

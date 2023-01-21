@@ -1,7 +1,9 @@
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import {Text, StyleSheet, TouchableOpacity, View} from 'react-native';
 
 const BlueButton = ({value, onPress, isButton, positionOn, positionOff}) => {
+  const {t, i18n}=useTranslation()
   return (
     <View>
       {isButton === true ? (
@@ -17,7 +19,7 @@ const BlueButton = ({value, onPress, isButton, positionOn, positionOff}) => {
             bottom: 0,
           }}
           onPress={onPress}>
-          <Text style={styles.TextTrue}>{value}</Text>
+          <Text style={styles.TextTrue}>{t(value)}</Text>
         </TouchableOpacity>
       ) : (
         <View

@@ -43,8 +43,12 @@ import Australia from '../../../assets/transferCard/openmoji_flag-australia.png'
 import Japan from '../../../assets/transferCard/openmoji_flag-japan.png';
 import TextButtonBlue from '../../components/atoms/textButtonBlue';
 import {formatCurrencyWithoutComma} from '../../helpers/formatter/currencyFormatter';
+import { Dimensions } from 'react-native';
+import { useTranslation } from 'react-i18next';
+const {width, height} = Dimensions.get('window');
 
 const TransactionInternational = ({navigation}) => {
+  const {t, i18n}=useTranslation()
   const stateGlobal = useSelector(state => state.global);
   const stateTransfer = useSelector(state => state.transfer);
   const dispatch = useDispatch();
@@ -118,7 +122,7 @@ const TransactionInternational = ({navigation}) => {
     <>
       <View style={styles.Container}>
         <HeaderPagesBlue
-          value={'Akun Bank'}
+          value={'Bank account'}
           hideShowTitle={true}
           onPress={() => navigation.goBack()}
         />
@@ -126,8 +130,8 @@ const TransactionInternational = ({navigation}) => {
           onPressButton={() => dispatch(setIsPopupAccountNumberNotFound(false))}
           ImagePopUp={ImagePopupError}
           visible={stateGlobal.isPopupAccountNumberNotFound}
-          textButton={'Coba Lagi'}
-          value={'Oops! No. Rekening tujuan anda tidak ditemukan'}
+          textButton={'Try again'}
+          value={'Oops! No. Your destination account was not found'}
         />
         <ScrollView style={styles.ContainerBody}>
           <Image
@@ -138,7 +142,7 @@ const TransactionInternational = ({navigation}) => {
             <View style={{flexDirection: 'row', alignItems: 'center'}}>
               <IconIndonesia />
               <Text style={styles.TextFormatCurrencyCountry}>
-                IDR ke {stateTransfer.countryDestination}
+                IDR {t('to')} {stateTransfer.countryDestination}
               </Text>
               {stateTransfer.countryDestination == 'USD' ? (
                 <Image source={UnitedStates} style={{marginLeft: 10}} />
@@ -153,7 +157,7 @@ const TransactionInternational = ({navigation}) => {
                 <Image source={Singapore} style={{marginLeft: 10}} />
               ) : null}
             </View>
-            <Text style={styles.TextTotal}>Total Transaksi</Text>
+            <Text style={styles.TextTotal}>{t('Total transactions')}</Text>
             <Text style={styles.TextIDR}>
               {formatCurrencyWithoutComma(
                 stateTransfer.totalTransactionInternational,
@@ -163,7 +167,7 @@ const TransactionInternational = ({navigation}) => {
 
           <View style={styles.FormInputBank}>
             <View style={{flexDirection: 'row'}}>
-              <TextDefault value={'Pilih Bank '} />
+              <TextDefault value={'Choose a bank'} />
               <RequirementSymbols />
             </View>
             {stateTransfer.countryDestination == 'USD' ? (
@@ -176,7 +180,7 @@ const TransactionInternational = ({navigation}) => {
                   borderWidth: 0,
                   width: '100%',
                 }}
-                placeholder="Pilih Bank"
+                placeholder={t('Choose a bank')}
                 inputStyles={{marginLeft: -15}}
                 search={false}
                 dropdownStyles={{backgroundColor: '#F1F7FF', borderWidth: 0}}
@@ -192,7 +196,7 @@ const TransactionInternational = ({navigation}) => {
                   borderWidth: 0,
                   width: '100%',
                 }}
-                placeholder="Pilih Bank"
+                placeholder={t('Choose a bank')}
                 inputStyles={{marginLeft: -15}}
                 search={false}
                 dropdownStyles={{backgroundColor: '#F1F7FF', borderWidth: 0}}
@@ -208,7 +212,7 @@ const TransactionInternational = ({navigation}) => {
                   borderWidth: 0,
                   width: '100%',
                 }}
-                placeholder="Pilih Bank"
+                placeholder={t('Choose a bank')}
                 inputStyles={{marginLeft: -15}}
                 search={false}
                 dropdownStyles={{backgroundColor: '#F1F7FF', borderWidth: 0}}
@@ -224,7 +228,7 @@ const TransactionInternational = ({navigation}) => {
                   borderWidth: 0,
                   width: '100%',
                 }}
-                placeholder="Pilih Bank"
+                placeholder={t('Choose a bank')}
                 inputStyles={{marginLeft: -15}}
                 search={false}
                 dropdownStyles={{backgroundColor: '#F1F7FF', borderWidth: 0}}
@@ -233,21 +237,21 @@ const TransactionInternational = ({navigation}) => {
           </View>
           <View style={styles.FormInput}>
             <View style={{flexDirection: 'row'}}>
-              <TextDefault value={'Kode Swift '} />
+              <TextDefault value={'Swift code'} />
               <RequirementSymbols />
             </View>
             <TextField
-              placeholder={'Masukkan kode swift'}
+              placeholder={'Enter swift code'}
               value={stateTransfer.swiftCode}
               onChangeText={value =>
                 dispatch(setSwiftCode(value.replace(/\D/g, '')))
               }
               keyboardType={'numeric'}
-              textNegatifCaseBlank={'Anda harus mengisi bagian ini'}
+              textNegatifCaseBlank={'You must fill in this section'}
             />
 
             <TextButtonBlue
-              value={'Silakan cek kode swift disini'}
+              value={'Please check the swift code here'}
               onPress={() =>
                 Linking.openURL('https://www.transfez.com/swift-codes/')
               }
@@ -255,26 +259,26 @@ const TransactionInternational = ({navigation}) => {
           </View>
           <View style={styles.FormInput}>
             <View style={{flexDirection: 'row'}}>
-              <TextDefault value={'Nama Penerima '} />
+              <TextDefault value={`Recipient's name`} />
               <RequirementSymbols />
             </View>
             <TextField
-              placeholder={'Masukkan Nama Penerima'}
+              placeholder={`Enter Recipient's Name`}
               value={stateTransfer.nameReceiverInternational}
               onChangeText={value =>
                 dispatch(setNameReceiverInternational(value))
               }
-              textNegatifCaseBlank={'Anda harus mengisi bagian ini'}
+              textNegatifCaseBlank={'You must fill in this section'}
             />
           </View>
 
           <View style={styles.FormInput}>
             <View style={{flexDirection: 'row'}}>
-              <TextDefault value={'No. Rekening '} />
+              <TextDefault value={'Account number'} />
               <RequirementSymbols />
             </View>
             <TextField
-              placeholder={'Masukkan No. Rekening'}
+              placeholder={'Enter No. Account'}
               value={stateTransfer.accountNumberInternational}
               onChangeText={value =>
                 dispatch(
@@ -282,18 +286,18 @@ const TransactionInternational = ({navigation}) => {
                 )
               }
               keyboardType={'numeric'}
-              textNegatifCaseBlank={'Anda harus mengisi bagian ini'}
+              textNegatifCaseBlank={'You must fill in this section'}
             />
           </View>
         </ScrollView>
       </View>
       <View style={styles.ContainerButton}>
         <TouchableOpacity style={styles.ButtonAturUlang} onPress={handleReset}>
-          <Text style={styles.TextAturUlang}>Atur Ulang</Text>
+          <Text style={styles.TextAturUlang}>{t('Reset')}</Text>
         </TouchableOpacity>
         <View style={styles.ButtonSelanjutnya}>
           <BlueButton
-            value={'Selanjutnya'}
+            value={'Next'}
             isButton={stateGlobal.isButtonTransactionLocal}
             onPress={handleSelanjutnya}
           />

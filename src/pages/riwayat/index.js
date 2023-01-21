@@ -34,8 +34,12 @@ import Japan from '../../../assets/transferCard/openmoji_flag-japan.png';
 import CardRiwayat from '../../components/organism/cardRiwayat';
 import {getHistory, getTransasctionByID} from '../../service/redux/reducer/transferSlice';
 import {formatCurrencyWithoutComma} from '../../helpers/formatter/currencyFormatter';
+import { Dimensions } from 'react-native';
+import { useTranslation } from 'react-i18next';
+const {width, height} = Dimensions.get('window');
 
 const Riwayat = ({navigation}) => {
+  const {t, i18n}=useTranslation()
   const dispatch = useDispatch();
   const stateGlobal = useSelector(state => state.global);
   const stateUsers = useSelector(state => state.users);
@@ -52,9 +56,10 @@ const Riwayat = ({navigation}) => {
   const [showStatus, setShowStatus]=useState(false)
 
   useEffect(() => {
-    dispatch(getHistory());
+    setHistoryMap(stateTransfer.history)
+    // dispatch(getHistory());
   // }, [stateUsers.login, stateTransfer.transactionLocal, stateTransfer.totalTransactionLocal]);
-    },[])
+    },[stateTransfer.history])
   const onChange = (event, selectedDate) => {
     const currentDate = selectedDate || date;
     setShowDate(false);
@@ -104,7 +109,7 @@ const Riwayat = ({navigation}) => {
         }
       }
       setIsSearching(searchHistory);
-      console.log('cek disini ', isSearching);
+
     }
   };
 
@@ -150,7 +155,7 @@ const Riwayat = ({navigation}) => {
   return (
     <View style={styles.Container}>
       <HeaderPagesBlue
-        value={'Riwayat Transaksi'}
+        value={'Transaction history'}
         hideShowTitle={true}
         showBackButton={false}
       />
@@ -159,12 +164,12 @@ const Riwayat = ({navigation}) => {
         onPressButton={() => dispatch(setIsPopupErrorDate(false))}
         visible={stateGlobal.isPopupErrorDate}
         ImagePopUp={ImagePopupErrorDate}
-        value={'Tanggal Awal tidak boleh lebih besar dari Tanggal Akhir '}
+        value={'Start Date cannot be greater than End Date'}
       />
 
       <View style={{flexDirection: 'row', marginTop: 20}}>
         <View style={{width: '40%', marginRight: 20}}>
-          <Text style={styles.TextTitleDate}>Awal:</Text>
+          <Text style={styles.TextTitleDate}>{t('From')}:</Text>
           <TouchableOpacity onPress={() => showMode('date')}>
             <View style={styles.ContainerTextInputDate}>
               <TextInput
@@ -189,7 +194,7 @@ const Riwayat = ({navigation}) => {
           </TouchableOpacity>
         </View>
         <View style={{width: '40%'}}>
-          <Text style={styles.TextTitleDate}>Akhir:</Text>
+          <Text style={styles.TextTitleDate}>{t('Until')}:</Text>
           <TouchableOpacity onPress={() => showMode2('date')}>
             <View style={styles.ContainerTextInputDate}>
               <TextInput
@@ -215,7 +220,7 @@ const Riwayat = ({navigation}) => {
         </View>
       </View>
       <TouchableOpacity style={styles.ContainerSearch} onPress={handleSearch}>
-        <Text style={styles.TextSearch}>Cari</Text>
+        <Text style={styles.TextSearch}>{t('Search')}</Text>
         <IconSearch />
       </TouchableOpacity>
       {stateTransfer.history !== null ? 

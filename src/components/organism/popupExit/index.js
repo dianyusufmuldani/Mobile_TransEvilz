@@ -1,4 +1,5 @@
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import {
   View,
   StyleSheet,
@@ -20,6 +21,7 @@ const PopUpExit = ({
   textButtonBlue,
   textButtonWhite,
 }) => {
+  const {t, i18n}=useTranslation()
   return (
     <Modal visible={visible} transparent={true} animationType={'fade'}>
       <View style={styles.Container}>
@@ -27,19 +29,19 @@ const PopUpExit = ({
           <TouchableOpacity style={styles.CancelX} onPress={onPressCancel} />
           <View style={styles.ViewImage}>
             <Image source={ImagePopUp} />
-            <Text style={styles.TextPopUp}>{value}</Text>
+            <Text style={styles.TextPopUp}>{t(value)}</Text>
           </View>
           <View style={styles.ButtonPopUp}>
             <View style={{width: '45%'}}>
               <WhiteButton
                 isButton={true}
-                value={textButtonWhite}
+                value={t(textButtonWhite)}
                 onPress={onPressWhite}
               />
             </View>
             <View style={{width: '45%'}}>
               <BlueButton
-                value={textButtonBlue}
+                value={t(textButtonBlue)}
                 onPress={onPressBlue}
                 isButton={true}
               />

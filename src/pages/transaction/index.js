@@ -36,8 +36,12 @@ import {
 } from '../../service/redux/reducer/transferSlice';
 import ImagePopupError from '../../../assets/popup/popup_error.png';
 import {formatCurrencyWithoutComma} from '../../helpers/formatter/currencyFormatter';
+import { Dimensions } from 'react-native';
+import { useTranslation } from 'react-i18next';
+const {width, height} = Dimensions.get('window');
 
 const Transaction = ({navigation}) => {
+  const {t, i18n}=useTranslation()
   const stateGlobal = useSelector(state => state.global);
   const stateTransfer = useSelector(state => state.transfer);
   const dispatch = useDispatch();
@@ -98,7 +102,7 @@ const Transaction = ({navigation}) => {
     <>
       <View style={styles.Container}>
         <HeaderPagesBlue
-          value={'Akun Bank'}
+          value={'Bank account'}
           hideShowTitle={true}
           onPress={() => navigation.goBack()}
         />
@@ -106,8 +110,8 @@ const Transaction = ({navigation}) => {
           onPressButton={() => dispatch(setIsPopupAccountNumberNotFound(false))}
           ImagePopUp={ImagePopupError}
           visible={stateGlobal.isPopupAccountNumberNotFound}
-          textButton={'Coba Lagi'}
-          value={'Oops! No. Rekening tujuan anda tidak ditemukan'}
+          textButton={'Try again'}
+          value={'Oops! No. Your destination account was not found'}
         />
         <ScrollView style={styles.ContainerBody}>
           <Image
@@ -119,7 +123,7 @@ const Transaction = ({navigation}) => {
               <IconIndonesia />
               <Text style={styles.TextFormatCurrencyCountry}>IDR</Text>
             </View>
-            <Text style={styles.TextTotal}>Total Transaksi</Text>
+            <Text style={styles.TextTotal}>{t('Total transactions')}</Text>
             <Text style={styles.TextIDR}>
               {formatCurrencyWithoutComma(stateTransfer.totalTransactionLocal)}
             </Text>
@@ -127,7 +131,7 @@ const Transaction = ({navigation}) => {
 
           <View style={styles.FormInputBank}>
             <View style={{flexDirection: 'row'}}>
-              <TextDefault value={'Pilih Bank '} />
+              <TextDefault value={'Choose a bank'} />
               <RequirementSymbols />
             </View>
             <SelectList
@@ -139,7 +143,7 @@ const Transaction = ({navigation}) => {
                 borderWidth: 0,
                 width: '100%',
               }}
-              placeholder="Pilih Bank"
+              placeholder={t('Choose a bank')}
               inputStyles={{marginLeft: -15}}
               search={false}
               dropdownStyles={{backgroundColor: '#F1F7FF', borderWidth: 0}}
@@ -147,34 +151,34 @@ const Transaction = ({navigation}) => {
           </View>
           <View style={styles.FormInput}>
             <View style={{flexDirection: 'row'}}>
-              <TextDefault value={'No. Rekening'} />
+              <TextDefault value={'No. Account'} />
               <RequirementSymbols />
             </View>
             <TextField
-              placeholder={'Masukkan No. Rekening'}
+              placeholder={'Enter No. Account'}
               value={stateTransfer.accountNumber}
               onChangeText={value =>
                 dispatch(setAccountNumber(value.replace(/\D/g, '')))
               }
               keyboardType={'numeric'}
-              textNegatifCaseBlank={'Anda harus mengisi bagian ini'}
+              textNegatifCaseBlank={'You must fill in this section'}
               isNegatifCase1={
                 stateTransfer.nameReceiver === 404 &&
                 stateTransfer.accountNumber !== '' &&
                 stateTransfer.accountNumber !== null
               }
               textNegatifCase1={
-                'No Rekening yang anda masukkan tidak ditemukan'
+                'The account number you entered was not found'
               }
             />
           </View>
           <View style={styles.FormInput}>
             <View style={{flexDirection: 'row'}}>
-              <TextDefault value={'Nama Penerima '} />
+              <TextDefault value={`Recipient's name`} />
               <RequirementSymbols />
             </View>
             <TextField
-              placeholder={'Masukkan Nama Penerima'}
+              placeholder={`Enter Recipient's Name`}
               value={
                 stateTransfer.nameReceiver !== 404 ||
                 stateTransfer.nameReceiver !== null
@@ -182,18 +186,18 @@ const Transaction = ({navigation}) => {
                   : null
               }
               editable={false}
-              textNegatifCaseBlank={'Anda harus mengisi bagian ini'}
+              textNegatifCaseBlank={'You must fill in this section'}
             />
           </View>
         </ScrollView>
       </View>
       <View style={styles.ContainerButton}>
         <TouchableOpacity style={styles.ButtonAturUlang} onPress={handleReset}>
-          <Text style={styles.TextAturUlang}>Atur Ulang</Text>
+          <Text style={styles.TextAturUlang}>{t('Reset')}</Text>
         </TouchableOpacity>
         <View style={styles.ButtonSelanjutnya}>
           <BlueButton
-            value={'Selanjutnya'}
+            value={'Next'}
             isButton={stateGlobal.isButtonTransactionLocal}
             onPress={handleSelanjutnya}
           />

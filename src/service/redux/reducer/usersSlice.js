@@ -1,12 +1,14 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {createSlice} from '@reduxjs/toolkit';
-import {hitLogin, hitNewPassword, hitRegister} from '../../api';
+import {hitLanguage, hitLogin, hitNewPassword, hitRegister} from '../../api';
 const initialState = {
   data: null,
   login: null,
   noHp: null,
   registerStatus: null,
   newPassword: null,
+  language:'id',
+  photo:null
 };
 export const UsersSlice = createSlice({
   name: 'users',
@@ -26,6 +28,12 @@ export const UsersSlice = createSlice({
     },
     setNewPassword: (state, action) => {
       state.newPassword = action.payload;
+    },
+    setLanguage: (state, action) => {
+      state.language = action.payload;
+    },
+    setPhoto: (state, action) => {
+      state.photo = action.payload;
     },
   },
 });
@@ -67,7 +75,22 @@ export const getNewPassword = request => async dispatch => {
   }
 };
 
+export const getLanguage = request => async dispatch => {
+  try {
+    const response = await hitLanguage(request);
+    if (response.data.accessToken) {
+      AsyncStorage.setItem('languageStorage', response);
+    }
+    console.log('isi Respon berhasil language',response);
+  } catch (err) {
+    console.log(err.response);
+   
+  }
+};
+
 export const {
+  setPhoto,
+  setLanguage,
   setUsers,
   setLogin,
   setNoHpRedux,

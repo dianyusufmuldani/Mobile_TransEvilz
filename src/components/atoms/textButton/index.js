@@ -1,10 +1,12 @@
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import {Text, TouchableOpacity, StyleSheet} from 'react-native';
 
 const TextButton = ({value, onPress}) => {
+  const {t, i18n}=useTranslation()
   return (
     <TouchableOpacity onPress={onPress}>
-      <Text style={styles.Container}>{value}</Text>
+      <Text style={styles.Container}>{t(value)}</Text>
     </TouchableOpacity>
   );
 };

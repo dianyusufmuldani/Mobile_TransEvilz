@@ -16,8 +16,12 @@ import ImageBgTransaction from '../../../assets/transaction/bgTransaction.png';
 import IconIndonesia from '../../../assets/registration/openmoji_flag-indonesia.svg';
 import HeaderPagesBlue from '../../components/moleculs/headerPagesBlue';
 import {formatCurrencyWithoutComma} from '../../helpers/formatter/currencyFormatter';
+import { Dimensions } from 'react-native';
+import { useTranslation } from 'react-i18next';
+const {width, height} = Dimensions.get('window');
 
 const TransactionMethod = ({navigation}) => {
+  const {t, i18n}=useTranslation()
   const dispatch = useDispatch();
   const stateGlobal = useSelector(state => state.global);
   const stateTransfer = useSelector(state => state.transfer);
@@ -40,7 +44,7 @@ const TransactionMethod = ({navigation}) => {
   return (
     <View style={styles.Container}>
       <HeaderPagesBlue
-        value={'Akun Bank'}
+        value={'Bank account'}
         hideShowTitle={true}
         onPress={() => navigation.goBack()}
       />
@@ -54,12 +58,12 @@ const TransactionMethod = ({navigation}) => {
             <IconIndonesia />
             <Text style={styles.TextFormatCurrencyCountry}>IDR ke IDR</Text>
           </View>
-          <Text style={styles.TextTotal}>Total Transaksi</Text>
+          <Text style={styles.TextTotal}>{t('Total transactions')}</Text>
           <Text style={styles.TextIDR}>
             {formatCurrencyWithoutComma(stateTransfer.totalTransactionLocal)}
           </Text>
         </View>
-        <TextDefault value={'Metode Pembayaran'} />
+        <TextDefault value={'Payment method'} />
 
         <View style={styles.ContainerRadioButton}>
           <SelectList
@@ -71,7 +75,7 @@ const TransactionMethod = ({navigation}) => {
               borderWidth: 0,
               width: '100%',
             }}
-            placeholder="Pilih Bank"
+            placeholder={t('Choose a bank')}
             search={false}
             dropdownStyles={{backgroundColor: '#F1F7FF', borderWidth: 0}}
           />
@@ -79,7 +83,7 @@ const TransactionMethod = ({navigation}) => {
       </View>
       <View style={styles.ContainerSelanjutnya}>
         <BlueButton
-          value={'Selanjutnya'}
+          value={'Next'}
           isButton={stateGlobal.isButtonMethodLocal}
           onPress={() => navigation.navigate('PIN')}
         />

@@ -47,6 +47,9 @@ import ImageReceiveMessage from '../../../assets/popup/received_message_icon.png
 import IconCalender from '../../../assets/formRegistration/calendar.svg';
 import IconUserImageAdd from '../../../assets/formRegistration/user-plus.svg';
 import TextDescriptionOnBoarding from '../../components/atoms/textDescriptionOnBoarding';
+import { Dimensions } from 'react-native';
+import { useTranslation } from 'react-i18next';
+const {width, height} = Dimensions.get('window');
 var ListAgreeTerms = [{value: 'Setuju'}];
 
 var listGender = [
@@ -55,6 +58,7 @@ var listGender = [
 ];
 
 const FormRegistration = ({navigation}) => {
+  const {t, i18n}=useTranslation()
   const [typeDocument, setTypeDocument] = useState(null);
   const [noDocument, setNoDocument] = useState(null);
   const [gender, setGender] = useState('male');
@@ -161,7 +165,7 @@ const FormRegistration = ({navigation}) => {
       dispatch(setIsButtonFormRegistration(false));
     } else if (birthplace === '' || birthplace === null) {
       dispatch(setIsButtonFormRegistration(false));
-    } else if (Number(moment().diff(date, 'years', false)) <= 17) {
+    } else if (Number(moment().diff(date, 'years', false)) < 17) {
       dispatch(setIsButtonFormRegistration(false));
     } else if (address === '' || address === null) {
       dispatch(setIsButtonFormRegistration(false));
@@ -206,7 +210,7 @@ const FormRegistration = ({navigation}) => {
       birth_date: date,
       address: address,
       sex: gender,
-      phone_number: stateUsers.noHp,
+      phone_number: (stateUsers.noHp).toString(),
       password: password,
     };
     dispatch(getUsers(request));
@@ -227,6 +231,10 @@ const FormRegistration = ({navigation}) => {
       }
     }
   }, [stateUsers.registerStatus]);
+
+  useEffect(()=>{
+    console.log('isi Status Register', stateUsers.registerStatus)
+  })
   const handleCancelPopUp = () => {
     dispatch(setIsPopupSuccessFormRegistration(false));
   };
@@ -253,9 +261,9 @@ const FormRegistration = ({navigation}) => {
         visible={stateGlobal.isPopupSuccessFormRegistration}
         onPressCancel={handleCancelPopUp}
         onPressButton={handleAktivasiSekarang}
-        value={'Cek email anda untuk melakukan aktivasi akun'}
+        value={'Check your email to activate your account'}
         ImagePopUp={ImageReceiveMessage}
-        textButton={'Aktivasi Sekarang'}
+        textButton={'Activate Now'}
       />
       <HeaderPages
         hideShowTitle={true}
@@ -274,28 +282,28 @@ const FormRegistration = ({navigation}) => {
             )}
           </TouchableOpacity>
           <View style={{alignSelf: 'center', marginBottom: 20}}>
-            <TextDescriptionOnBoarding value={'Tambah gambar '} />
+            <TextDescriptionOnBoarding value={'Add image'} />
           </View>
           <View style={{flexDirection: 'row'}}>
-            <TextDefault value={'Email '} />
+            <TextDefault value={'E-mail'} />
             <RequirementSymbols />
           </View>
           <TextFieldEmail
-            placeholder={'Email'}
+            placeholder={'E-mail'}
             value={email}
             onChangeText={handleCheckValidEmail}
             validValue={checkValidEmail}
             keyboardType={'email-address'}
-            textNegatifCase3={'Format email salah'}
-            textNegatifCaseBlank={'Anda harus mengisi bagian ini'}
+            textNegatifCase3={'Incorrect email format'}
+            textNegatifCaseBlank={'You must fill in this section'}
             isNegatifCase1={checkRegistered}
-            textNegatifCase1={'Email sudah terdaftar'}
+            textNegatifCase1={'Email already registered'}
           />
         </View>
 
         <View style={styles.FormStyle}>
           <View style={{flexDirection: 'row'}}>
-            <TextDefault value={'Tipe Dokumen '} />
+            <TextDefault value={'Document type'} />
             <RequirementSymbols />
           </View>
           <View style={styles.ContainerDropdownType}>
@@ -308,7 +316,7 @@ const FormRegistration = ({navigation}) => {
                 borderWidth: 0,
                 width: '100%',
               }}
-              placeholder="Pilih Tipe dokumen"
+              placeholder={t('Select the Document Type')}
               inputStyles={{marginLeft: -15, paddingLeft: 10}}
               dropdownStyles={{
                 height: 130,
@@ -323,41 +331,41 @@ const FormRegistration = ({navigation}) => {
             <>
               {typeDocument == 'Passport' ? (
                 <TextField
-                  placeholder={'Masukkan no dokumen'}
+                  placeholder={'Enter the document number'}
                   value={noDocument}
                   onChangeText={value => setNoDocument(value)}
                   maxLength={16}
-                  textNegatifCaseBlank={'Anda harus mengisi bagian ini'}
+                  textNegatifCaseBlank={'You must fill in this section'}
                 />
               ) : null}
               {typeDocument == 'KTP' ? (
                 <TextField
-                  placeholder={'Masukkan no dokumen'}
+                  placeholder={'Enter the document number'}
                   value={noDocument}
                   onChangeText={value =>
                     setNoDocument(value.replace(/\D/g, ''))
                   }
                   maxLength={16}
                   keyboardType={'numeric'}
-                  textNegatifCaseBlank={'Anda harus mengisi bagian ini'}
+                  textNegatifCaseBlank={'You must fill in this section'}
                 />
               ) : null}
               {typeDocument == 'SIM' ? (
                 <TextField
-                  placeholder={'Masukkan no dokumen'}
+                  placeholder={'Enter the document number'}
                   value={noDocument}
                   onChangeText={value =>
                     setNoDocument(value.replace(/\D/g, ''))
                   }
                   maxLength={12}
                   keyboardType={'numeric'}
-                  textNegatifCaseBlank={'Anda harus mengisi bagian ini'}
+                  textNegatifCaseBlank={'You must fill in this section'}
                 />
               ) : null}
             </>
           ) : (
             <TextInput
-              placeholder={'Masukkan no dokumen'}
+              placeholder={'Enter the document number'}
               value={noDocument}
               onChangeText={value => setNoDocument(value)}
               editable={false}
@@ -369,48 +377,48 @@ const FormRegistration = ({navigation}) => {
 
         <View style={styles.FormStyle}>
           <View style={{flexDirection: 'row'}}>
-            <TextDefault value={'Nama Depan '} />
+            <TextDefault value={'First name'} />
             <RequirementSymbols />
           </View>
           <TextField
-            placeholder={'Nama depan'}
+            placeholder={'First name'}
             value={firstName}
             onChangeText={value =>
               setFirstName(value.replace(/[^a-z ]/gim, ''))
             }
             maxLength={15}
-            textNegatifCaseBlank={'Anda harus mengisi bagian ini'}
+            textNegatifCaseBlank={'You must fill in this section'}
           />
         </View>
         <View style={styles.FormStyle}>
           <View style={{flexDirection: 'row'}}>
-            <TextDefault value={'Nama Belakang '} />
+            <TextDefault value={'Last name'} />
             <RequirementSymbols />
           </View>
           <TextField
-            placeholder={'Nama Belakang'}
+            placeholder={'Last name'}
             value={lastName}
             onChangeText={value => setLastName(value.replace(/[^a-z ]/gim, ''))}
             maxLength={15}
-            textNegatifCaseBlank={'Anda harus mengisi bagian ini'}
+            textNegatifCaseBlank={'You must fill in this section'}
           />
         </View>
         <View style={styles.FormStyle}>
           <View style={{flexDirection: 'row'}}>
-            <TextDefault value={'Tempat Lahir'} />
+            <TextDefault value={'Place of birth'} />
             <RequirementSymbols />
           </View>
           <TextField
-            placeholder={'Tempat Lahir '}
+            placeholder={'Place of birth'}
             value={birthplace}
             onChangeText={value => setBirthplace(value)}
             maxLength={15}
-            textNegatifCaseBlank={'Anda harus mengisi bagian ini'}
+            textNegatifCaseBlank={'You must fill in this section'}
           />
         </View>
         <View style={styles.FormStyle}>
           <View style={{flexDirection: 'row'}}>
-            <TextDefault value={'Tanggal Lahir '} />
+            <TextDefault value={'Date of birth'} />
             <RequirementSymbols />
           </View>
           <TouchableOpacity
@@ -418,7 +426,7 @@ const FormRegistration = ({navigation}) => {
             style={{width: '100%'}}>
             <View
               style={
-                Number(moment().diff(date, 'years', false)) <= 17 &&
+                Number(moment().diff(date, 'years', false)) < 17 &&
                 birtday !== null
                   ? styles.ContainerTextInputDateError
                   : styles.ContainerTextInputDate
@@ -447,7 +455,7 @@ const FormRegistration = ({navigation}) => {
           {Number(moment().diff(date, 'years', false)) <= 17 &&
           birtday !== null ? (
             <NegatifCase
-              text={'Umur tidak boleh kurang dari 17 tahun'}
+              text={'Age cannot be less than 17 years'}
               value={''}
             />
           ) : null}
@@ -455,11 +463,11 @@ const FormRegistration = ({navigation}) => {
 
         <View style={styles.FormStyle}>
           <View style={{flexDirection: 'row'}}>
-            <TextDefault value={'Alamat '} />
+            <TextDefault value={'Address'} />
             <RequirementSymbols />
           </View>
           <TextInput
-            placeholder={'Alamat'}
+            placeholder={'Address'}
             multiline={true}
             numberOfLines={4}
             value={address}
@@ -472,11 +480,11 @@ const FormRegistration = ({navigation}) => {
             textAlignVertical="top"
           />
 
-          <NegatifCase text={'Anda harus mengisi bagian ini'} value={address} />
+          <NegatifCase text={'You must fill in this section'} value={address} />
         </View>
         <View style={styles.FormStyle}>
           <View style={{flexDirection: 'row'}}>
-            <TextDefault value={'Jenis Kelamin '} />
+            <TextDefault value={'Gender'} />
             <RequirementSymbols />
           </View>
 
@@ -498,38 +506,38 @@ const FormRegistration = ({navigation}) => {
         </View>
         <View style={styles.FormStyle}>
           <View style={{flexDirection: 'row'}}>
-            <TextDefault value={'Kata sandi '} />
+            <TextDefault value={'Password'} />
             <RequirementSymbols />
           </View>
           <TextFieldPassword
-            placeholder={'Kata sandi'}
+            placeholder={'Password'}
             value={password}
             onChangeText={handleCheckValidPassword}
             maxLength={16}
             validValue={checkValidPassword}
-            textNegatifCaseBlank={'Anda harus mengisi bagian ini'}
+            textNegatifCaseBlank={'You must fill in this section'}
             textNegatifCase3={
-              'Kata sandi harus berisi huruf besar, angka dan simbol (@ * # &)'
+              'Password must contain uppercase letters, numbers and symbols (@ * # &)'
             }
           />
         </View>
         <View style={styles.FormStyle}>
           <View style={{flexDirection: 'row'}}>
-            <TextDefault value={'Konfirmasi kata sandi '} />
+            <TextDefault value={'Confirmation Password'} />
             <RequirementSymbols />
           </View>
           <TextFieldPassword
-            placeholder={'Konfirmasi kata sandi'}
+            placeholder={'Confirmation Password'}
             value={confirmPassword}
             onChangeText={value => setConfirmPassword(value)}
             maxLength={16}
-            textNegatifCaseBlank={'Anda harus mengisi bagian ini'}
+            textNegatifCaseBlank={'You must fill in this section'}
             isNegatifCase1={
               password !== confirmPassword &&
               confirmPassword !== '' &&
               confirmPassword !== null
             }
-            textNegatifCase1={'Kata sandi tidak sama'}
+            textNegatifCase1={'Passwords are not the same'}
           />
         </View>
         <View style={styles.ViewAgreeTerms}>
@@ -546,17 +554,17 @@ const FormRegistration = ({navigation}) => {
             selectedButtonColor={'#73788A'}
             animation={false}
           />
-          <Text style={styles.TextAgreeTerms}>Saya setuju dengan </Text>
+          <Text style={styles.TextAgreeTerms}>{t('I agree with')} </Text>
           <TouchableOpacity
             onPress={() => navigation.navigate('TermsAndConditions')}>
             <Text style={styles.TextButtonAgreeTerms}>
-              Syarat & Ketentuan yang berlaku
+              {t('Terms & Conditions Applicable')}
             </Text>
           </TouchableOpacity>
         </View>
         <View style={styles.ButtonLanjut}>
           <BlueButton
-            value={'Selanjutnya'}
+            value={'Next'}
             onPress={handleLanjut}
             isButton={stateGlobal.isButtonFormRegistration}
           />

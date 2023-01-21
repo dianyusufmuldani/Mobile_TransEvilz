@@ -1,7 +1,9 @@
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import {StyleSheet, TouchableOpacity, View, Text} from 'react-native';
 import BackIcon from '../../../../assets/otp/arrow-left.svg';
 const HeaderPages = ({onPress, hideShowTitle, value, showBackButton}) => {
+  const {t, i18n}=useTranslation()
   return (
     <View style={styles.Container}>
       {showBackButton === false ? (
@@ -13,7 +15,7 @@ const HeaderPages = ({onPress, hideShowTitle, value, showBackButton}) => {
       )}
 
       {hideShowTitle === true ? (
-        <Text style={styles.TextStyle}>{value}</Text>
+        <Text style={styles.TextStyle}>{t(value)}</Text>
       ) : null}
       <View style={styles.ContainerBlank} />
     </View>

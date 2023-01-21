@@ -5,6 +5,7 @@ import RootNavigation from './src/navigation/rootNavigation';
 import {store} from './src/service/redux/store';
 
 const App = () => {
+  
   return (
     <Provider store={store}>
       <View style={{flex: 1}}>

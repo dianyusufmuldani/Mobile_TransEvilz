@@ -1,10 +1,12 @@
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import {Text, View, StyleSheet} from 'react-native';
 
 const TextTitleOnBoarding = ({value}) => {
+  const {t, i18n}=useTranslation()
   return (
     <View>
-      <Text style={styles.Container}>{value}</Text>
+      <Text style={styles.Container}>{t(value)}</Text>
     </View>
   );
 };

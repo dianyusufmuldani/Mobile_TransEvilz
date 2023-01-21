@@ -1,6 +1,6 @@
 //Import Library
 import React, {useState} from 'react';
-import {View, StyleSheet, Text, Image, TouchableOpacity} from 'react-native';
+import {View, StyleSheet, Text, Image, TouchableOpacity, PermissionsAndroid} from 'react-native';
 
 //Import Component
 import HeaderPages from '../../components/moleculs/headerPages';
@@ -17,14 +17,20 @@ import IconLogout from '../../../assets/user/power.svg';
 import IconArrowRight from '../../../assets/user/arrowright.svg';
 import {useDispatch, useSelector} from 'react-redux';
 import HeaderPagesBlue from '../../components/moleculs/headerPagesBlue';
-import {setLogin, setUsers} from '../../service/redux/reducer/usersSlice';
+import {setLogin, setPhoto, setUsers} from '../../service/redux/reducer/usersSlice';
 import PopUpExit from '../../components/organism/popupExit';
 import ImageError from '../../../assets/popup/popup_error.png';
+import { Dimensions } from 'react-native';
+import { useTranslation } from 'react-i18next';
+import { launchImageLibrary } from 'react-native-image-picker';
+const {width, height} = Dimensions.get('window');
 
 const User = ({navigation}) => {
   const dispatch = useDispatch();
   const stateUsers = useSelector(state => state.users);
   const [isPopupExit, setIsPopupExit] = useState(false);
+  const {t, i18n}=useTranslation()
+
   const handleLogout = () => {
     setIsPopupExit(true);
   };
@@ -33,10 +39,20 @@ const User = ({navigation}) => {
     dispatch(setUsers(null));
     navigation.navigate('Login');
   };
+  
+  let options = {
+    setToPhotos: true,
+    mediaType: 'photo',
+  };
+  const openGallery = async () => {
+    const result = await launchImageLibrary(options);
+    dispatch(setPhoto(result.assets[0].uri))
+
+  };
   return (
     <View style={styles.Container}>
       <HeaderPagesBlue
-        value={'Akun Saya'}
+        value={'My account'}
         hideShowTitle={true}
         showBackButton={false}
       />
@@ -45,20 +61,26 @@ const User = ({navigation}) => {
         onPressBlue={handleLogoutSuccess}
         onPressWhite={() => setIsPopupExit(false)}
         ImagePopUp={ImageError}
-        textButtonBlue={'Ya'}
-        textButtonWhite={'Tidak'}
-        value={'Apakah anda yakin ingin keluar ?'}
+        textButtonBlue={'Yes'}
+        textButtonWhite={'Not'}
+        value={'Are you sure you want to go out?'}
       />
       <View style={styles.ContainerBody}>
         <View style={styles.CardUser}>
           <View style={styles.ContainerImage}>
-            <Image
+          {stateUsers.photo===null||stateUsers.photo===undefined ? (
+              <Image
               source={{
                 uri: `https://robohash.org/${stateUsers.data.user.fullname}`,
               }}
               style={styles.StyleImage}
             />
-            <TouchableOpacity style={{bottom: 20, right: -40}}>
+            ):
+            (
+              <Image source={{uri: stateUsers.photo}} style={{width:60, height:60, borderRadius:60}}/>
+            ) }
+            
+            <TouchableOpacity style={{bottom: 20, right: -40}} onPress={openGallery}>
               <IconEditPhoto />
             </TouchableOpacity>
           </View>
@@ -66,29 +88,27 @@ const User = ({navigation}) => {
             <Text style={styles.TextStyle}>
               {stateUsers.data.user.fullname}
             </Text>
-            {/* <TouchableOpacity style={styles.ContainerIconEdit}>
-              <IconEdit />
-            </TouchableOpacity> */}
+     
           </View>
         </View>
         <View style={styles.CardFeature}>
-          <TextDefault value={'Bahasa'} />
+          <TextDefault value={'Language'} />
           <SwitchingLanguage />
         </View>
         <View style={styles.CardFeature}>
-          <TextDefault value={'Izin Aplikasi'} />
+          <TextDefault value={'Application permit'} />
           <SwitchingApp />
         </View>
 
         <TouchableOpacity
           style={styles.CardFeature}
           onPress={() => navigation.navigate('TermsAndConditions')}>
-          <TextDefault value={'Syarat & Ketentuan'} />
+          <TextDefault value={'Terms and conditions'} />
           <IconArrowRight />
         </TouchableOpacity>
         <TouchableOpacity style={styles.ContainerLogout} onPress={handleLogout}>
           <IconLogout />
-          <Text style={styles.TextLogout}>Keluar</Text>
+          <Text style={styles.TextLogout}>{t('Logout')}</Text>
         </TouchableOpacity>
       </View>
     </View>
@@ -123,8 +143,8 @@ const styles = StyleSheet.create({
     borderColor: '#FFFFFF',
   },
   StyleImage: {
-    width: '100%',
-    height: '100%',
+    width: 60,
+    height: 60,
   },
   ContainerText: {
     justifyContent: 'center',

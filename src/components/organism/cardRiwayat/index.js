@@ -8,6 +8,7 @@ import Japan from '../../../../assets/transferCard/openmoji_flag-japan.png';
 import {getHistory} from '../../../service/redux/reducer/transferSlice';
 import {useDispatch, useSelector} from 'react-redux';
 import {useState} from 'react';
+import { useTranslation } from 'react-i18next';
 
 const CardRiwayat = ({
   onPress,
@@ -19,6 +20,7 @@ const CardRiwayat = ({
   status,
   totalTransfer,
 }) => {
+  const {t, i18n}=useTranslation()
   // const dispatch = useDispatch();
   // const stateTransfer = useSelector(state => state.transfer);
   const [imageCountery, setImageCountery] = useState(null);

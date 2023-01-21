@@ -27,8 +27,12 @@ import {
   getNewPassword,
   setNewPassword,
 } from '../../service/redux/reducer/usersSlice';
+import { Dimensions } from 'react-native';
+import { useTranslation } from 'react-i18next';
+const {width, height} = Dimensions.get('window');
 
 const CreateNewPassword = ({navigation}) => {
+  const {t, i18n}=useTranslation()
   const dispatch = useDispatch();
   const stateUsers = useSelector(state => state.users);
   const [password, setPassword] = useState(null);
@@ -38,6 +42,7 @@ const CreateNewPassword = ({navigation}) => {
   const [checkValidPassword, setCheckValidPassword] = useState(false);
   const [checkMatchPassword, setCheckMatchPassword] = useState(false);
   const handleCheckValidPassword = text => {
+    
     let re = /\S+@\S+\.\S+/;
     let regex =
       /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@*#&])[A-Za-z\d#$@!%&*?]{8,16}$/;
@@ -50,7 +55,8 @@ const CreateNewPassword = ({navigation}) => {
   };
 
   useEffect(() => {
-    console.log('isi state', stateUsers);
+    console.log('isi state', checkMatchPassword);
+    console.log('isi state', checkValidPassword);
     if (password === null || password === '') {
       setIsButton(false);
       setCheckValidPassword(false);
@@ -64,13 +70,17 @@ const CreateNewPassword = ({navigation}) => {
     } else if (password === confirmPassword) {
       setCheckMatchPassword(false);
       if (checkValidPassword === false && checkMatchPassword === false) {
+   
+        console.log('masuk sini')
         setIsButton(true);
-      }
     }
+    
+      }
+      
     BackHandler.addEventListener('hardwareBackPress', backAction);
     return () =>
       BackHandler.removeEventListener('hardwareBackPress', backAction);
-  }, [password, confirmPassword]);
+  }, [password, confirmPassword, checkMatchPassword, checkValidPassword]);
   const handleButtonPopup = () => {
     setIsPopup(false);
     navigation.navigate('Login');
@@ -101,63 +111,63 @@ const CreateNewPassword = ({navigation}) => {
         visible={isPopup}
         onPressCancel={handleCancelPopUp}
         onPressButton={handleButtonPopup}
-        value={'Password anda berhasil diperbarui'}
+        value={'Your password was successfully updated'}
         ImagePopUp={ImageSuccess}
-        textButton={'Masuk Sekarang'}
+        textButton={'Login Now'}
       />
       <HeaderPages
         hideShowTitle={true}
-        value={'Buat Kata sandi Baru'}
+        value={'Make a new password'}
         onPress={() => navigation.goBack()}
         showBackButton={false}
       />
       <ScrollView style={styles.ContainerBody}>
         <View style={styles.ContainerImage}>
           <Image source={ImageGirlPassword} />
-          <Text style={styles.TextStyle}>Buat kata sandi baru anda</Text>
+          <Text style={styles.TextStyle}>{t('Create your new password')}</Text>
         </View>
         <View style={styles.FormStyle}>
           <View style={{flexDirection: 'row'}}>
-            <TextDefault value={'Kata sandi Baru '} />
+            <TextDefault value={'New password'} />
             <RequirementSymbols />
           </View>
           <TextFieldPassword
-            placeholder={'Kata sandi baru'}
+            placeholder={'New password'}
             value={password}
             onChangeText={handleCheckValidPassword}
             maxLength={16}
             validValue={checkValidPassword}
-            textNegatifCaseBlank={'Anda harus mengisi bagian ini'}
+            textNegatifCaseBlank={'You must fill in this section'}
             textNegatifCase3={
-              'Kata sandi harus berisi huruf besar, angka dan simbol (@ * # &)'
+              'Password must contain uppercase letters, numbers and symbols (@ * # &)'
             }
           />
         </View>
 
         <View style={styles.FormStyle}>
           <View style={{flexDirection: 'row'}}>
-            <TextDefault value={'Konfirmasi Kata sandi Baru '} />
+            <TextDefault value={'Confirmation Password'} />
             <RequirementSymbols />
           </View>
           <TextFieldPassword
-            placeholder={'Konfirmasi kata sandi baru'}
+            placeholder={'Confirmation Password'}
             value={confirmPassword}
             onChangeText={value => setConfirmPassword(value)}
             maxLength={16}
             validValue={checkMatchPassword}
-            textNegatifCaseBlank={'Anda harus mengisi bagian ini'}
+            textNegatifCaseBlank={'You must fill in this section'}
             isNegatifCase1={
               password !== confirmPassword &&
               confirmPassword !== '' &&
               confirmPassword !== null
             }
-            textNegatifCase1={'Kata sandi tidak sama'}
+            textNegatifCase1={'Passwords are not the same'}
           />
         </View>
       </ScrollView>
       <View style={styles.ContainerKirim}>
         <BlueButton
-          value={'Kirim'}
+          value={'Send'}
           isButton={isButton}
           onPress={handleButtonFooter}
         />

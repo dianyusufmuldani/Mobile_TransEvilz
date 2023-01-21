@@ -29,8 +29,12 @@ import CancelKeyboardOtp from '../../../assets/otp/cancel_keyboard_otp.svg';
 import ImagePopupError from '../../../assets/popup/popup_error.png';
 import ImageTimerRuns from '../../../assets/popup/timer_runs.png';
 import {getOtp, setOtpSlice} from '../../service/redux/reducer/otpSlice';
+import { Dimensions } from 'react-native';
+import { useTranslation } from 'react-i18next';
+const {width, height} = Dimensions.get('window');
 
 const OTP = ({navigation}) => {
+  const {t, i18n}=useTranslation()
   const [otp, setOtp] = useState([]);
   const [allOtp, setAllOtp] = useState(null);
   const [iSRunning, setIsRunning] = useState(true);
@@ -106,26 +110,25 @@ const OTP = ({navigation}) => {
   return (
     <View style={styles.Container}>
       <PopUpError
-        value={'Oops! Kode OTP yang anda masukkan salah'}
+        value={'Oops! The OTP code you entered is incorrect'}
         visible={stateGlobal.isPopupIncorectOtp}
         ImagePopUp={ImagePopupError}
-        textButton={'Coba Lagi'}
+        textButton={'Try again'}
         onPressButton={handleTryAgain}
       />
       <PopUpError
         visible={stateGlobal.isPopupRequestTimedOut}
         onPressButton={handleTryAgainTimedOut}
         ImagePopUp={ImageTimerRuns}
-        value={'Oops! Waktu anda Habis'}
-        textButton={'Coba Nanti'}
+        value={'Oops! Your time is up'}
+        textButton={'Try later'}
       />
       <HeaderPages onPress={handleBack} />
       <ScrollView showsVerticalScrollIndicator={false}>
         <View style={styles.StyleTitle}>
-          <Text style={styles.Title}>Verifikasi Kode OTP</Text>
+          <Text style={styles.Title}>{t('OTP Code Verification')}</Text>
           <Text style={styles.Description}>
-            Masukkan kode verifikasi yang telah dikirim pada No.Hp yang telah
-            anda daftarkan sebelumnya
+            {t('Enter the verification code that was sent to the cellphone number that you previously registered')}
           </Text>
         </View>
 
@@ -136,7 +139,7 @@ const OTP = ({navigation}) => {
             setIsRunning(false);
             dispatch(setIsPopupRequestTimedOut(true));
           }}
-          onPress={() => alert('hello')}
+          onPress={() => console.log('on Press')}
           size={12}
           digitTxtStyle={{color: '#2ACA10'}}
           digitStyle={{backgroundColor: 'transparent', marginHorizontal: -5}}
@@ -149,7 +152,7 @@ const OTP = ({navigation}) => {
 
         <View style={styles.ContainerContentOtp}>
           <TextInput
-            placeholder="Masukkan 6 digit kode OTP"
+            placeholder={t('Enter the 6 digit OTP code')}
             value={allOtp}
             style={styles.TextInputContentOtp}
             editable={false}
@@ -157,10 +160,10 @@ const OTP = ({navigation}) => {
           />
         </View>
         <View style={styles.KirimUlang}>
-          <TextDescriptionOnBoarding value={'Belum dapat kode OTP? '} />
+          <TextDescriptionOnBoarding value={`Didn't get the OTP code?`} />
           {iSRunning == false ? (
             <TextButton
-              value={'KIRIM ULANG KODE OTP'}
+              value={'RESEND OTP CODE'}
               onPress={handleSendAgain}
             />
           ) : (
@@ -168,25 +171,25 @@ const OTP = ({navigation}) => {
           )}
         </View>
         <View style={styles.ViewNumberKeyboard}>
-          <NumberKeyboard value={1} onPress={() => setOtp([...otp, 1])} />
-          <NumberKeyboard value={2} onPress={() => setOtp([...otp, 2])} />
-          <NumberKeyboard value={3} onPress={() => setOtp([...otp, 3])} />
+          <NumberKeyboard value={1} onPress={() =>{if(iSRunning===false){}else{{setOtp([...otp, 1])}}}}/>
+          <NumberKeyboard value={2} onPress={() =>{if(iSRunning===false){}else{{setOtp([...otp, 2])}}}}/>
+          <NumberKeyboard value={3} onPress={() =>{if(iSRunning===false){}else{{setOtp([...otp, 3])}}}}/>
         </View>
         <View style={styles.ViewNumberKeyboard}>
-          <NumberKeyboard value={4} onPress={() => setOtp([...otp, 4])} />
-          <NumberKeyboard value={5} onPress={() => setOtp([...otp, 5])} />
-          <NumberKeyboard value={6} onPress={() => setOtp([...otp, 6])} />
+          <NumberKeyboard value={4} onPress={() =>{if(iSRunning===false){}else{{setOtp([...otp, 4])}}}}/>
+          <NumberKeyboard value={5} onPress={() =>{if(iSRunning===false){}else{{setOtp([...otp, 5])}}}}/>
+          <NumberKeyboard value={6} onPress={() =>{if(iSRunning===false){}else{{setOtp([...otp, 6])}}}}/>
         </View>
         <View style={styles.ViewNumberKeyboard}>
-          <NumberKeyboard value={7} onPress={() => setOtp([...otp, 7])} />
-          <NumberKeyboard value={8} onPress={() => setOtp([...otp, 8])} />
-          <NumberKeyboard value={9} onPress={() => setOtp([...otp, 9])} />
+          <NumberKeyboard value={7} onPress={() =>{if(iSRunning===false){}else{{setOtp([...otp, 7])}}}}/>
+          <NumberKeyboard value={8} onPress={() =>{if(iSRunning===false){}else{{setOtp([...otp, 8])}}}}/>
+          <NumberKeyboard value={9} onPress={() =>{if(iSRunning===false){}else{{setOtp([...otp, 9])}}}}/>
         </View>
         <View style={styles.ViewNumberKeyboard}>
           <View style={styles.ButtonKeyboardBlank} />
-          <NumberKeyboard value={0} onPress={() => setOtp([...otp, 0])} />
-          <TouchableOpacity onPress={handleDeleteOtp}>
-            <CancelKeyboardOtp style={styles.IconCancelKeyboardOtp} />
+          <NumberKeyboard value={0} onPress={() =>{if(iSRunning===false){}else{{setOtp([...otp, 0])}}}}/>
+          <TouchableOpacity onPress={handleDeleteOtp} style={styles.IconCancelKeyboardOtp}>
+            <CancelKeyboardOtp />
           </TouchableOpacity>
         </View>
       </ScrollView>
@@ -244,9 +247,13 @@ const styles = StyleSheet.create({
     marginTop: 10,
   },
   IconCancelKeyboardOtp: {
-    position: 'absolute',
-    right: -70,
-    top: 20,
+    width:60, 
+    height:60, 
+    borderRadius:60, 
+    justifyContent:'center', 
+    alignItems:'center', 
+    right:-28, 
+    top:0
   },
   ContainerContentOtp: {
     width: '90%',

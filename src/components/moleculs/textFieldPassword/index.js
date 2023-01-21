@@ -1,4 +1,5 @@
 import React, {useState} from 'react';
+import { useTranslation } from 'react-i18next';
 import {TextInput, View, StyleSheet, TouchableOpacity} from 'react-native';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import NegatifCase from '../../atoms/negatifCaseTextInput';
@@ -16,6 +17,7 @@ const TextFieldPassword = ({
   textNegatifCase3,
   textNegatifCaseBlank,
 }) => {
+  const {t, i18n}=useTranslation()
   const [isShowPassword, setIsShowPassword] = useState(true);
   const handleShowPassword = () => {
     setIsShowPassword(!isShowPassword);
@@ -25,14 +27,14 @@ const TextFieldPassword = ({
       <View
         style={
           value === '' ||
-          (validValue === true) ||
+          (validValue === true&&value!==''&&value!==null) ||
           isNegatifCase1 === true ||
           isNegatifCase2 === true
             ? styles.ContainerError
             : styles.Container
         }>
         <TextInput
-          placeholder={placeholder}
+          placeholder={t(placeholder)}
           secureTextEntry={isShowPassword}
           value={value}
           onChangeText={onChangeText}
@@ -50,16 +52,16 @@ const TextFieldPassword = ({
           {/* <IconHidePassword /> */}
         </TouchableOpacity>
       </View>
-      <NegatifCase text={textNegatifCaseBlank} value={value} />
+      <NegatifCase text={t(textNegatifCaseBlank)} value={value} />
 
       {isNegatifCase1 ? (
-        <NegatifCase text={textNegatifCase1} value={''} />
+        <NegatifCase text={t(textNegatifCase1)} value={''} />
       ) : null}
       {isNegatifCase2 ? (
-        <NegatifCase text={textNegatifCase2} value={''} />
+        <NegatifCase text={t(textNegatifCase2)} value={''} />
       ) : null}
-      {validValue === true&&value!=='' ? (
-        <NegatifCase text={textNegatifCase3} value={''} />
+      {validValue === true&&value!==''&&value!==null ? (
+        <NegatifCase text={t(textNegatifCase3)} value={''} />
       ) : null}
     </>
   );
@@ -79,6 +81,7 @@ const styles = StyleSheet.create({
     position: 'absolute',
     right: 12,
     top: 16,
+    transform:[{rotateY:'180deg'}]
   },
   ContainerError: {
     backgroundColor: '#F1F7FF',

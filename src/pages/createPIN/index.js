@@ -19,12 +19,19 @@ import IconInfo from '../../../assets/createPIN/info.svg';
 import ImageSuccess from '../../../assets/popup/Completed_successfully.png';
 import {getPin} from '../../service/redux/reducer/pinSlice';
 import ToastedSuccess from '../../components/moleculs/toastSuccess';
+import { BackHandler } from 'react-native';
+import PopUpExit from '../../components/organism/popupExit';
+import ImageError from '../../../assets/popup/popup_error.png';
+import { Dimensions } from 'react-native';
+import { setLogin } from '../../service/redux/reducer/usersSlice';
+const {width, height} = Dimensions.get('window');
 
 const CreatePIN = ({navigation}) => {
   const [pin, setPin] = useState(null);
   const [isButton, setIsButton] = useState(false);
   const [confirmPin, setConfirmPin] = useState(null);
   const [isToastedSuccesPin, setIsToastedSuccessPin] = useState(false);
+  const [isPopupExit, setIsPopupExit]=useState(false)
   const stateGlobal = useSelector(state => state.global);
   const stateUsers = useSelector(state => state.users);
   const statePin = useSelector(state => state.pin);
@@ -45,12 +52,31 @@ const CreatePIN = ({navigation}) => {
       }
     } else {
       setIsButton(false);
-    }
+    } 
   });
   const handleKirim = () => {
     const request = {pin: Number(pin)};
     dispatch(getPin(request));
   };
+
+  const backAction = () => {
+    BackHandler.removeEventListener();
+    setIsPopupExit(true)
+    return true;
+    
+ 
+  };
+  const handleLogoutSuccess=()=>{
+    dispatch(setLogin(null))
+    BackHandler.exitApp();
+    return true;
+  }
+  
+  useEffect(()=>{
+  
+    BackHandler.addEventListener('hardwareBackPress', backAction);
+    
+  })
 
   useEffect(() => {
     if (statePin.pinRedux !== null) {
@@ -74,6 +100,15 @@ const CreatePIN = ({navigation}) => {
 
   return (
     <View style={styles.Container}>
+      <PopUpExit
+        visible={isPopupExit}
+        onPressBlue={handleLogoutSuccess}
+        onPressWhite={() => setIsPopupExit(false)}
+        ImagePopUp={ImageError}
+        textButtonBlue={'Ya'}
+        textButtonWhite={'Tidak'}
+        value={'Apakah anda yakin ingin keluar ?'}
+      />
       <ToastedSuccess
         visible={isToastedSuccesPin}
         onPressButton={() => setIsToastedSuccessPin(false)}
@@ -96,6 +131,7 @@ const CreatePIN = ({navigation}) => {
         hideShowTitle={true}
         value={'Membuat Pin Evliz'}
         onPress={() => navigation.goBack()}
+        showBackButton={false}
       />
       <View style={styles.Body}>
         <View style={styles.Info}>

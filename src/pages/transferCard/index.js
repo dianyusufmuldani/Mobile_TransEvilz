@@ -22,8 +22,12 @@ import {
   formatCurrencyWithoutComma,
   formatCurrencyWithoutCommaAndIDR,
 } from '../../helpers/formatter/currencyFormatter';
+import { Dimensions } from 'react-native';
+import { useTranslation } from 'react-i18next';
+const {width, height} = Dimensions.get('window');
 
 const TransferCard = ({navigation}) => {
+  const {t, i18n}=useTranslation()
   const stateTransfer = useSelector(state => state.transfer);
   const stateGlobal = useSelector(state => state.global);
   const dispatch = useDispatch();
@@ -65,7 +69,7 @@ const TransferCard = ({navigation}) => {
     <View style={styles.Container}>
       <HeaderPagesBlue
         hideShowTitle={true}
-        value={'Masukkan Nominal'}
+        value={'Enter the nominal'}
         onPress={() => navigation.goBack()}
       />
 
@@ -105,16 +109,16 @@ const TransferCard = ({navigation}) => {
         stateTransfer.nominalLocal !== null ? (
           <NegatifCase
             value={''}
-            text={'Minimal nominal transaksi Rp 10.000'}
+            text={'Minimum transaction nominal IDR 10,000'}
           />
         ) : null}
         <NegatifCase
           value={stateTransfer.nominalLocal}
-          text={'Anda harus mengisi bagian ini'}
+          text={'You must fill in this section'}
         />
 
         <View style={styles.TextNilaiKurs}>
-          <TextDescriptionOnBoarding value={'Biaya Admin'} />
+          <TextDescriptionOnBoarding value={'Admin fee'} />
           <TextDescriptionOnBoarding
             value={formatCurrencyWithoutComma(stateTransfer.adminLocal)}
           />
@@ -123,17 +127,16 @@ const TransferCard = ({navigation}) => {
 
       <View style={styles.ContainerFooter}>
         <Text style={styles.TextDescriptionFooter}>
-          Uang akan terkirim satu hari setelah proses berhasil jika dibayar
-          sebelum pukul 23:00
+          {t('The money will be sent one day after the process is successful if paid before 11.00 PM')}
         </Text>
-        <Text style={styles.TextTitleFooter}>Total Transaksi</Text>
+        <Text style={styles.TextTitleFooter}>{t('Total transactions')}</Text>
         <Text style={styles.TextCurrencyFooter}>
           {formatCurrencyWithoutComma(stateTransfer.totalTransactionLocal)}
         </Text>
 
         <View style={styles.ContainerSelanjutnya}>
           <BlueButton
-            value={'Selanjutnya'}
+            value={'Next'}
             isButton={stateGlobal.isButtonTransferLocal}
             onPress={handleSelanjutnya}
           />

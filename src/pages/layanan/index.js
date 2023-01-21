@@ -13,12 +13,16 @@ import IconMessage from '../../../assets/layanan/message.svg';
 import IconWhatsapp from '../../../assets/layanan/whatsapp.svg';
 import IconPhone from '../../../assets/layanan/phone.svg';
 import HeaderPagesBlue from '../../components/moleculs/headerPagesBlue';
+import { Dimensions } from 'react-native';
+import { useTranslation } from 'react-i18next';
+const {width, height} = Dimensions.get('window');
 
 const Layanan = ({navigation}) => {
+  const {t, i18n}=useTranslation()
   return (
     <View style={styles.Container}>
       <HeaderPagesBlue
-        value={'Layanan Pengaduan'}
+        value={'Complaint Service'}
         hideShowTitle={true}
         showBackButton={false}
       />
@@ -28,7 +32,7 @@ const Layanan = ({navigation}) => {
       <View style={styles.ContainerIcon}>
         <View>
           <IconMaps />
-          <Text style={styles.TextDescription}>Lokasi Kantor</Text>
+          <Text style={styles.TextDescription}>{t('Office Location')}</Text>
         </View>
         <View style={styles.ContainerTextButton}>
           <TextButtonBlue
@@ -39,7 +43,7 @@ const Layanan = ({navigation}) => {
       <View style={styles.ContainerIcon}>
         <View>
           <IconMessage />
-          <Text style={styles.TextDescription}>Email</Text>
+          <Text style={styles.TextDescription}>{t('E-mail')}</Text>
         </View>
         <View style={styles.ContainerTextButton}>
           <TextButtonBlue value={'transevilz@evil.id'} />
@@ -48,23 +52,23 @@ const Layanan = ({navigation}) => {
       <View style={styles.ContainerIcon}>
         <View>
           <IconWhatsapp />
-          <Text style={styles.TextDescription}>Whatsapp</Text>
+          <Text style={styles.TextDescription}>{t('Whatsapp')}</Text>
         </View>
         <View style={styles.ContainerTextButton}>
-          <TextButtonBlue value={'WA Bisnis'} />
+          <TextButtonBlue value={'WA Business'} />
         </View>
       </View>
       <View style={styles.ContainerIcon}>
         <View>
           <IconPhone />
-          <Text style={styles.TextDescription}>Call Center</Text>
+          <Text style={styles.TextDescription}>{t('Call Center')}</Text>
         </View>
         <View style={styles.ContainerTextButton}>
           <TextButtonBlue value={'+62 1234 5678 9101'} />
         </View>
       </View>
       <Text style={styles.ContainerDescription}>
-        Untuk keperluan yang lebih lanjut silakan datang langsung ke kantor
+        {t('For further needs, please come directly to the office')}
       </Text>
     </View>
   );

@@ -8,6 +8,9 @@ import {
   ScrollView,
 } from 'react-native';
 import {useSelector, useDispatch} from 'react-redux';
+import {Dimensions} from 'react-native';
+import {useTranslation} from 'react-i18next';
+const {width, height} = Dimensions.get('window');
 
 //Import Component
 import HeaderPages from '../../components/moleculs/headerPages';
@@ -15,22 +18,19 @@ import {Colours} from '../../helpers/colours';
 import NumberKeyboard from '../../components/moleculs/numberKeyboard';
 import PopUpError from '../../components/organism/popupError';
 import {setIsPopupPinInvalid} from '../../service/redux/reducer/globalSlice';
-
-//Import Assets
-import CancelKeyboardPin from '../../../assets/otp/cancel_keyboard_otp.svg';
-import ImagePopupError from '../../../assets/popup/popup_error.png';
 import TextButtonBlue from '../../components/atoms/textButtonBlue';
 import {
   getCreateTransactions,
   getTransasctionByID,
   setTransactionLocal,
 } from '../../service/redux/reducer/transferSlice';
-import { Dimensions } from 'react-native';
-import { useTranslation } from 'react-i18next';
-const {width, height} = Dimensions.get('window');
+
+//Import Assets
+import CancelKeyboardPin from '../../../assets/otp/cancel_keyboard_otp.svg';
+import ImagePopupError from '../../../assets/popup/popup_error.png';
 
 const PIN = ({navigation}) => {
-  const {t, i18n}=useTranslation()
+  const {t, i18n} = useTranslation();
   const stateTransfer = useSelector(state => state.transfer);
   const [pin, setPin] = useState([]);
   const [allPin, setAllPin] = useState('');
@@ -65,29 +65,37 @@ const PIN = ({navigation}) => {
         setPin([]);
         dispatch(setIsPopupPinInvalid(true));
         dispatch(setTransactionLocal(null));
-      } else if(stateTransfer.countryDestination===null||stateTransfer.countryDestination===''){
-        const request={transaction_id:stateTransfer.transactionLocal.data.transaction_id}
-        dispatch(getTransasctionByID(request))
-        if(stateTransfer.idTransactionLocal===null){
-        }
-        else{
-        if (
-          stateTransfer.countryDestination === null ||
-          stateTransfer.countryDestination === ''
-        ) {
-          dispatch(setTransactionLocal(null))
-          navigation.navigate('TransactionSuccess');
+      } else if (
+        stateTransfer.countryDestination === null ||
+        stateTransfer.countryDestination === ''
+      ) {
+        const request = {
+          transaction_id: stateTransfer.transactionLocal.data.transaction_id,
+        };
+        dispatch(getTransasctionByID(request));
+        if (stateTransfer.idTransactionLocal === null) {
         } else {
-        
+          if (
+            stateTransfer.countryDestination === null ||
+            stateTransfer.countryDestination === ''
+          ) {
+            dispatch(setTransactionLocal(null));
+            navigation.navigate('TransactionSuccess');
+          } else {
+          }
         }
-      }
-      }
-        
-        else if(stateTransfer.countryDestination!==null||stateTransfer.countryDestination!==''){
+      } else if (
+        stateTransfer.countryDestination !== null ||
+        stateTransfer.countryDestination !== ''
+      ) {
         navigation.navigate('TransactionSuccessInternational');
-      } 
+      }
     }
-  }, [stateTransfer.transactionLocal, stateTransfer.idTransactionLocal, stateTransfer.transactionInternational]);
+  }, [
+    stateTransfer.transactionLocal,
+    stateTransfer.idTransactionLocal,
+    stateTransfer.transactionInternational,
+  ]);
   const handleDeletePin = item => {
     setPin(pin.slice(0, -1));
   };

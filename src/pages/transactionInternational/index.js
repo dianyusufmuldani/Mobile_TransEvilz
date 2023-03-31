@@ -11,6 +11,9 @@ import {
 } from 'react-native';
 import {SelectList} from 'react-native-dropdown-select-list';
 import {useSelector, useDispatch} from 'react-redux';
+import {Dimensions} from 'react-native';
+import {useTranslation} from 'react-i18next';
+const {width, height} = Dimensions.get('window');
 
 //Import Component
 import RequirementSymbols from '../../components/atoms/requirementSymbols';
@@ -24,10 +27,8 @@ import {
   setIsPopupAccountNumberNotFound,
 } from '../../service/redux/reducer/globalSlice';
 import PopUpError from '../../components/organism/popupError';
-
-//Import Assets
-import ImageBgTransaction from '../../../assets/transaction/bgTransaction.png';
-import IconIndonesia from '../../../assets/registration/openmoji_flag-indonesia.svg';
+import {formatCurrencyWithoutComma} from '../../helpers/formatter/currencyFormatter';
+import TextButtonBlue from '../../components/atoms/textButtonBlue';
 import NegatifCase from '../../components/atoms/negatifCaseTextInput';
 import {
   setAccountNumberInternational,
@@ -36,19 +37,18 @@ import {
   setNameReceiverInternational,
   setSwiftCode,
 } from '../../service/redux/reducer/transferSlice';
+
+//Import Assets
+import ImageBgTransaction from '../../../assets/transaction/bgTransaction.png';
+import IconIndonesia from '../../../assets/registration/openmoji_flag-indonesia.svg';
 import ImagePopupError from '../../../assets/popup/popup_error.png';
 import Singapore from '../../../assets/transferCard/openmoji_flag-singapore.png';
 import UnitedStates from '../../../assets/transferCard/openmoji_flag-united-states.png';
 import Australia from '../../../assets/transferCard/openmoji_flag-australia.png';
 import Japan from '../../../assets/transferCard/openmoji_flag-japan.png';
-import TextButtonBlue from '../../components/atoms/textButtonBlue';
-import {formatCurrencyWithoutComma} from '../../helpers/formatter/currencyFormatter';
-import { Dimensions } from 'react-native';
-import { useTranslation } from 'react-i18next';
-const {width, height} = Dimensions.get('window');
 
 const TransactionInternational = ({navigation}) => {
-  const {t, i18n}=useTranslation()
+  const {t, i18n} = useTranslation();
   const stateGlobal = useSelector(state => state.global);
   const stateTransfer = useSelector(state => state.transfer);
   const dispatch = useDispatch();

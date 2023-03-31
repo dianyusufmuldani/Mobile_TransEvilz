@@ -8,6 +8,10 @@ import {
   ScrollView,
   BackHandler,
 } from 'react-native';
+import {Dimensions} from 'react-native';
+import {useTranslation} from 'react-i18next';
+const {width, height} = Dimensions.get('window');
+import {useDispatch, useSelector} from 'react-redux';
 
 //Import Component
 import TextDefault from '../../components/atoms/textDefault';
@@ -17,22 +21,18 @@ import TextFieldPassword from '../../components/moleculs/textFieldPassword';
 import {Colours} from '../../helpers/colours';
 import HeaderPages from '../../components/moleculs/headerPages';
 import PopUp from '../../components/organism/popup';
-
-//Import Assets
-import ImageGirlPassword from '../../../assets/forgotPassword/girl_tries_password.png';
-import ImageSuccess from '../../../assets/popup/Completed_successfully.png';
 import NegatifCase from '../../components/atoms/negatifCaseTextInput';
-import {useDispatch, useSelector} from 'react-redux';
 import {
   getNewPassword,
   setNewPassword,
 } from '../../service/redux/reducer/usersSlice';
-import { Dimensions } from 'react-native';
-import { useTranslation } from 'react-i18next';
-const {width, height} = Dimensions.get('window');
+
+//Import Assets
+import ImageGirlPassword from '../../../assets/forgotPassword/girl_tries_password.png';
+import ImageSuccess from '../../../assets/popup/Completed_successfully.png';
 
 const CreateNewPassword = ({navigation}) => {
-  const {t, i18n}=useTranslation()
+  const {t, i18n} = useTranslation();
   const dispatch = useDispatch();
   const stateUsers = useSelector(state => state.users);
   const [password, setPassword] = useState(null);
@@ -42,7 +42,6 @@ const CreateNewPassword = ({navigation}) => {
   const [checkValidPassword, setCheckValidPassword] = useState(false);
   const [checkMatchPassword, setCheckMatchPassword] = useState(false);
   const handleCheckValidPassword = text => {
-    
     let re = /\S+@\S+\.\S+/;
     let regex =
       /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@*#&])[A-Za-z\d#$@!%&*?]{8,16}$/;
@@ -70,13 +69,11 @@ const CreateNewPassword = ({navigation}) => {
     } else if (password === confirmPassword) {
       setCheckMatchPassword(false);
       if (checkValidPassword === false && checkMatchPassword === false) {
-   
-        console.log('masuk sini')
+        console.log('masuk sini');
         setIsButton(true);
-    }
-    
       }
-      
+    }
+
     BackHandler.addEventListener('hardwareBackPress', backAction);
     return () =>
       BackHandler.removeEventListener('hardwareBackPress', backAction);
@@ -129,7 +126,7 @@ const CreateNewPassword = ({navigation}) => {
         <View style={styles.FormStyle}>
           <View style={{flexDirection: 'row'}}>
             <TextDefault value={'New password'} />
-            <RequirementSymbols />
+            <RequirementSymbols />{' '}
           </View>
           <TextFieldPassword
             placeholder={'New password'}

@@ -10,6 +10,9 @@ import {
 } from 'react-native';
 import {useDispatch, useSelector} from 'react-redux';
 import CountDown from 'react-native-countdown-fixed';
+import {Dimensions} from 'react-native';
+import {useTranslation} from 'react-i18next';
+const {width, height} = Dimensions.get('window');
 
 //Import Component
 import HeaderPages from '../../components/moleculs/headerPages';
@@ -23,18 +26,15 @@ import {
   setIsPopupIncorectOtp,
   setIsPopupRequestTimedOut,
 } from '../../service/redux/reducer/globalSlice';
+import {getOtp, setOtpSlice} from '../../service/redux/reducer/otpSlice';
 
 //Import Assets
 import CancelKeyboardOtp from '../../../assets/otp/cancel_keyboard_otp.svg';
 import ImagePopupError from '../../../assets/popup/popup_error.png';
 import ImageTimerRuns from '../../../assets/popup/timer_runs.png';
-import {getOtp, setOtpSlice} from '../../service/redux/reducer/otpSlice';
-import { Dimensions } from 'react-native';
-import { useTranslation } from 'react-i18next';
-const {width, height} = Dimensions.get('window');
 
 const OTP = ({navigation}) => {
-  const {t, i18n}=useTranslation()
+  const {t, i18n} = useTranslation();
   const [otp, setOtp] = useState([]);
   const [allOtp, setAllOtp] = useState(null);
   const [iSRunning, setIsRunning] = useState(true);
@@ -128,7 +128,9 @@ const OTP = ({navigation}) => {
         <View style={styles.StyleTitle}>
           <Text style={styles.Title}>{t('OTP Code Verification')}</Text>
           <Text style={styles.Description}>
-            {t('Enter the verification code that was sent to the cellphone number that you previously registered')}
+            {t(
+              'Enter the verification code that was sent to the cellphone number that you previously registered',
+            )}
           </Text>
         </View>
 
@@ -162,33 +164,132 @@ const OTP = ({navigation}) => {
         <View style={styles.KirimUlang}>
           <TextDescriptionOnBoarding value={`Didn't get the OTP code?`} />
           {iSRunning == false ? (
-            <TextButton
-              value={'RESEND OTP CODE'}
-              onPress={handleSendAgain}
-            />
+            <TextButton value={'RESEND OTP CODE'} onPress={handleSendAgain} />
           ) : (
             <></>
           )}
         </View>
         <View style={styles.ViewNumberKeyboard}>
-          <NumberKeyboard value={1} onPress={() =>{if(iSRunning===false){}else{{setOtp([...otp, 1])}}}}/>
-          <NumberKeyboard value={2} onPress={() =>{if(iSRunning===false){}else{{setOtp([...otp, 2])}}}}/>
-          <NumberKeyboard value={3} onPress={() =>{if(iSRunning===false){}else{{setOtp([...otp, 3])}}}}/>
+          <NumberKeyboard
+            value={1}
+            onPress={() => {
+              if (iSRunning === false) {
+              } else {
+                {
+                  setOtp([...otp, 1]);
+                }
+              }
+            }}
+          />
+          <NumberKeyboard
+            value={2}
+            onPress={() => {
+              if (iSRunning === false) {
+              } else {
+                {
+                  setOtp([...otp, 2]);
+                }
+              }
+            }}
+          />
+          <NumberKeyboard
+            value={3}
+            onPress={() => {
+              if (iSRunning === false) {
+              } else {
+                {
+                  setOtp([...otp, 3]);
+                }
+              }
+            }}
+          />
         </View>
         <View style={styles.ViewNumberKeyboard}>
-          <NumberKeyboard value={4} onPress={() =>{if(iSRunning===false){}else{{setOtp([...otp, 4])}}}}/>
-          <NumberKeyboard value={5} onPress={() =>{if(iSRunning===false){}else{{setOtp([...otp, 5])}}}}/>
-          <NumberKeyboard value={6} onPress={() =>{if(iSRunning===false){}else{{setOtp([...otp, 6])}}}}/>
+          <NumberKeyboard
+            value={4}
+            onPress={() => {
+              if (iSRunning === false) {
+              } else {
+                {
+                  setOtp([...otp, 4]);
+                }
+              }
+            }}
+          />
+          <NumberKeyboard
+            value={5}
+            onPress={() => {
+              if (iSRunning === false) {
+              } else {
+                {
+                  setOtp([...otp, 5]);
+                }
+              }
+            }}
+          />
+          <NumberKeyboard
+            value={6}
+            onPress={() => {
+              if (iSRunning === false) {
+              } else {
+                {
+                  setOtp([...otp, 6]);
+                }
+              }
+            }}
+          />
         </View>
         <View style={styles.ViewNumberKeyboard}>
-          <NumberKeyboard value={7} onPress={() =>{if(iSRunning===false){}else{{setOtp([...otp, 7])}}}}/>
-          <NumberKeyboard value={8} onPress={() =>{if(iSRunning===false){}else{{setOtp([...otp, 8])}}}}/>
-          <NumberKeyboard value={9} onPress={() =>{if(iSRunning===false){}else{{setOtp([...otp, 9])}}}}/>
+          <NumberKeyboard
+            value={7}
+            onPress={() => {
+              if (iSRunning === false) {
+              } else {
+                {
+                  setOtp([...otp, 7]);
+                }
+              }
+            }}
+          />
+          <NumberKeyboard
+            value={8}
+            onPress={() => {
+              if (iSRunning === false) {
+              } else {
+                {
+                  setOtp([...otp, 8]);
+                }
+              }
+            }}
+          />
+          <NumberKeyboard
+            value={9}
+            onPress={() => {
+              if (iSRunning === false) {
+              } else {
+                {
+                  setOtp([...otp, 9]);
+                }
+              }
+            }}
+          />
         </View>
         <View style={styles.ViewNumberKeyboard}>
           <View style={styles.ButtonKeyboardBlank} />
-          <NumberKeyboard value={0} onPress={() =>{if(iSRunning===false){}else{{setOtp([...otp, 0])}}}}/>
-          <TouchableOpacity onPress={handleDeleteOtp} style={styles.IconCancelKeyboardOtp}>
+          <NumberKeyboard
+            value={0}
+            onPress={() => {
+              if (iSRunning === false) {
+              } else {
+                {
+                  setOtp([...otp, 0]);
+                }
+              }
+            }}
+          />
+          <TouchableOpacity
+            onPress={handleDeleteOtp}
+            style={styles.IconCancelKeyboardOtp}>
             <CancelKeyboardOtp />
           </TouchableOpacity>
         </View>
@@ -247,13 +348,13 @@ const styles = StyleSheet.create({
     marginTop: 10,
   },
   IconCancelKeyboardOtp: {
-    width:60, 
-    height:60, 
-    borderRadius:60, 
-    justifyContent:'center', 
-    alignItems:'center', 
-    right:-28, 
-    top:0
+    width: 60,
+    height: 60,
+    borderRadius: 60,
+    justifyContent: 'center',
+    alignItems: 'center',
+    right: -28,
+    top: 0,
   },
   ContainerContentOtp: {
     width: '90%',

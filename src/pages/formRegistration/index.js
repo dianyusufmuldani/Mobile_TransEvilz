@@ -20,6 +20,9 @@ import RadioForm, {
   RadioButtonInput,
   RadioButtonLabel,
 } from 'react-native-simple-radio-button';
+import {Dimensions} from 'react-native';
+import {useTranslation} from 'react-i18next';
+const {width, height} = Dimensions.get('window');
 
 //Import Component
 import RequirementSymbols from '../../components/atoms/requirementSymbols';
@@ -41,15 +44,13 @@ import {
   setIsPopupSuccessFormRegistration,
   setIsButtonFormRegistration,
 } from '../../service/redux/reducer/globalSlice';
+import TextDescriptionOnBoarding from '../../components/atoms/textDescriptionOnBoarding';
 
 //Import Assets
 import ImageReceiveMessage from '../../../assets/popup/received_message_icon.png';
 import IconCalender from '../../../assets/formRegistration/calendar.svg';
 import IconUserImageAdd from '../../../assets/formRegistration/user-plus.svg';
-import TextDescriptionOnBoarding from '../../components/atoms/textDescriptionOnBoarding';
-import { Dimensions } from 'react-native';
-import { useTranslation } from 'react-i18next';
-const {width, height} = Dimensions.get('window');
+
 var ListAgreeTerms = [{value: 'Setuju'}];
 
 var listGender = [
@@ -58,7 +59,7 @@ var listGender = [
 ];
 
 const FormRegistration = ({navigation}) => {
-  const {t, i18n}=useTranslation()
+  const {t, i18n} = useTranslation();
   const [typeDocument, setTypeDocument] = useState(null);
   const [noDocument, setNoDocument] = useState(null);
   const [gender, setGender] = useState('male');
@@ -210,7 +211,7 @@ const FormRegistration = ({navigation}) => {
       birth_date: date,
       address: address,
       sex: gender,
-      phone_number: (stateUsers.noHp).toString(),
+      phone_number: stateUsers.noHp.toString(),
       password: password,
     };
     dispatch(getUsers(request));
@@ -232,9 +233,9 @@ const FormRegistration = ({navigation}) => {
     }
   }, [stateUsers.registerStatus]);
 
-  useEffect(()=>{
-    console.log('isi Status Register', stateUsers.registerStatus)
-  })
+  useEffect(() => {
+    console.log('isi Status Register', stateUsers.registerStatus);
+  });
   const handleCancelPopUp = () => {
     dispatch(setIsPopupSuccessFormRegistration(false));
   };
@@ -454,10 +455,7 @@ const FormRegistration = ({navigation}) => {
 
           {Number(moment().diff(date, 'years', false)) <= 17 &&
           birtday !== null ? (
-            <NegatifCase
-              text={'Age cannot be less than 17 years'}
-              value={''}
-            />
+            <NegatifCase text={'Age cannot be less than 17 years'} value={''} />
           ) : null}
         </View>
 

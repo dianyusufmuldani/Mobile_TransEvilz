@@ -1,24 +1,24 @@
 //Import Library
 import React from 'react';
 import {View, StyleSheet, Text} from 'react-native';
+import {Dimensions} from 'react-native';
+import {useTranslation} from 'react-i18next';
+const {width, height} = Dimensions.get('window');
 
 //Import Component
 import HeaderPages from '../../components/moleculs/headerPages';
 import TextButtonBlue from '../../components/atoms/textButtonBlue';
 import {Colours} from '../../helpers/colours';
+import HeaderPagesBlue from '../../components/moleculs/headerPagesBlue';
 
 //Import Assets
 import IconMaps from '../../../assets/layanan/maps.svg';
 import IconMessage from '../../../assets/layanan/message.svg';
 import IconWhatsapp from '../../../assets/layanan/whatsapp.svg';
 import IconPhone from '../../../assets/layanan/phone.svg';
-import HeaderPagesBlue from '../../components/moleculs/headerPagesBlue';
-import { Dimensions } from 'react-native';
-import { useTranslation } from 'react-i18next';
-const {width, height} = Dimensions.get('window');
 
 const Layanan = ({navigation}) => {
-  const {t, i18n}=useTranslation()
+  const {t, i18n} = useTranslation();
   return (
     <View style={styles.Container}>
       <HeaderPagesBlue

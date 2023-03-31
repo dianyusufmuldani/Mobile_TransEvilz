@@ -3,29 +3,29 @@ import React, {useEffect} from 'react';
 import {View, StyleSheet, Text, Image} from 'react-native';
 import {SelectList} from 'react-native-dropdown-select-list';
 import {useSelector, useDispatch} from 'react-redux';
+import {Dimensions} from 'react-native';
+import {useTranslation} from 'react-i18next';
+const {width, height} = Dimensions.get('window');
 
 //Import Component
 import TextDefault from '../../components/atoms/textDefault';
 import BlueButton from '../../components/moleculs/blueButton';
 import HeaderPages from '../../components/moleculs/headerPages';
 import {setIsButtonMethodLocal} from '../../service/redux/reducer/globalSlice';
+import {formatCurrencyWithoutComma} from '../../helpers/formatter/currencyFormatter';
+import HeaderPagesBlue from '../../components/moleculs/headerPagesBlue';
+import {Colours} from '../../helpers/colours';
 
 //Import Assets
-import {Colours} from '../../helpers/colours';
 import ImageBgTransaction from '../../../assets/transaction/bgTransaction.png';
 import IconIndonesia from '../../../assets/registration/openmoji_flag-indonesia.svg';
-import HeaderPagesBlue from '../../components/moleculs/headerPagesBlue';
 import Singapore from '../../../assets/transferCard/openmoji_flag-singapore.png';
 import UnitedStates from '../../../assets/transferCard/openmoji_flag-united-states.png';
 import Australia from '../../../assets/transferCard/openmoji_flag-australia.png';
 import Japan from '../../../assets/transferCard/openmoji_flag-japan.png';
-import {formatCurrencyWithoutComma} from '../../helpers/formatter/currencyFormatter';
-import { Dimensions } from 'react-native';
-import { useTranslation } from 'react-i18next';
-const {width, height} = Dimensions.get('window');
 
 const TransactionMethodInternational = ({navigation}) => {
-  const {t, i18n}=useTranslation()
+  const {t, i18n} = useTranslation();
   const dispatch = useDispatch();
   const stateGlobal = useSelector(state => state.global);
   const stateTransfer = useSelector(state => state.transfer);

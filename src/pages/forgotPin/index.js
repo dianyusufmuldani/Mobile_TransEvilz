@@ -8,6 +8,9 @@ import {
   BackHandler,
   ScrollView,
 } from 'react-native';
+import {Dimensions} from 'react-native';
+import {useTranslation} from 'react-i18next';
+const {width, height} = Dimensions.get('window');
 
 //Import Component
 import HeaderPages from '../../components/moleculs/headerPages';
@@ -17,18 +20,15 @@ import TextField from '../../components/moleculs/textField';
 import BlueButton from '../../components/moleculs/blueButton';
 import {Colours} from '../../helpers/colours';
 import PopUp from '../../components/organism/popup';
+import NegatifCase from '../../components/atoms/negatifCaseTextInput';
+import TextFieldEmail from '../../components/moleculs/textFieldEmail';
 
 //Import Assets
 import ImageGirlPassword from '../../../assets/forgotPassword/girl_tries_password.png';
 import ImageReceiveMessage from '../../../assets/popup/received_message_icon.png';
-import NegatifCase from '../../components/atoms/negatifCaseTextInput';
-import TextFieldEmail from '../../components/moleculs/textFieldEmail';
-import { Dimensions } from 'react-native';
-import { useTranslation } from 'react-i18next';
-const {width, height} = Dimensions.get('window');
 
 const ForgotPin = ({navigation}) => {
-  const {t, i18n}=useTranslation()
+  const {t, i18n} = useTranslation();
   const [email, setEmail] = useState(null);
   const [isButton, setIsButton] = useState(false);
   const [checkValidEmail, setCheckValidEmail] = useState(false);
@@ -78,7 +78,9 @@ const ForgotPin = ({navigation}) => {
         value={'Forgot the evilz pin?'}
         onPress={() => navigation.goBack()}
       />
-      <ScrollView style={styles.ContainerScrollView} showsVerticalScrollIndicator={false} >
+      <ScrollView
+        style={styles.ContainerScrollView}
+        showsVerticalScrollIndicator={false}>
         <View style={styles.ContainerImage}>
           <Image source={ImageGirlPassword} />
           <Text style={styles.TextStyle}>
@@ -102,8 +104,8 @@ const ForgotPin = ({navigation}) => {
             textNegatifCase1={'Unregistered e-mail'}
           />
         </View>
-     
-        <View style={{height:100}}/>
+
+        <View style={{height: 100}} />
       </ScrollView>
       <View style={styles.ContainerKirim}>
         <BlueButton value={'Send'} onPress={handleKirim} isButton={isButton} />
@@ -143,7 +145,5 @@ const styles = StyleSheet.create({
   TextWrong: {
     color: 'red',
   },
-  ContainerScrollView:{
-  
-  }
+  ContainerScrollView: {},
 });

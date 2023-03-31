@@ -1,6 +1,10 @@
 //Import Library
 import React, {useState, useEffect} from 'react';
 import {View, StyleSheet, Image, Text, ScrollView} from 'react-native';
+import {Dimensions} from 'react-native';
+import {useTranslation} from 'react-i18next';
+const {width, height} = Dimensions.get('window');
+import {useDispatch, useSelector} from 'react-redux';
 
 //Import Component
 import HeaderPages from '../../components/moleculs/headerPages';
@@ -10,20 +14,16 @@ import TextField from '../../components/moleculs/textField';
 import BlueButton from '../../components/moleculs/blueButton';
 import {Colours} from '../../helpers/colours';
 import PopUp from '../../components/organism/popup';
+import NegatifCase from '../../components/atoms/negatifCaseTextInput';
+import TextFieldEmail from '../../components/moleculs/textFieldEmail';
+import {setNewPassword} from '../../service/redux/reducer/usersSlice';
 
 //Import Assets
 import ImageGirlPassword from '../../../assets/forgotPassword/girl_tries_password.png';
 import ImageReceiveMessage from '../../../assets/popup/received_message_icon.png';
-import NegatifCase from '../../components/atoms/negatifCaseTextInput';
-import TextFieldEmail from '../../components/moleculs/textFieldEmail';
-import {useDispatch, useSelector} from 'react-redux';
-import {setNewPassword} from '../../service/redux/reducer/usersSlice';
-import { Dimensions } from 'react-native';
-import { useTranslation } from 'react-i18next';
-const {width, height} = Dimensions.get('window');
 
 const ForgotPassword = ({navigation}) => {
-  const {t, i18n}=useTranslation()
+  const {t, i18n} = useTranslation();
   const dispatch = useDispatch();
   const stateUsers = useSelector(state => state.users);
   const [email, setEmail] = useState(null);
@@ -72,7 +72,9 @@ const ForgotPassword = ({navigation}) => {
         visible={isPopup}
         onPressCancel={handleCancelPopUp}
         onPressButton={handleButtonPopup}
-        value={'Application for Changes to Passwords has been sent to your email'}
+        value={
+          'Application for Changes to Passwords has been sent to your email'
+        }
         ImagePopUp={ImageReceiveMessage}
         textButton={'Check email now'}
       />
@@ -81,7 +83,9 @@ const ForgotPassword = ({navigation}) => {
         value={'Forgot password?'}
         onPress={() => navigation.goBack()}
       />
-      <ScrollView style={styles.ContainerScrollView} showsVerticalScrollIndicator={false}>
+      <ScrollView
+        style={styles.ContainerScrollView}
+        showsVerticalScrollIndicator={false}>
         <View style={styles.ContainerImage}>
           <Image source={ImageGirlPassword} />
           <Text style={styles.TextStyle}>
@@ -105,7 +109,7 @@ const ForgotPassword = ({navigation}) => {
             textNegatifCase1={'Unregistered e-mail'}
           />
         </View>
-        <View style={{height:100}}/>
+        <View style={{height: 100}} />
       </ScrollView>
       <View style={styles.ContainerKirim}>
         <BlueButton value={'Send'} onPress={handleKirim} isButton={isButton} />

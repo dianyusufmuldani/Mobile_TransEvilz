@@ -2,6 +2,9 @@
 import React, {useEffect} from 'react';
 import {View, StyleSheet, Text, TextInput} from 'react-native';
 import {useSelector, useDispatch} from 'react-redux';
+import {Dimensions} from 'react-native';
+import {useTranslation} from 'react-i18next';
+const {width, height} = Dimensions.get('window');
 
 //Import Component
 import HeaderPages from '../../components/moleculs/headerPages';
@@ -14,20 +17,17 @@ import {
 } from '../../service/redux/reducer/transferSlice';
 import NegatifCase from '../../components/atoms/negatifCaseTextInput';
 import {setIsButtonTransferLocal} from '../../service/redux/reducer/globalSlice';
-
-//Import Assets
-import IconIndonesia from '../../../assets/transferCard/openmoji_flag-indonesia.svg';
 import HeaderPagesBlue from '../../components/moleculs/headerPagesBlue';
 import {
   formatCurrencyWithoutComma,
   formatCurrencyWithoutCommaAndIDR,
 } from '../../helpers/formatter/currencyFormatter';
-import { Dimensions } from 'react-native';
-import { useTranslation } from 'react-i18next';
-const {width, height} = Dimensions.get('window');
+
+//Import Assets
+import IconIndonesia from '../../../assets/transferCard/openmoji_flag-indonesia.svg';
 
 const TransferCard = ({navigation}) => {
-  const {t, i18n}=useTranslation()
+  const {t, i18n} = useTranslation();
   const stateTransfer = useSelector(state => state.transfer);
   const stateGlobal = useSelector(state => state.global);
   const dispatch = useDispatch();
@@ -92,15 +92,12 @@ const TransferCard = ({navigation}) => {
                 ? 0
                 : formatCurrencyWithoutCommaAndIDR(stateTransfer.nominalLocal)
             }
-            onChangeText={value =>
-              {if(value==='0'){
-
+            onChangeText={value => {
+              if (value === '0') {
+              } else {
+                dispatch(setNominalTransferLocal(value.replace(/\D/g, '')));
               }
-              else{
-              dispatch(setNominalTransferLocal(value.replace(/\D/g, '')))
-            }
-            }
-            }
+            }}
             keyboardType={'number-pad'}
           />
         </View>
@@ -127,7 +124,9 @@ const TransferCard = ({navigation}) => {
 
       <View style={styles.ContainerFooter}>
         <Text style={styles.TextDescriptionFooter}>
-          {t('The money will be sent one day after the process is successful if paid before 11.00 PM')}
+          {t(
+            'The money will be sent one day after the process is successful if paid before 11.00 PM',
+          )}
         </Text>
         <Text style={styles.TextTitleFooter}>{t('Total transactions')}</Text>
         <Text style={styles.TextCurrencyFooter}>

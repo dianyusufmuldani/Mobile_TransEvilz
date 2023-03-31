@@ -9,6 +9,10 @@ import {
   ScrollView,
 } from 'react-native';
 import {useDispatch, useSelector} from 'react-redux';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import {Dimensions} from 'react-native';
+import {useTranslation} from 'react-i18next';
+const {width, height} = Dimensions.get('window');
 
 //Import Component
 import TextButton from '../../components/atoms/textButton';
@@ -34,19 +38,15 @@ import {
   setIsPopupInternetNotStable,
 } from '../../service/redux/reducer/globalSlice';
 import NegatifCase from '../../components/atoms/negatifCaseTextInput';
+import ToastFailed from '../../components/moleculs/toastFailed';
+import ToastedFailed from '../../components/moleculs/toastFailed';
 
 //Import Assets
 import ImageFingerprint from '../../../assets/login/Fingerprint.png';
 import ImagePopupError3x from '../../../assets/popup/popup_error.png';
-import ToastFailed from '../../components/moleculs/toastFailed';
-import ToastedFailed from '../../components/moleculs/toastFailed';
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import { Dimensions } from 'react-native';
-import { useTranslation } from 'react-i18next';
-const {width, height} = Dimensions.get('window');
 
 const Login = ({navigation}) => {
-  const {t, i18n}=useTranslation()
+  const {t, i18n} = useTranslation();
   const [isButton, setIsButton] = useState(false);
   const [email, setEmail] = useState(null);
   const [password, setPassword] = useState(null);
@@ -81,20 +81,20 @@ const Login = ({navigation}) => {
       setCheckValidPassword(true);
     }
   };
-  useEffect(()=>{
-    getLanguage()
-    i18n.changeLanguage(stateUsers.language)
-    setEmail(null)
-    setPassword(null)
-  },[])
+  useEffect(() => {
+    getLanguage();
+    i18n.changeLanguage(stateUsers.language);
+    setEmail(null);
+    setPassword(null);
+  }, []);
   const backAction = () => {
     BackHandler.exitApp();
     return true;
   };
-  const getLanguage = async() => {
+  const getLanguage = async () => {
     const languageStorage = await AsyncStorage.getItem('languageStorage');
-     dispatch(setLanguage(languageStorage))
-};
+    dispatch(setLanguage(languageStorage));
+  };
 
   useEffect(() => {
     if (email === null || email === '') {
@@ -116,8 +116,8 @@ const Login = ({navigation}) => {
     BackHandler.addEventListener('hardwareBackPress', backAction);
   }, [email, password]);
   const handleRegistrasi = () => {
-    setEmail(null)
-    setPassword(null)
+    setEmail(null);
+    setPassword(null);
     navigation.navigate('Registration');
   };
   const handleLogin = () => {
@@ -135,7 +135,6 @@ const Login = ({navigation}) => {
   });
   useEffect(() => {
     console.log('stateUsers from pages Login', stateUsers.data);
-
     if (
       stateUsers.login != null ||
       stateUsers.login != undefined ||
@@ -145,8 +144,8 @@ const Login = ({navigation}) => {
       dispatch(setIsLoading(false));
       if (stateUsers.login === 200) {
         if (stateUsers.data !== null) {
-          setEmail(null)
-          setPassword(null)
+          setEmail(null);
+          setPassword(null);
           if (stateUsers.data.user.userPin == false) {
             console.log('isi state users s', stateUsers.data.user.accessToken);
             navigation.navigate('CreatePIN');
@@ -177,8 +176,8 @@ const Login = ({navigation}) => {
   }, [counterLogin]);
 
   const handleForgotPassword = () => {
-    setEmail(null)
-    setPassword(null)
+    setEmail(null);
+    setPassword(null);
     navigation.navigate('ForgotPassword');
   };
   return (
@@ -209,7 +208,9 @@ const Login = ({navigation}) => {
           visible={stateGlobal.isPopupInternetNotStable}
           onPressButton={() => dispatch(setIsPopupInternetNotStable(false))}
           ImagePopUp={ImagePopupError3x}
-          value={'Oops! Your internet connection is unstable, please reload the page'}
+          value={
+            'Oops! Your internet connection is unstable, please reload the page'
+          }
           textButton={'Try later'}
         />
 
@@ -219,10 +220,7 @@ const Login = ({navigation}) => {
           </View>
           <View style={styles.ContainerText}>
             <TextDescriptionOnBoarding value={'Already have an account?'} />
-            <TextButton
-              value={'Register'}
-              onPress={handleRegistrasi}
-            />
+            <TextButton value={'Register'} onPress={handleRegistrasi} />
           </View>
           <View style={styles.ContainerImage}>
             <Image source={ImageFingerprint} />

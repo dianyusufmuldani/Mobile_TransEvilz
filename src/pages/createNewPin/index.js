@@ -8,6 +8,10 @@ import {
   ScrollView,
   BackHandler,
 } from 'react-native';
+import {Dimensions} from 'react-native';
+import {useTranslation} from 'react-i18next';
+const {width, height} = Dimensions.get('window');
+import {useDispatch, useSelector} from 'react-redux';
 
 //Import Component
 import TextDefault from '../../components/atoms/textDefault';
@@ -17,21 +21,17 @@ import TextFieldPassword from '../../components/moleculs/textFieldPassword';
 import {Colours} from '../../helpers/colours';
 import HeaderPages from '../../components/moleculs/headerPages';
 import PopUp from '../../components/organism/popup';
+import ToastedSuccess from '../../components/moleculs/toastSuccess';
+import {getNewPin} from '../../service/redux/reducer/pinSlice';
+import NegatifCase from '../../components/atoms/negatifCaseTextInput';
 
 //Import Assets
 import ImageGirlPassword from '../../../assets/forgotPassword/girl_tries_password.png';
 import ImageSuccess from '../../../assets/popup/Completed_successfully.png';
-import NegatifCase from '../../components/atoms/negatifCaseTextInput';
 import IconInfo from '../../../assets/createPIN/info.svg';
-import ToastedSuccess from '../../components/moleculs/toastSuccess';
-import {useDispatch, useSelector} from 'react-redux';
-import {getNewPin} from '../../service/redux/reducer/pinSlice';
-import { Dimensions } from 'react-native';
-import { useTranslation } from 'react-i18next';
-const {width, height} = Dimensions.get('window');
 
 const CreateNewPin = ({navigation}) => {
-  const {t, i18n}=useTranslation()
+  const {t, i18n} = useTranslation();
   const dispatch = useDispatch();
   const stateUsers = useSelector(state => state.users);
   const [pin, setPin] = useState(null);
@@ -108,7 +108,9 @@ const CreateNewPin = ({navigation}) => {
           <IconInfo />
           <View style={styles.ViewTextInfo}>
             <Text style={styles.TextInfo}>
-              {t('This Evilz pin is used for the payment/transfer process on TransEvilz. Use a combination of 6 numbers without letters and symbols')}
+              {t(
+                'This Evilz pin is used for the payment/transfer process on TransEvilz. Use a combination of 6 numbers without letters and symbols',
+              )}
             </Text>
           </View>
         </View>

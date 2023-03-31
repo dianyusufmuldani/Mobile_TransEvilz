@@ -4,15 +4,16 @@ import {View, StyleSheet, Text, Image, TouchableOpacity} from 'react-native';
 import {useDispatch, useSelector} from 'react-redux';
 import Clipboard from '@react-native-community/clipboard';
 import CountDown from 'react-native-countdown-fixed';
+import {Dimensions} from 'react-native';
+import {useTranslation} from 'react-i18next';
+const {width, height} = Dimensions.get('window');
 
 //Import Component
 import TextDefault from '../../components/atoms/textDefault';
 import TextDescriptionOnBoarding from '../../components/atoms/textDescriptionOnBoarding';
 import BlueButton from '../../components/moleculs/blueButton';
 import {Colours} from '../../helpers/colours';
-
-//Import Assets
-import ImageSuccess from '../../../assets/transactionSuccess/check_mark.png';
+import {formatCurrencyWithoutComma} from '../../helpers/formatter/currencyFormatter';
 import {
   getHistory,
   setAccountNumberInternational,
@@ -23,14 +24,13 @@ import {
   setSwiftCode,
   setTransactionLocal,
 } from '../../service/redux/reducer/transferSlice';
+
+//Import Assets
+import ImageSuccess from '../../../assets/transactionSuccess/check_mark.png';
 import IconCopy from '../../../assets/transactionSuccess/copy.svg';
-import {formatCurrencyWithoutComma} from '../../helpers/formatter/currencyFormatter';
-import { Dimensions } from 'react-native';
-import { useTranslation } from 'react-i18next';
-const {width, height} = Dimensions.get('window');
 
 const TransactionSuccessInternational = ({navigation}) => {
-  const {t, i18n}=useTranslation()
+  const {t, i18n} = useTranslation();
   const dispatch = useDispatch();
   const stateTransfer = useSelector(state => state.transfer);
   const stateUsers = useSelector(state => state.users);
@@ -63,7 +63,8 @@ const TransactionSuccessInternational = ({navigation}) => {
         </View>
         <View style={styles.ContainerTextTitle}>
           <Text style={styles.TextTitle}>
-            {t('Congratulations')} {stateUsers.data.user.fullname}, {t('your process is successful')}{' '}
+            {t('Congratulations')} {stateUsers.data.user.fullname},{' '}
+            {t('your process is successful')}{' '}
           </Text>
         </View>
         <Text style={styles.TextDescription}>
@@ -81,7 +82,11 @@ const TransactionSuccessInternational = ({navigation}) => {
             left: -20,
           }}
           separatorStyle={{color: '#2ACA10'}}
-          timeLabels={{h: `${t('Hours')}`, m: `${t('Minutes')}`, s: `${t('Seconds')}`}}
+          timeLabels={{
+            h: `${t('Hours')}`,
+            m: `${t('Minutes')}`,
+            s: `${t('Seconds')}`,
+          }}
           timeToShow={['H', 'M', 'S']}
           timeLabelStyle={{
             color: '#2ACA10',
@@ -103,7 +108,9 @@ const TransactionSuccessInternational = ({navigation}) => {
           <View style={styles.ContainerTextDescription}>
             <TextDescriptionOnBoarding value={'Transaction Type'} />
           </View>
-          <TextDefault value={`IDR ${t('to')} ${stateTransfer.countryDestination}`} />
+          <TextDefault
+            value={`IDR ${t('to')} ${stateTransfer.countryDestination}`}
+          />
 
           <View style={styles.ContainerTextDescription}>
             <TextDescriptionOnBoarding value={'Account number'} />

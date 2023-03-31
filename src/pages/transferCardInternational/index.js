@@ -10,9 +10,11 @@ import {
   ScrollView,
 } from 'react-native';
 import {useDispatch, useSelector} from 'react-redux';
+import {Dimensions} from 'react-native';
+import {useTranslation} from 'react-i18next';
+const {width, height} = Dimensions.get('window');
 
 //Import Component
-import HeaderPages from '../../components/moleculs/headerPages';
 import TextDescriptionOnBoarding from '../../components/atoms/textDescriptionOnBoarding';
 import BlueButton from '../../components/moleculs/blueButton';
 import {Colours} from '../../helpers/colours';
@@ -24,6 +26,12 @@ import {
   setTotalTransactionInternational,
   setNominalIndonesia,
 } from '../../service/redux/reducer/transferSlice';
+import NegatifCase from '../../components/atoms/negatifCaseTextInput';
+import HeaderPagesBlue from '../../components/moleculs/headerPagesBlue';
+import {
+  formatCurrencyWithoutComma,
+  formatCurrencyWithoutCommaAndIDR,
+} from '../../helpers/formatter/currencyFormatter';
 
 //Import Assets
 import IconIndonesia from '../../../assets/transferCard/openmoji_flag-indonesia.svg';
@@ -32,18 +40,9 @@ import UnitedStates from '../../../assets/transferCard/openmoji_flag-united-stat
 import Australia from '../../../assets/transferCard/openmoji_flag-australia.png';
 import Japan from '../../../assets/transferCard/openmoji_flag-japan.png';
 import IconArrowDown from '../../../assets/transferCard/icon_arrow_down.svg';
-import NegatifCase from '../../components/atoms/negatifCaseTextInput';
-import HeaderPagesBlue from '../../components/moleculs/headerPagesBlue';
-import {
-  formatCurrencyWithoutComma,
-  formatCurrencyWithoutCommaAndIDR,
-} from '../../helpers/formatter/currencyFormatter';
-import { Dimensions } from 'react-native';
-import { useTranslation } from 'react-i18next';
-const {width, height} = Dimensions.get('window');
 
 const TransferCardInternational = ({navigation}) => {
-  const {t, i18n}=useTranslation()
+  const {t, i18n} = useTranslation();
   const dispatch = useDispatch();
   const stateGlobal = useSelector(state => state.global);
   const stateTransfer = useSelector(state => state.transfer);
@@ -144,17 +143,12 @@ const TransferCardInternational = ({navigation}) => {
                 : styles.ContainerTextInputFlag
             }
             placeholder={'IDR'}
-            onChangeText={value =>
-
-              {if(value==='0'){
-
+            onChangeText={value => {
+              if (value === '0') {
+              } else {
+                dispatch(setNominalIndonesia(value.replace(/\D/g, '')));
               }
-              else{
-                dispatch(setNominalIndonesia(value.replace(/\D/g, '')))
-            }
-            }
-             
-            }
+            }}
             keyboardType={'numeric'}
             value={
               stateTransfer.nominalIndonesia === null
@@ -273,7 +267,9 @@ const TransferCardInternational = ({navigation}) => {
       <View style={styles.ContainerFooter}>
         <View style={styles.BodyFooter}>
           <Text style={styles.TextDescriptionFooter}>
-            {t('The money will be sent one day after the process is successful if paid before 23:00')}
+            {t(
+              'The money will be sent one day after the process is successful if paid before 23:00',
+            )}
           </Text>
           <Text style={styles.TextTitleFooter}>{t('Total transactions')}</Text>
           <Text style={styles.TextCurrencyFooter}>

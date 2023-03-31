@@ -10,6 +10,10 @@ import {
   TextInput,
   Keyboard,
 } from 'react-native';
+import {Dimensions} from 'react-native';
+import {useTranslation} from 'react-i18next';
+const {width, height} = Dimensions.get('window');
+import {useDispatch, useSelector} from 'react-redux';
 
 //Import Component
 import TextDescriptionOnBoarding from '../../components/atoms/textDescriptionOnBoarding';
@@ -18,20 +22,16 @@ import RequirementSymbols from '../../components/atoms/requirementSymbols';
 import BlueButton from '../../components/moleculs/blueButton';
 import {Colours} from '../../helpers/colours';
 import HeaderPages from '../../components/moleculs/headerPages';
-
-//Import Assets
-import ImageMan from '../../../assets/registration/Man_logging.png';
-import NegatifCase from '../../components/atoms/negatifCaseTextInput';
-import {useDispatch, useSelector} from 'react-redux';
 import {setIsButtonRegistration} from '../../service/redux/reducer/globalSlice';
 import {setNoHpRedux} from '../../service/redux/reducer/usersSlice';
 import ToastedFailed from '../../components/moleculs/toastFailed';
-import { Dimensions } from 'react-native';
-import { useTranslation } from 'react-i18next';
-const {width, height} = Dimensions.get('window');
+import NegatifCase from '../../components/atoms/negatifCaseTextInput';
+
+//Import Assets
+import ImageMan from '../../../assets/registration/Man_logging.png';
 
 const Registration = ({navigation}) => {
-  const {t, i18n}=useTranslation()
+  const {t, i18n} = useTranslation();
   const [country, setCountry] = React.useState('');
   const [noHp, setNoHp] = useState(null);
   const [codeRegion, setCodeRegion] = useState('+62');
@@ -91,7 +91,11 @@ const Registration = ({navigation}) => {
 
   return (
     <View style={styles.Container}>
-      <HeaderPages onPress={() =>{navigation.goBack()}} />
+      <HeaderPages
+        onPress={() => {
+          navigation.goBack();
+        }}
+      />
       <ScrollView>
         <ToastedFailed
           visible={isToastedRegistered}
@@ -107,9 +111,7 @@ const Registration = ({navigation}) => {
           </View>
           <View style={styles.Description}>
             <TextDescriptionOnBoarding
-              value={
-                'If you want to join, register first'
-              }
+              value={'If you want to join, register first'}
             />
           </View>
           <Image source={ImageMan} />
@@ -136,7 +138,10 @@ const Registration = ({navigation}) => {
             </View>
             <NegatifCase text={'You must fill in this section'} value={noHp} />
             {noHp !== null && noHp !== '' && noHp.length <= 10 ? (
-              <NegatifCase text={'The format of the cellphone number is not correct'} value={''} />
+              <NegatifCase
+                text={'The format of the cellphone number is not correct'}
+                value={''}
+              />
             ) : null}
 
             <View style={{marginTop: 20}} />

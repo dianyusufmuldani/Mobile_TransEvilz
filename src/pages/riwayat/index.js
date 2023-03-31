@@ -12,34 +12,37 @@ import {
 import DateTimePicker from '@react-native-community/datetimepicker';
 import moment from 'moment';
 import 'moment/locale/id';
+import {Dimensions} from 'react-native';
+import {useTranslation} from 'react-i18next';
+const {width, height} = Dimensions.get('window');
+import {useDispatch, useSelector} from 'react-redux';
 
 //Import Component
 import HeaderPages from '../../components/moleculs/headerPages';
 import {Colours} from '../../helpers/colours';
 import HeaderPagesBlue from '../../components/moleculs/headerPagesBlue';
+import CardRiwayat from '../../components/organism/cardRiwayat';
+import {
+  getHistory,
+  getTransasctionByID,
+} from '../../service/redux/reducer/transferSlice';
+import {formatCurrencyWithoutComma} from '../../helpers/formatter/currencyFormatter';
+import {setIsPopupErrorDate} from '../../service/redux/reducer/globalSlice';
 
 //Import Assets
 import ImageUser from '../../../assets/user/kakashi.jpg';
-import {useDispatch, useSelector} from 'react-redux';
 import IconCalender from '../../../assets/formRegistration/calendar.svg';
 import IconSearch from '../../../assets/riwayat/search.svg';
 import PopUpError from '../../components/organism/popupError';
 import ImagePopupErrorDate from '../../../assets/popup/popup_error.png';
-import {setIsPopupErrorDate} from '../../service/redux/reducer/globalSlice';
 import Indonesia from '../../../assets/transferCard/openmoji_flag-indonesia.png';
 import Singapore from '../../../assets/transferCard/openmoji_flag-singapore.png';
 import UnitedStates from '../../../assets/transferCard/openmoji_flag-united-states.png';
 import Australia from '../../../assets/transferCard/openmoji_flag-australia.png';
 import Japan from '../../../assets/transferCard/openmoji_flag-japan.png';
-import CardRiwayat from '../../components/organism/cardRiwayat';
-import {getHistory, getTransasctionByID} from '../../service/redux/reducer/transferSlice';
-import {formatCurrencyWithoutComma} from '../../helpers/formatter/currencyFormatter';
-import { Dimensions } from 'react-native';
-import { useTranslation } from 'react-i18next';
-const {width, height} = Dimensions.get('window');
 
 const Riwayat = ({navigation}) => {
-  const {t, i18n}=useTranslation()
+  const {t, i18n} = useTranslation();
   const dispatch = useDispatch();
   const stateGlobal = useSelector(state => state.global);
   const stateUsers = useSelector(state => state.users);
@@ -53,13 +56,13 @@ const Riwayat = ({navigation}) => {
   const [endDate, setEndDate] = useState(null);
   const [isSearching, setIsSearching] = useState([]);
   const [historyMap, setHistoryMap] = useState(stateTransfer.history);
-  const [showStatus, setShowStatus]=useState(false)
+  const [showStatus, setShowStatus] = useState(false);
 
   useEffect(() => {
-    setHistoryMap(stateTransfer.history)
+    setHistoryMap(stateTransfer.history);
     // dispatch(getHistory());
-  // }, [stateUsers.login, stateTransfer.transactionLocal, stateTransfer.totalTransactionLocal]);
-    },[stateTransfer.history])
+    // }, [stateUsers.login, stateTransfer.transactionLocal, stateTransfer.totalTransactionLocal]);
+  }, [stateTransfer.history]);
   const onChange = (event, selectedDate) => {
     const currentDate = selectedDate || date;
     setShowDate(false);
@@ -109,12 +112,11 @@ const Riwayat = ({navigation}) => {
         }
       }
       setIsSearching(searchHistory);
-
     }
   };
 
   useEffect(() => {
-    console.log('isi state histori', stateTransfer.history)
+    console.log('isi state histori', stateTransfer.history);
     if (startDate !== null) {
       setStartDate(moment(date).format('DD/MM/YYYY'));
     }
@@ -126,32 +128,30 @@ const Riwayat = ({navigation}) => {
     }
   }, [endDate]);
 
-  const handleTransactionById=item=>{
-    setShowStatus(true)
+  const handleTransactionById = item => {
+    setShowStatus(true);
     for (let i = 0; i < stateTransfer.history.length; i++) {
       // console.log('isi i', stateTransfer.history[i])
       if (stateTransfer.history[i].id === item.id) {
         // console.log('OKE', stateTransfer.history[i])
-        const request={transaction_id:stateTransfer.history[i].id}
-        dispatch(getTransasctionByID(request))
-        
+        const request = {transaction_id: stateTransfer.history[i].id};
+        dispatch(getTransasctionByID(request));
       }
     }
-  }
-  useEffect(()=>{
-    if(stateTransfer.idTransactionLocal===null||stateTransfer.idTransactionLocal===undefined){
-    
+  };
+  useEffect(() => {
+    if (
+      stateTransfer.idTransactionLocal === null ||
+      stateTransfer.idTransactionLocal === undefined
+    ) {
+    } else {
+      if (showStatus === false) {
+      } else {
+        setShowStatus(false);
+        navigation.navigate('StatusTransaction');
+      }
     }
-    else{
-      if(showStatus===false){
-      
-    }
-    else{
-      setShowStatus(false)
-      navigation.navigate('StatusTransaction')
-    }
-    }
-  },[stateTransfer.idTransactionLocal])
+  }, [stateTransfer.idTransactionLocal]);
   return (
     <View style={styles.Container}>
       <HeaderPagesBlue
@@ -223,12 +223,12 @@ const Riwayat = ({navigation}) => {
         <Text style={styles.TextSearch}>{t('Search')}</Text>
         <IconSearch />
       </TouchableOpacity>
-      {stateTransfer.history !== null ? 
+      {stateTransfer.history !== null ? (
         <ScrollView showsVerticalScrollIndicator={false} style={{height: 500}}>
           {historyMap.map((item, index) => {
             return (
               <CardRiwayat
-                onPress={()=>handleTransactionById(item)}
+                onPress={() => handleTransactionById(item)}
                 key={index}
                 bank={item.bank}
                 name={item.recipient_name}
@@ -238,12 +238,10 @@ const Riwayat = ({navigation}) => {
                 status={item.status}
                 dateTransfer={moment(item.transaction_date).format('LL')}
               />
-              );
-            })}
+            );
+          })}
         </ScrollView>
-       : null} 
-
-    
+      ) : null}
     </View>
   );
 };

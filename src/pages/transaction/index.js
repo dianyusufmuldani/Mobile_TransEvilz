@@ -10,6 +10,9 @@ import {
 } from 'react-native';
 import {SelectList} from 'react-native-dropdown-select-list';
 import {useSelector, useDispatch} from 'react-redux';
+import {Dimensions} from 'react-native';
+import {useTranslation} from 'react-i18next';
+const {width, height} = Dimensions.get('window');
 
 //Import Component
 import RequirementSymbols from '../../components/atoms/requirementSymbols';
@@ -23,10 +26,7 @@ import {
   setIsPopupAccountNumberNotFound,
 } from '../../service/redux/reducer/globalSlice';
 import PopUpError from '../../components/organism/popupError';
-
-//Import Assets
-import ImageBgTransaction from '../../../assets/transaction/bgTransaction.png';
-import IconIndonesia from '../../../assets/registration/openmoji_flag-indonesia.svg';
+import {formatCurrencyWithoutComma} from '../../helpers/formatter/currencyFormatter';
 import NegatifCase from '../../components/atoms/negatifCaseTextInput';
 import {
   getReceiverLocal,
@@ -34,14 +34,14 @@ import {
   setBankReceiver,
   setNameReceiver,
 } from '../../service/redux/reducer/transferSlice';
+
+//Import Assets
+import ImageBgTransaction from '../../../assets/transaction/bgTransaction.png';
+import IconIndonesia from '../../../assets/registration/openmoji_flag-indonesia.svg';
 import ImagePopupError from '../../../assets/popup/popup_error.png';
-import {formatCurrencyWithoutComma} from '../../helpers/formatter/currencyFormatter';
-import { Dimensions } from 'react-native';
-import { useTranslation } from 'react-i18next';
-const {width, height} = Dimensions.get('window');
 
 const Transaction = ({navigation}) => {
-  const {t, i18n}=useTranslation()
+  const {t, i18n} = useTranslation();
   const stateGlobal = useSelector(state => state.global);
   const stateTransfer = useSelector(state => state.transfer);
   const dispatch = useDispatch();
@@ -167,9 +167,7 @@ const Transaction = ({navigation}) => {
                 stateTransfer.accountNumber !== '' &&
                 stateTransfer.accountNumber !== null
               }
-              textNegatifCase1={
-                'The account number you entered was not found'
-              }
+              textNegatifCase1={'The account number you entered was not found'}
             />
           </View>
           <View style={styles.FormInput}>

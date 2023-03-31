@@ -1,46 +1,50 @@
 //Import Library
 import React, {useEffect, useState} from 'react';
-import {View, Image, StyleSheet, ScrollView, RefreshControl} from 'react-native';
+import {
+  View,
+  Image,
+  StyleSheet,
+  ScrollView,
+  RefreshControl,
+} from 'react-native';
 import SplashScreen from 'react-native-splash-screen';
+const {width, height} = Dimensions.get('window');
+import {Dimensions} from 'react-native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import {useDispatch, useSelector} from 'react-redux';
+import {useTranslation} from 'react-i18next';
 
 //Import Component
 import TextTitleOnBoarding from '../../components/atoms/textTitleOnBoarding';
 import TextDescriptionOnBoarding from '../../components/atoms/textDescriptionOnBoarding';
 import BlueButton from '../../components/moleculs/blueButton';
 import {Colours} from '../../helpers/colours';
+import {setLanguage} from '../../service/redux/reducer/usersSlice';
 
 //Import Assets
 import Image1 from '../../../assets/onBoarding/image1.png';
 import Image2 from '../../../assets/onBoarding/image2.png';
 import Image3 from '../../../assets/onBoarding/image3.png';
-import { Dimensions } from 'react-native';
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import { useDispatch, useSelector } from 'react-redux';
-import { useTranslation } from 'react-i18next';
-import { setLanguage } from '../../service/redux/reducer/usersSlice';
-const {width, height} = Dimensions.get('window');
 
 const OnBoarding = ({navigation}) => {
-  const dispatch=useDispatch()
-  const {t, i18n}=useTranslation()
-  const stateUsers=useSelector(state=>state.users)
+  const dispatch = useDispatch();
+  const {t, i18n} = useTranslation();
+  const stateUsers = useSelector(state => state.users);
   const [imgActive, setImgActive] = useState(0);
-  const [checkLanguage, setCheckLanguage]=useState(false)
+  const [checkLanguage, setCheckLanguage] = useState(false);
   useEffect(() => {
-    setCheckLanguage(true)
-    getLanguage()      
+    setCheckLanguage(true);
+    getLanguage();
     SplashScreen.hide();
-    console.log('splashcreen nih')
+    console.log('splashcreen nih');
   }, []);
-  useEffect(()=>{
-    i18n.changeLanguage(stateUsers.language)  
-  },[stateUsers.language])
-  const getLanguage = async() => {
+  useEffect(() => {
+    i18n.changeLanguage(stateUsers.language);
+  }, [stateUsers.language]);
+  const getLanguage = async () => {
     const languageStorage = await AsyncStorage.getItem('languageStorage');
-     dispatch(setLanguage(languageStorage))
-
-
-};
+    dispatch(setLanguage(languageStorage));
+  };
   const images = [];
   const onChange = nativeEvent => {
     if (nativeEvent) {
@@ -59,7 +63,7 @@ const OnBoarding = ({navigation}) => {
 
   return (
     <View style={styles.Container}>
-      <View style={{justifyContent:'center'}}>
+      <View style={{justifyContent: 'center'}}>
         <ScrollView
           onScroll={({nativeEvent}) => onChange(nativeEvent)}
           showsHorizontalScrollIndicator={false}
@@ -79,7 +83,9 @@ const OnBoarding = ({navigation}) => {
             <Image source={Image1} style={styles.Image} />
             <View style={styles.ContainerTextTitleOnBoarding}>
               <TextTitleOnBoarding
-                value={'The latest technology that provides convenience for you'}
+                value={
+                  'The latest technology that provides convenience for you'
+                }
               />
             </View>
             <View style={styles.ContainerTextDescriptionOnBoarding}>
@@ -95,9 +101,7 @@ const OnBoarding = ({navigation}) => {
             <Image source={Image2} style={styles.Image} />
             <View style={styles.ContainerTextTitleOnBoarding}>
               <TextTitleOnBoarding
-                value={
-                  'You can easily do transfers between countries'
-                }
+                value={'You can easily do transfers between countries'}
               />
             </View>
             <View style={styles.ContainerTextDescriptionOnBoarding}>
@@ -113,9 +117,7 @@ const OnBoarding = ({navigation}) => {
             <Image source={Image3} style={styles.Image} />
             <View style={styles.ContainerTextTitleOnBoarding}>
               <TextTitleOnBoarding
-                value={
-                  'what are you waiting for join now with TransEvilz'
-                }
+                value={'what are you waiting for join now with TransEvilz'}
               />
             </View>
             <View style={styles.ContainerTextDescriptionOnBoarding}>

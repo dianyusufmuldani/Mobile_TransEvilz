@@ -2,6 +2,9 @@
 import React, {useState, useEffect} from 'react';
 import {View, StyleSheet, Text} from 'react-native';
 import {useDispatch, useSelector} from 'react-redux';
+const {width, height} = Dimensions.get('window');
+import {Dimensions} from 'react-native';
+import {BackHandler} from 'react-native';
 
 //Import Component
 import HeaderPages from '../../components/moleculs/headerPages';
@@ -13,25 +16,22 @@ import PopUp from '../../components/organism/popup';
 import {Colours} from '../../helpers/colours';
 import NegatifCase from '../../components/atoms/negatifCaseTextInput';
 import {setIsPopupCreatePinSuccess} from '../../service/redux/reducer/globalSlice';
+import {setLogin} from '../../service/redux/reducer/usersSlice';
+import PopUpExit from '../../components/organism/popupExit';
+import {getPin} from '../../service/redux/reducer/pinSlice';
+import ToastedSuccess from '../../components/moleculs/toastSuccess';
 
 //Import Assets
 import IconInfo from '../../../assets/createPIN/info.svg';
 import ImageSuccess from '../../../assets/popup/Completed_successfully.png';
-import {getPin} from '../../service/redux/reducer/pinSlice';
-import ToastedSuccess from '../../components/moleculs/toastSuccess';
-import { BackHandler } from 'react-native';
-import PopUpExit from '../../components/organism/popupExit';
 import ImageError from '../../../assets/popup/popup_error.png';
-import { Dimensions } from 'react-native';
-import { setLogin } from '../../service/redux/reducer/usersSlice';
-const {width, height} = Dimensions.get('window');
 
 const CreatePIN = ({navigation}) => {
   const [pin, setPin] = useState(null);
   const [isButton, setIsButton] = useState(false);
   const [confirmPin, setConfirmPin] = useState(null);
   const [isToastedSuccesPin, setIsToastedSuccessPin] = useState(false);
-  const [isPopupExit, setIsPopupExit]=useState(false)
+  const [isPopupExit, setIsPopupExit] = useState(false);
   const stateGlobal = useSelector(state => state.global);
   const stateUsers = useSelector(state => state.users);
   const statePin = useSelector(state => state.pin);
@@ -52,7 +52,7 @@ const CreatePIN = ({navigation}) => {
       }
     } else {
       setIsButton(false);
-    } 
+    }
   });
   const handleKirim = () => {
     const request = {pin: Number(pin)};
@@ -61,22 +61,18 @@ const CreatePIN = ({navigation}) => {
 
   const backAction = () => {
     BackHandler.removeEventListener();
-    setIsPopupExit(true)
+    setIsPopupExit(true);
     return true;
-    
- 
   };
-  const handleLogoutSuccess=()=>{
-    dispatch(setLogin(null))
+  const handleLogoutSuccess = () => {
+    dispatch(setLogin(null));
     BackHandler.exitApp();
     return true;
-  }
-  
-  useEffect(()=>{
-  
+  };
+
+  useEffect(() => {
     BackHandler.addEventListener('hardwareBackPress', backAction);
-    
-  })
+  });
 
   useEffect(() => {
     if (statePin.pinRedux !== null) {
